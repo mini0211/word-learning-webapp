@@ -218,6 +218,7 @@ export default function App() {
   }
 
   function changeFilter(filter) {
+    if (filter === progress.filter) return;
     setFlipped(false);
     setExamAnswer('');
     setExamFeedback(null);
@@ -225,6 +226,7 @@ export default function App() {
   }
 
   function changeMode(mode) {
+    if (mode === progress.mode) return;
     setFlipped(false);
     setExamAnswer('');
     setExamFeedback(null);
