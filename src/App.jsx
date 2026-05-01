@@ -16,6 +16,7 @@ const emptyProgress = {
   wrong: 0,
   examCorrect: 0,
   examWrong: 0,
+  examLimit: 25,
   updatedAt: null,
 };
 
@@ -131,6 +132,8 @@ function authMessage(error) {
     invalid_request_type: '요청 종류를 다시 선택해주세요.',
     invalid_request_message: '요청 내용은 1~1000자로 입력해주세요.',
     invalid_request_status: '요청 상태를 다시 선택해주세요.',
+    invalid_question_count: '시험 문제 수를 다시 선택해주세요.',
+    invalid_score: '선택한 문제 수를 모두 푼 뒤 저장해주세요.',
   };
   return map[error?.message] || '처리 중 문제가 발생했습니다.';
 }
@@ -236,6 +239,8 @@ export default function App() {
   const answeredCount = Object.keys(progress.results).filter((id) => filteredWords.some((word) => word.id === id)).length;
   const isExamMode = progress.mode === 'exam';
   const examTotal = progress.examCorrect + progress.examWrong;
+  const examLimit = [25, 50, 100].includes(Number(progress.examLimit)) ? Number(progress.examLimit) : 25;
+  const examCompleted = isExamMode && examTotal >= examLimit;
   const isAdmin = auth?.user?.role === 'admin';
 
   async function refreshLeaderboard(language = progress.filter) {
@@ -245,8 +250,9 @@ export default function App() {
     }
     setLeaderboardLoading(true);
     try {
-      const query = language === 'all' ? '' : `?language=${language}`;
-      const data = await api(`/leaderboard${query}`);
+      const params = new URLSearchParams({ questionCount: String(examLimit) });
+      if (language !== 'all') params.set('language', language);
+      const data = await api(`/leaderboard?${params.toString()}`);
       setLeaderboard(data.leaderboard ?? []);
     } catch {
       setSyncStatus('랭킹을 불러오지 못했습니다.');
@@ -258,7 +264,7 @@ export default function App() {
   useEffect(() => {
     if (isLoggedIn) refreshLeaderboard(progress.filter);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [progress.filter, isLoggedIn]);
+  }, [progress.filter, progress.examLimit, isLoggedIn]);
 
   useEffect(() => {
     if (!loading && filteredWords.length && !validDeck.length) {
@@ -285,10 +291,22 @@ export default function App() {
     setFlipped(false);
     setExamAnswer('');
     setExamFeedback(null);
-    setProgress((prev) => ({ ...prev, mode, deck: rebuildDeck(), deckCursor: 0, updatedAt: new Date().toISOString() }));
+    setProgress((prev) => ({ ...prev, mode, deck: rebuildDeck(), deckCursor: 0, examCorrect: 0, examWrong: 0, results: {}, updatedAt: new Date().toISOString() }));
+  }
+
+  function changeExamLimit(limit) {
+    if (limit === examLimit) return;
+    setFlipped(false);
+    setExamAnswer('');
+    setExamFeedback(null);
+    setProgress((prev) => ({ ...prev, examLimit: limit, deck: rebuildDeck(), deckCursor: 0, examCorrect: 0, examWrong: 0, results: {}, updatedAt: new Date().toISOString() }));
   }
 
   function moveNext() {
+    if (isExamMode && examTotal >= examLimit) {
+      setExamFeedback(null);
+      return;
+    }
     setProgress((prev) => {
       const nextDeck = currentIndex >= currentDeck.length - 1 ? makeDeck(filteredWords) : currentDeck;
       const nextCursor = currentIndex >= currentDeck.length - 1 ? 0 : currentIndex + 1;
@@ -318,7 +336,7 @@ export default function App() {
 
   function submitExam(event) {
     event.preventDefault();
-    if (!currentWord || examFeedback) return;
+    if (!currentWord || examFeedback || examCompleted) return;
     const correct = judgeAnswer(examAnswer, currentWord);
     const result = correct ? 'correct' : 'wrong';
     const previous = progress.results[currentWord.id];
@@ -487,8 +505,8 @@ export default function App() {
       setSyncStatus('점수를 저장하려면 로그인이 필요합니다.');
       return;
     }
-    if (!examTotal) {
-      setSyncStatus('시험모드에서 최소 1문제 이상 풀어야 점수를 저장할 수 있습니다.');
+    if (examTotal < examLimit) {
+      setSyncStatus(`${examLimit}문제를 모두 푼 뒤 점수를 저장할 수 있습니다.`);
       return;
     }
     setSyncStatus('점수를 저장 중입니다...');
@@ -496,9 +514,9 @@ export default function App() {
       await api('/scores', {
         method: 'POST',
         token: auth.token,
-        body: JSON.stringify({ correctCount: progress.examCorrect, wrongCount: progress.examWrong, languageFilter: progress.filter }),
+        body: JSON.stringify({ correctCount: progress.examCorrect, wrongCount: progress.examWrong, languageFilter: progress.filter, questionCount: examLimit }),
       });
-      setSyncStatus('점수를 저장했습니다. 랭킹을 새로고침했습니다.');
+      setSyncStatus(`${examLimit}문제 시험 점수를 저장했습니다. 랭킹을 새로고침했습니다.`);
       await refreshLeaderboard(progress.filter);
     } catch (err) {
       setSyncStatus(authMessage(err));
@@ -508,7 +526,7 @@ export default function App() {
 
   function resetProgress() {
     localStorage.removeItem(STORAGE_KEY);
-    setProgress({ ...emptyProgress, deck: makeDeck(filteredWords) });
+    setProgress({ ...emptyProgress, examLimit, deck: makeDeck(filteredWords) });
     setFlipped(false);
     setExamAnswer('');
     setExamFeedback(null);
@@ -661,7 +679,7 @@ export default function App() {
                 {adminScores.map((score) => (
                   <div key={score.id} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-slate-50 px-4 py-3 text-sm">
                     <span>{new Date(score.submitted_at).toLocaleString('ko-KR')}</span>
-                    <span>{score.language_filter} · 정답 {score.correct_count} / 오답 {score.wrong_count}</span>
+                    <span>{score.language_filter} · {score.question_count ?? score.total_count}문제 · 정답 {score.correct_count} / 오답 {score.wrong_count}</span>
                     <span className="font-black text-indigo-600">정답률 {score.accuracy}%</span>
                   </div>
                 ))}
@@ -690,6 +708,18 @@ export default function App() {
             ))}
           </div>
 
+          {isExamMode && (
+            <div className="rounded-3xl border border-violet-100 bg-white/80 p-4 shadow-sm">
+              <p className="text-sm font-black text-slate-700">시험 문제 수</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {[25, 50, 100].map((limit) => (
+                  <button key={limit} type="button" onClick={() => changeExamLimit(limit)} className={`rounded-full px-5 py-2 text-sm font-bold transition ${examLimit === limit ? 'bg-violet-600 text-white shadow-lg' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>{limit}문제</button>
+                ))}
+              </div>
+              <p className="mt-2 text-xs text-slate-500">문제 수를 바꾸면 현재 시험 진행상황이 초기화됩니다.</p>
+            </div>
+          )}
+
           <div className="flex flex-wrap gap-2">
             {[["all", "전체"], ["en", "영어"], ["ja", "일본어"]].map(([value, label]) => (
               <button key={value} type="button" onClick={() => changeFilter(value)} className={`rounded-full px-5 py-2 text-sm font-bold transition ${progress.filter === value ? 'bg-slate-950 text-white shadow-lg' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>{label}</button>
@@ -704,9 +734,17 @@ export default function App() {
           {!loading && !error && isExamMode && (
             <section className="rounded-[2rem] border border-violet-100 bg-white p-8 shadow-xl shadow-violet-100/60">
               <div className="mb-6 flex items-center justify-between">
-                <span className="rounded-full bg-violet-50 px-3 py-1 text-sm font-semibold text-violet-600">시험모드</span>
-                <span className="text-sm text-slate-400">뜻을 직접 입력하세요</span>
+                <span className="rounded-full bg-violet-50 px-3 py-1 text-sm font-semibold text-violet-600">시험모드 · {examLimit}문제</span>
+                <span className="text-sm text-slate-400">{Math.min(examTotal + 1, examLimit)} / {examLimit}</span>
               </div>
+              {examCompleted ? (
+                <div className="rounded-3xl bg-violet-50 p-6 text-center">
+                  <p className="text-2xl font-black text-violet-700">시험 완료</p>
+                  <p className="mt-3 text-slate-600">{examLimit}문제 중 {progress.examCorrect}개 정답, {progress.examWrong}개 오답입니다.</p>
+                  <p className="mt-1 text-sm text-slate-500">오른쪽의 점수 저장 버튼으로 랭킹에 기록할 수 있습니다.</p>
+                </div>
+              ) : (
+                <>
               <p className="text-sm font-medium uppercase tracking-[0.35em] text-slate-400">QUESTION</p>
               <h2 className="mt-4 break-words text-5xl font-black tracking-tight text-slate-950 sm:text-6xl">{currentWord?.word ?? '-'}</h2>
               {currentWord?.reading && <p className="mt-4 text-xl text-slate-500">{currentWord.reading}</p>}
@@ -718,8 +756,10 @@ export default function App() {
                 <div className={`mt-6 rounded-2xl p-5 ${examFeedback.correct ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}`}>
                   <p className="text-lg font-black">{examFeedback.correct ? '정답입니다!' : '오답입니다.'}</p>
                   <p className="mt-2 text-sm">정답: {examFeedback.answer}</p>
-                  <button type="button" onClick={moveNext} className="mt-4 rounded-xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">다음 랜덤 단어</button>
+                  <button type="button" onClick={moveNext} className="mt-4 rounded-xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">{examTotal >= examLimit ? '시험 결과 보기' : '다음 랜덤 단어'}</button>
                 </div>
+              )}
+                </>
               )}
             </section>
           )}
@@ -798,14 +838,14 @@ export default function App() {
 
           <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur">
             <h2 className="text-lg font-black">시험 점수 저장</h2>
-            <p className="mt-2 text-sm text-slate-500">시험모드 결과 {progress.examCorrect}정답 / {progress.examWrong}오답을 현재 필터 랭킹에 저장합니다.</p>
+            <p className="mt-2 text-sm text-slate-500">{examLimit}문제 시험 결과 {progress.examCorrect}정답 / {progress.examWrong}오답을 현재 필터 랭킹에 저장합니다.</p>
             <button type="button" onClick={submitScore} className="mt-4 w-full rounded-2xl bg-violet-600 px-4 py-3 text-sm font-black text-white transition hover:bg-violet-700">랭킹에 점수 저장</button>
             {syncStatus && <p className="mt-3 text-sm font-semibold text-slate-600">{syncStatus}</p>}
           </section>
 
           <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur">
             <div className="flex items-center justify-between gap-2">
-              <h2 className="text-lg font-black">전체 랭킹</h2>
+              <h2 className="text-lg font-black">{examLimit}문제 랭킹</h2>
               <button type="button" onClick={() => refreshLeaderboard(progress.filter)} className="text-sm font-bold text-indigo-600">새로고침</button>
             </div>
             <div className="mt-4 space-y-2">
@@ -815,7 +855,7 @@ export default function App() {
                 <div key={`${row.display_name}-${row.last_submitted_at}`} className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 text-sm">
                   <div>
                     <p className="font-black text-slate-900">{index + 1}. {row.display_name}</p>
-                    <p className="text-xs text-slate-500">도전 {row.attempts}회</p>
+                    <p className="text-xs text-slate-500">{row.question_count ?? examLimit}문제 · 도전 {row.attempts}회</p>
                   </div>
                   <div className="text-right">
                     <p className="font-black text-indigo-600">{row.best_correct}개</p>
@@ -830,7 +870,7 @@ export default function App() {
             <h2 className="text-lg font-black">학습 상태</h2>
             <dl className="mt-4 space-y-3 text-sm text-slate-600">
               <div className="flex justify-between"><dt>모드</dt><dd>{isExamMode ? '시험모드' : '학습모드'}</dd></div>
-              <div className="flex justify-between"><dt>현재 위치</dt><dd>{filteredWords.length ? currentIndex + 1 : 0} / {filteredWords.length}</dd></div>
+              <div className="flex justify-between"><dt>현재 위치</dt><dd>{isExamMode ? `${Math.min(examTotal, examLimit)} / ${examLimit}` : `${filteredWords.length ? currentIndex + 1 : 0} / ${filteredWords.length}`}</dd></div>
               <div className="flex justify-between"><dt>최근 저장</dt><dd>{progress.updatedAt ? new Date(progress.updatedAt).toLocaleString('ko-KR') : '아직 없음'}</dd></div>
             </dl>
             <button type="button" onClick={() => setProgress((prev) => ({ ...prev, deck: makeDeck(filteredWords), deckCursor: 0, updatedAt: new Date().toISOString() }))} className="mt-5 w-full rounded-2xl bg-indigo-50 px-4 py-3 text-sm font-bold text-indigo-700 transition hover:bg-indigo-100">랜덤 순서 다시 섞기</button>
