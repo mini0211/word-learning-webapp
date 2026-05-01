@@ -1,6 +1,8 @@
-export default function ProgressBar({ current, total, correct, wrong }) {
+export default function ProgressBar({ current, total, correct, wrong, examCorrect = 0, examWrong = 0 }) {
   const safeTotal = Math.max(total, 1);
   const percent = Math.min(100, Math.round((current / safeTotal) * 100));
+  const examTotal = examCorrect + examWrong;
+  const examRate = examTotal ? Math.round((examCorrect / examTotal) * 100) : 0;
 
   return (
     <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur">
@@ -12,8 +14,10 @@ export default function ProgressBar({ current, total, correct, wrong }) {
         <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-emerald-400 transition-all duration-500" style={{ width: `${percent}%` }} />
       </div>
       <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-        <div className="rounded-2xl bg-emerald-50 px-4 py-3 text-emerald-700">정답 {correct}</div>
-        <div className="rounded-2xl bg-rose-50 px-4 py-3 text-rose-700">오답 {wrong}</div>
+        <div className="rounded-2xl bg-emerald-50 px-4 py-3 text-emerald-700">전체 정답 {correct}</div>
+        <div className="rounded-2xl bg-rose-50 px-4 py-3 text-rose-700">전체 오답 {wrong}</div>
+        <div className="rounded-2xl bg-violet-50 px-4 py-3 text-violet-700">시험 정답 {examCorrect}</div>
+        <div className="rounded-2xl bg-slate-50 px-4 py-3 text-slate-700">시험 정답률 {examRate}%</div>
       </div>
     </section>
   );
