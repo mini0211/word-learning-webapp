@@ -113,6 +113,7 @@ function authMessage(error) {
     invalid_credentials: '아이디 또는 비밀번호가 맞지 않습니다.',
     missing_token: '로그인이 필요합니다.',
     invalid_token: '로그인이 만료되었습니다. 다시 로그인해주세요.',
+    admin_required: '관리자 권한이 필요합니다.',
   };
   return map[error?.message] || '처리 중 문제가 발생했습니다.';
 }
@@ -132,6 +133,12 @@ export default function App() {
   const [syncStatus, setSyncStatus] = useState('');
   const [leaderboard, setLeaderboard] = useState([]);
   const [leaderboardLoading, setLeaderboardLoading] = useState(false);
+  const [adminView, setAdminView] = useState('admin');
+  const [adminUsers, setAdminUsers] = useState([]);
+  const [adminScores, setAdminScores] = useState([]);
+  const [selectedAdminUser, setSelectedAdminUser] = useState(null);
+  const [adminStatus, setAdminStatus] = useState('');
+  const [adminLoading, setAdminLoading] = useState(false);
   const isLoggedIn = Boolean(auth?.token && auth?.user);
 
   useEffect(() => {
@@ -182,6 +189,7 @@ export default function App() {
   const answeredCount = Object.keys(progress.results).filter((id) => filteredWords.some((word) => word.id === id)).length;
   const isExamMode = progress.mode === 'exam';
   const examTotal = progress.examCorrect + progress.examWrong;
+  const isAdmin = auth?.user?.role === 'admin';
 
   async function refreshLeaderboard(language = progress.filter) {
     if (!isLoggedIn) {
@@ -306,6 +314,7 @@ export default function App() {
         body: JSON.stringify(payload),
       });
       setAuth(data);
+      if (data.user?.role === 'admin') setAdminView('admin');
       setAuthStatus(authMode === 'register' ? '회원가입과 로그인이 완료되었습니다.' : '로그인되었습니다.');
       setAuthForm(emptyAuthForm);
       if (data.user?.preferredLanguage) changeFilter(data.user.preferredLanguage);
@@ -318,6 +327,56 @@ export default function App() {
     setAuth(null);
     setAuthStatus('로그아웃되었습니다.');
   }
+
+  async function loadAdminUsers() {
+    if (!auth?.token || !isAdmin) return;
+    setAdminLoading(true);
+    setAdminStatus('사용자 목록을 불러오는 중입니다...');
+    try {
+      const data = await api('/admin/users', { token: auth.token });
+      setAdminUsers(data.users ?? []);
+      setAdminStatus('사용자 목록을 불러왔습니다.');
+    } catch (err) {
+      setAdminStatus(authMessage(err));
+      if (err.status === 401) setAuth(null);
+    } finally {
+      setAdminLoading(false);
+    }
+  }
+
+  async function loadAdminScores(user) {
+    if (!auth?.token || !isAdmin || !user) return;
+    setSelectedAdminUser(user);
+    setAdminScores([]);
+    setAdminStatus(`${user.display_name || user.username} 점수 기록을 불러오는 중입니다...`);
+    try {
+      const data = await api(`/admin/users/${user.id}/scores`, { token: auth.token });
+      setAdminScores(data.scores ?? []);
+      setAdminStatus('점수 기록을 불러왔습니다.');
+    } catch (err) {
+      setAdminStatus(authMessage(err));
+    }
+  }
+
+  async function setUserDisabled(user, disabled) {
+    if (!auth?.token || !isAdmin || !user) return;
+    setAdminStatus(disabled ? '사용자를 비활성화하는 중입니다...' : '사용자 비활성화를 해제하는 중입니다...');
+    try {
+      await api(`/admin/users/${user.id}/disabled`, {
+        method: 'PATCH',
+        token: auth.token,
+        body: JSON.stringify({ disabled }),
+      });
+      await loadAdminUsers();
+    } catch (err) {
+      setAdminStatus(authMessage(err));
+    }
+  }
+
+  useEffect(() => {
+    if (isAdmin && adminView === 'admin') loadAdminUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdmin, adminView]);
 
   async function submitScore() {
     if (!auth?.token) {
@@ -390,6 +449,83 @@ export default function App() {
   }
 
 
+  if (isAdmin && adminView === 'admin') {
+    return (
+      <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,#dbeafe,transparent_35%),linear-gradient(135deg,#f8fafc,#eef2ff)] px-5 py-8 text-slate-900">
+        <div className="mx-auto max-w-6xl space-y-6">
+          <header className="rounded-[2rem] border border-white/70 bg-white/85 p-6 shadow-sm backdrop-blur">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.35em] text-indigo-500">Admin Dashboard</p>
+                <h1 className="mt-3 text-4xl font-black tracking-tight">단어 학습 관리자</h1>
+                <p className="mt-2 text-slate-600">회원 정보와 점수 기록을 확인하고, 필요하면 계정을 비활성화할 수 있습니다.</p>
+              </div>
+              <div className="flex gap-2">
+                <button type="button" onClick={() => setAdminView('learn')} className="rounded-2xl bg-indigo-600 px-4 py-3 text-sm font-black text-white">학습 페이지</button>
+                <button type="button" onClick={logout} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-700">로그아웃</button>
+              </div>
+            </div>
+          </header>
+
+          <section className="rounded-3xl border border-slate-200 bg-white/85 p-5 shadow-sm backdrop-blur">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-xl font-black">사용자 목록</h2>
+              <button type="button" onClick={loadAdminUsers} className="rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">새로고침</button>
+            </div>
+            {adminStatus && <p className="mt-3 text-sm font-semibold text-slate-600">{adminStatus}</p>}
+            <div className="mt-5 overflow-x-auto">
+              <table className="w-full min-w-[920px] border-separate border-spacing-y-2 text-sm">
+                <thead className="text-left text-xs uppercase tracking-wider text-slate-400">
+                  <tr>
+                    <th className="px-3">아이디</th><th className="px-3">닉네임</th><th className="px-3">실명</th><th className="px-3">생년월일</th><th className="px-3">언어</th><th className="px-3">역할</th><th className="px-3">점수</th><th className="px-3">상태</th><th className="px-3">관리</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {adminLoading && <tr><td colSpan="9" className="rounded-2xl bg-slate-50 p-4 text-center text-slate-500">불러오는 중입니다...</td></tr>}
+                  {!adminLoading && adminUsers.map((user) => (
+                    <tr key={user.id} className="bg-slate-50">
+                      <td className="rounded-l-2xl px-3 py-3 font-bold">{user.username}</td>
+                      <td className="px-3 py-3">{user.display_name}</td>
+                      <td className="px-3 py-3">{user.real_name}</td>
+                      <td className="px-3 py-3">{user.birth_date ? new Date(user.birth_date).toLocaleDateString('ko-KR') : '-'}</td>
+                      <td className="px-3 py-3">{user.preferred_language}</td>
+                      <td className="px-3 py-3">{user.role}</td>
+                      <td className="px-3 py-3">최고 {user.best_correct ?? 0} / {user.best_accuracy ?? 0}%</td>
+                      <td className="px-3 py-3">{user.disabled_at ? '비활성' : '정상'}</td>
+                      <td className="rounded-r-2xl px-3 py-3">
+                        <div className="flex gap-2">
+                          <button type="button" onClick={() => loadAdminScores(user)} className="rounded-xl bg-indigo-50 px-3 py-2 font-bold text-indigo-700">점수</button>
+                          {user.role !== 'admin' && <button type="button" onClick={() => setUserDisabled(user, !user.disabled_at)} className="rounded-xl bg-rose-50 px-3 py-2 font-bold text-rose-700">{user.disabled_at ? '해제' : '비활성'}</button>}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          {selectedAdminUser && (
+            <section className="rounded-3xl border border-slate-200 bg-white/85 p-5 shadow-sm backdrop-blur">
+              <h2 className="text-xl font-black">{selectedAdminUser.display_name} 점수 기록</h2>
+              <div className="mt-4 grid gap-2">
+                {adminScores.length === 0 && <p className="text-sm text-slate-500">저장된 점수 기록이 없습니다.</p>}
+                {adminScores.map((score) => (
+                  <div key={score.id} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-slate-50 px-4 py-3 text-sm">
+                    <span>{new Date(score.submitted_at).toLocaleString('ko-KR')}</span>
+                    <span>{score.language_filter} · 정답 {score.correct_count} / 오답 {score.wrong_count}</span>
+                    <span className="font-black text-indigo-600">정답률 {score.accuracy}%</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+      </main>
+    );
+  }
+
+
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,#dbeafe,transparent_35%),linear-gradient(135deg,#f8fafc,#eef2ff)] px-5 py-8 text-slate-900">
       <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1fr_380px]">
@@ -453,7 +589,7 @@ export default function App() {
           <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur">
             <div className="flex items-center justify-between gap-3">
               <h2 className="text-lg font-black">계정</h2>
-              {auth?.user && <button type="button" onClick={logout} className="text-sm font-bold text-slate-500 hover:text-slate-900">로그아웃</button>}
+              {auth?.user && <div className="flex gap-2">{isAdmin && <button type="button" onClick={() => setAdminView('admin')} className="text-sm font-bold text-indigo-600 hover:text-indigo-800">관리자</button>}<button type="button" onClick={logout} className="text-sm font-bold text-slate-500 hover:text-slate-900">로그아웃</button></div>}
             </div>
             {auth?.user ? (
               <div className="mt-4 rounded-2xl bg-indigo-50 p-4 text-sm text-indigo-900">
