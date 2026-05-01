@@ -134,6 +134,9 @@ function authMessage(error) {
     invalid_request_status: '요청 상태를 다시 선택해주세요.',
     invalid_question_count: '시험 문제 수를 다시 선택해주세요.',
     invalid_score: '선택한 문제 수를 모두 푼 뒤 저장해주세요.',
+    invalid_current_password: '현재 비밀번호가 맞지 않습니다.',
+    account_locked: '로그인 실패가 여러 번 발생해 계정이 잠시 잠겼습니다. 10분 후 다시 시도해주세요.',
+    use_own_password_change: '본인 비밀번호는 내 정보에서 변경해주세요.',
   };
   return map[error?.message] || '처리 중 문제가 발생했습니다.';
 }
@@ -162,6 +165,11 @@ export default function App() {
   const [adminRequests, setAdminRequests] = useState([]);
   const [selectedRequestsUser, setSelectedRequestsUser] = useState(null);
   const [adminStatus, setAdminStatus] = useState('');
+  const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [passwordStatus, setPasswordStatus] = useState('');
+  const [resetPasswordUser, setResetPasswordUser] = useState(null);
+  const [resetPasswordForm, setResetPasswordForm] = useState({ newPassword: '', confirmPassword: '' });
+  const [resetPasswordStatus, setResetPasswordStatus] = useState('');
   const [adminLoading, setAdminLoading] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
   const isLoggedIn = Boolean(auth?.token && auth?.user);
@@ -480,6 +488,60 @@ export default function App() {
     }
   }
 
+
+  async function changeOwnPassword(event) {
+    event.preventDefault();
+    if (!auth?.token) return;
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordStatus('새 비밀번호 확인이 맞지 않습니다.');
+      return;
+    }
+    if (passwordForm.newPassword.length < 8) {
+      setPasswordStatus('새 비밀번호는 8자 이상이어야 합니다.');
+      return;
+    }
+    setPasswordStatus('비밀번호를 변경하는 중입니다...');
+    try {
+      await api('/me/password', {
+        method: 'PATCH',
+        token: auth.token,
+        body: JSON.stringify({ currentPassword: passwordForm.currentPassword, newPassword: passwordForm.newPassword }),
+      });
+      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setPasswordStatus('비밀번호가 변경되었습니다. 다시 로그인해주세요.');
+      setAuth(null);
+    } catch (err) {
+      setPasswordStatus(authMessage(err));
+      if (err.status === 401 && err.message === 'invalid_token') setAuth(null);
+    }
+  }
+
+  async function resetUserPassword(event) {
+    event.preventDefault();
+    if (!auth?.token || !isAdmin || !resetPasswordUser) return;
+    if (resetPasswordForm.newPassword !== resetPasswordForm.confirmPassword) {
+      setResetPasswordStatus('새 비밀번호 확인이 맞지 않습니다.');
+      return;
+    }
+    if (resetPasswordForm.newPassword.length < 8) {
+      setResetPasswordStatus('새 비밀번호는 8자 이상이어야 합니다.');
+      return;
+    }
+    setResetPasswordStatus('비밀번호를 초기화하는 중입니다...');
+    try {
+      await api(`/admin/users/${resetPasswordUser.id}/password-reset`, {
+        method: 'PATCH',
+        token: auth.token,
+        body: JSON.stringify({ newPassword: resetPasswordForm.newPassword }),
+      });
+      setResetPasswordForm({ newPassword: '', confirmPassword: '' });
+      setResetPasswordStatus(`${resetPasswordUser.display_name || resetPasswordUser.username} 비밀번호를 초기화했습니다.`);
+      await loadAdminUsers();
+    } catch (err) {
+      setResetPasswordStatus(authMessage(err));
+    }
+  }
+
   async function setUserDisabled(user, disabled) {
     if (!auth?.token || !isAdmin || !user) return;
     setAdminStatus(disabled ? '사용자를 비활성화하는 중입니다...' : '사용자 비활성화를 해제하는 중입니다...');
@@ -611,11 +673,11 @@ export default function App() {
               <table className="w-full min-w-[1060px] border-separate border-spacing-y-2 text-sm">
                 <thead className="text-left text-xs uppercase tracking-wider text-slate-400">
                   <tr>
-                    <th className="px-3">아이디</th><th className="px-3">닉네임</th><th className="px-3">실명</th><th className="px-3">생년월일</th><th className="px-3">언어</th><th className="px-3">역할</th><th className="px-3">점수</th><th className="px-3">요청</th><th className="px-3">상태</th><th className="px-3">관리</th>
+                    <th className="px-3">아이디</th><th className="px-3">닉네임</th><th className="px-3">실명</th><th className="px-3">생년월일</th><th className="px-3">언어</th><th className="px-3">역할</th><th className="px-3">점수</th><th className="px-3">요청</th><th className="px-3">로그인</th><th className="px-3">상태</th><th className="px-3">관리</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {adminLoading && <tr><td colSpan="10" className="rounded-2xl bg-slate-50 p-4 text-center text-slate-500">불러오는 중입니다...</td></tr>}
+                  {adminLoading && <tr><td colSpan="11" className="rounded-2xl bg-slate-50 p-4 text-center text-slate-500">불러오는 중입니다...</td></tr>}
                   {!adminLoading && adminUsers.map((user) => (
                     <tr key={user.id} className="bg-slate-50">
                       <td className="rounded-l-2xl px-3 py-3 font-bold">{user.username}</td>
@@ -626,11 +688,13 @@ export default function App() {
                       <td className="px-3 py-3">{user.role}</td>
                       <td className="px-3 py-3">최고 {user.best_correct ?? 0} / {user.best_accuracy ?? 0}%</td>
                       <td className="px-3 py-3"><span className={`rounded-full px-3 py-1 text-xs font-black ${Number(user.unread_request_count || 0) > 0 ? 'bg-rose-100 text-rose-700' : 'bg-slate-200 text-slate-600'}`}>요청 {user.request_count ?? 0} · 새 {user.unread_request_count ?? 0}</span></td>
+                      <td className="px-3 py-3">{user.login_locked_until && new Date(user.login_locked_until).getTime() > Date.now() ? '잠김' : `${user.login_failed_count ?? 0}회 실패`}</td>
                       <td className="px-3 py-3">{user.disabled_at ? '비활성' : '정상'}</td>
                       <td className="rounded-r-2xl px-3 py-3">
                         <div className="flex gap-2">
                           <button type="button" onClick={() => loadAdminScores(user)} className="rounded-xl bg-indigo-50 px-3 py-2 font-bold text-indigo-700">점수</button>
                           <button type="button" onClick={() => loadAdminRequests(user)} className="rounded-xl bg-amber-50 px-3 py-2 font-bold text-amber-700">요청</button>
+                          {user.role !== 'admin' && <button type="button" onClick={() => { setResetPasswordUser(user); setResetPasswordStatus(''); setResetPasswordForm({ newPassword: '', confirmPassword: '' }); }} className="rounded-xl bg-violet-50 px-3 py-2 font-bold text-violet-700">비번 초기화</button>}
                           {user.role !== 'admin' && <button type="button" onClick={() => setUserDisabled(user, !user.disabled_at)} className="rounded-xl bg-rose-50 px-3 py-2 font-bold text-rose-700">{user.disabled_at ? '해제' : '비활성'}</button>}
                         </div>
                       </td>
@@ -640,6 +704,33 @@ export default function App() {
               </table>
             </div>
           </section>
+
+
+          <section className="rounded-3xl border border-slate-200 bg-white/85 p-5 shadow-sm backdrop-blur">
+            <h2 className="text-xl font-black">내 비밀번호 변경</h2>
+            <form onSubmit={changeOwnPassword} className="mt-4 grid gap-3 md:grid-cols-3">
+              <input type="password" value={passwordForm.currentPassword} onChange={(e) => setPasswordForm((form) => ({ ...form, currentPassword: e.target.value }))} placeholder="현재 비밀번호" autoComplete="current-password" className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+              <input type="password" value={passwordForm.newPassword} onChange={(e) => setPasswordForm((form) => ({ ...form, newPassword: e.target.value }))} placeholder="새 비밀번호" autoComplete="new-password" className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+              <input type="password" value={passwordForm.confirmPassword} onChange={(e) => setPasswordForm((form) => ({ ...form, confirmPassword: e.target.value }))} placeholder="새 비밀번호 확인" autoComplete="new-password" className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+              <button type="submit" className="rounded-2xl bg-indigo-600 px-4 py-3 text-sm font-black text-white md:col-span-3">내 비밀번호 변경</button>
+              {passwordStatus && <p className="text-sm font-semibold text-slate-600 md:col-span-3">{passwordStatus}</p>}
+            </form>
+          </section>
+
+          {resetPasswordUser && (
+            <section className="rounded-3xl border border-violet-100 bg-white/85 p-5 shadow-sm backdrop-blur">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 className="text-xl font-black">{resetPasswordUser.display_name} 비밀번호 초기화</h2>
+                <button type="button" onClick={() => setResetPasswordUser(null)} className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-600">닫기</button>
+              </div>
+              <form onSubmit={resetUserPassword} className="mt-4 grid gap-3 md:grid-cols-2">
+                <input type="password" value={resetPasswordForm.newPassword} onChange={(e) => setResetPasswordForm((form) => ({ ...form, newPassword: e.target.value }))} placeholder="새 비밀번호" autoComplete="new-password" className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-violet-400" />
+                <input type="password" value={resetPasswordForm.confirmPassword} onChange={(e) => setResetPasswordForm((form) => ({ ...form, confirmPassword: e.target.value }))} placeholder="새 비밀번호 확인" autoComplete="new-password" className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-violet-400" />
+                <button type="submit" className="rounded-2xl bg-violet-600 px-4 py-3 text-sm font-black text-white md:col-span-2">비밀번호 초기화</button>
+                {resetPasswordStatus && <p className="text-sm font-semibold text-slate-600 md:col-span-2">{resetPasswordStatus}</p>}
+              </form>
+            </section>
+          )}
 
 
           {selectedRequestsUser && (
@@ -814,6 +905,19 @@ export default function App() {
           </section>
 
           <ProgressBar current={answeredCount} total={filteredWords.length} correct={progress.correct} wrong={progress.wrong} examCorrect={progress.examCorrect} examWrong={progress.examWrong} />
+
+
+          <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur">
+            <h2 className="text-lg font-black">내 정보 / 비밀번호 변경</h2>
+            <p className="mt-2 text-sm text-slate-500">{auth.user.displayName || auth.user.username}님 계정의 비밀번호만 변경할 수 있습니다.</p>
+            <form onSubmit={changeOwnPassword} className="mt-4 space-y-3">
+              <input type="password" value={passwordForm.currentPassword} onChange={(e) => setPasswordForm((form) => ({ ...form, currentPassword: e.target.value }))} placeholder="현재 비밀번호" autoComplete="current-password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+              <input type="password" value={passwordForm.newPassword} onChange={(e) => setPasswordForm((form) => ({ ...form, newPassword: e.target.value }))} placeholder="새 비밀번호" autoComplete="new-password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+              <input type="password" value={passwordForm.confirmPassword} onChange={(e) => setPasswordForm((form) => ({ ...form, confirmPassword: e.target.value }))} placeholder="새 비밀번호 확인" autoComplete="new-password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+              <button type="submit" className="w-full rounded-2xl bg-indigo-600 px-4 py-3 text-sm font-black text-white">비밀번호 변경</button>
+              {passwordStatus && <p className="text-sm font-semibold text-slate-600">{passwordStatus}</p>}
+            </form>
+          </section>
 
 
           <section className="rounded-3xl border border-amber-100 bg-white/80 p-5 shadow-sm backdrop-blur">
