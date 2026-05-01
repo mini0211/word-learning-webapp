@@ -1,34 +1,95 @@
-function speakText(text, lang) {
-  if (!text || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = lang;
-  utterance.rate = 0.9;
-  utterance.pitch = 1;
-  window.speechSynthesis.speak(utterance);
+import { useEffect, useMemo, useState } from 'react';
+
+function isAndroidEdge() {
+  if (typeof navigator === 'undefined') return false;
+  return /Android/i.test(navigator.userAgent) && /EdgA/i.test(navigator.userAgent);
+}
+
+function getSpeechSupport() {
+  return typeof window !== 'undefined' && 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+}
+
+function pickVoice(lang) {
+  if (!getSpeechSupport()) return null;
+  const voices = window.speechSynthesis.getVoices();
+  const baseLang = lang.split('-')[0].toLowerCase();
+  return (
+    voices.find((voice) => voice.lang?.toLowerCase() === lang.toLowerCase()) ||
+    voices.find((voice) => voice.lang?.toLowerCase().startsWith(baseLang)) ||
+    voices.find((voice) => voice.default) ||
+    null
+  );
+}
+
+function speakText(text, lang, onStatus) {
+  if (!text || !getSpeechSupport()) {
+    onStatus?.('이 브라우저는 음성 재생을 지원하지 않을 수 있습니다.');
+    return;
+  }
+
+  const speak = () => {
+    const voices = window.speechSynthesis.getVoices();
+    if (!voices.length) {
+      onStatus?.('사용 가능한 음성 엔진을 찾지 못했습니다. Chrome 또는 기기 TTS 설정을 확인해주세요.');
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.voice = pickVoice(lang);
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    utterance.onstart = () => onStatus?.('재생 중...');
+    utterance.onend = () => onStatus?.('');
+    utterance.onerror = () => onStatus?.('음성 재생에 실패했습니다. 다른 브라우저나 기기 TTS 설정을 확인해주세요.');
+    window.speechSynthesis.speak(utterance);
+  };
+
+  if (window.speechSynthesis.getVoices().length) {
+    speak();
+    return;
+  }
+
+  window.speechSynthesis.onvoiceschanged = speak;
+  setTimeout(speak, 250);
 }
 
 function SpeakButton({ text, lang, label, variant = 'light' }) {
+  const [status, setStatus] = useState('');
+  const [supported, setSupported] = useState(true);
   const isDark = variant === 'dark';
+
+  useEffect(() => {
+    setSupported(getSpeechSupport());
+  }, []);
+
   return (
-    <button
-      type="button"
-      onClick={(event) => {
-        event.stopPropagation();
-        speakText(text, lang);
-      }}
-      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-bold transition ${
-        isDark ? 'bg-white/20 text-white hover:bg-white/30' : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
-      }`}
-      aria-label={label}
-      title={label}
-    >
-      🔊 <span>{label}</span>
-    </button>
+    <div className="inline-flex flex-col items-start gap-1">
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          speakText(text, lang, setStatus);
+        }}
+        disabled={!supported}
+        className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50 ${
+          isDark ? 'bg-white/20 text-white hover:bg-white/30' : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
+        }`}
+        aria-label={label}
+        title={label}
+      >
+        🔊 <span>{label}</span>
+      </button>
+      {status && <span className={`max-w-56 text-xs ${isDark ? 'text-white/80' : 'text-slate-500'}`}>{status}</span>}
+    </div>
   );
 }
 
 export default function WordCard({ word, flipped, onFlip }) {
+  const androidEdgeWarning = useMemo(() => isAndroidEdge(), []);
+
   if (!word) {
     return (
       <div className="rounded-3xl border border-slate-200 bg-white p-10 text-center text-slate-500 shadow-sm">
@@ -62,6 +123,7 @@ export default function WordCard({ word, flipped, onFlip }) {
               <SpeakButton text={word.word} lang={speechLang} label="단어 듣기" />
             </div>
             {word.reading && <p className="mt-4 text-xl text-slate-500">{word.reading}</p>}
+            {androidEdgeWarning && <p className="mt-4 rounded-2xl bg-amber-50 p-3 text-xs leading-5 text-amber-700">Android Edge에서는 기기 음성 엔진에 따라 소리가 안 날 수 있습니다. 안 들리면 Chrome으로 접속하거나 휴대폰 TTS 설정을 확인해주세요.</p>}
           </div>
           <p className="text-sm text-slate-400">학습모드는 뜻과 예문 해석을 볼 수 있습니다</p>
         </section>
@@ -82,6 +144,7 @@ export default function WordCard({ word, flipped, onFlip }) {
                 </div>
                 {word.lang === 'ja' && word.exampleReading && <p className="text-sm text-white/80">발음: {word.exampleReading}</p>}
                 {word.exampleMeaning && <p className="text-sm text-white/90">뜻: {word.exampleMeaning}</p>}
+                {androidEdgeWarning && <p className="rounded-xl bg-white/15 p-3 text-xs text-white/80">Android Edge에서 소리가 안 나면 Chrome 사용을 권장합니다.</p>}
               </div>
             )}
           </div>
