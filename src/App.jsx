@@ -128,6 +128,9 @@ function authMessage(error) {
     request_timeout: '서버 응답이 지연되고 있습니다. 잠시 후 다시 시도해주세요.',
     network_error: '서버에 연결하지 못했습니다. 새로고침 후 다시 시도해주세요.',
     api_error: '서버 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
+    invalid_request_type: '요청 종류를 다시 선택해주세요.',
+    invalid_request_message: '요청 내용은 1~1000자로 입력해주세요.',
+    invalid_request_status: '요청 상태를 다시 선택해주세요.',
   };
   return map[error?.message] || '처리 중 문제가 발생했습니다.';
 }
@@ -151,6 +154,10 @@ export default function App() {
   const [adminUsers, setAdminUsers] = useState([]);
   const [adminScores, setAdminScores] = useState([]);
   const [selectedAdminUser, setSelectedAdminUser] = useState(null);
+  const [requestForm, setRequestForm] = useState({ type: 'suggestion', message: '' });
+  const [requestStatus, setRequestStatus] = useState('');
+  const [adminRequests, setAdminRequests] = useState([]);
+  const [selectedRequestsUser, setSelectedRequestsUser] = useState(null);
   const [adminStatus, setAdminStatus] = useState('');
   const [adminLoading, setAdminLoading] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
@@ -398,6 +405,63 @@ export default function App() {
     }
   }
 
+
+  async function loadAdminRequests(user) {
+    if (!auth?.token || !isAdmin || !user) return;
+    setSelectedRequestsUser(user);
+    setAdminRequests([]);
+    setAdminStatus(`${user.display_name || user.username} 요청사항을 불러오는 중입니다...`);
+    try {
+      const data = await api(`/admin/users/${user.id}/requests`, { token: auth.token });
+      setAdminRequests(data.requests ?? []);
+      setAdminStatus('요청사항을 불러왔습니다.');
+    } catch (err) {
+      setAdminStatus(authMessage(err));
+    }
+  }
+
+  async function updateAdminRequestStatus(request, status) {
+    if (!auth?.token || !isAdmin || !request) return;
+    setAdminStatus('요청 상태를 변경하는 중입니다...');
+    try {
+      await api(`/admin/requests/${request.id}/status`, {
+        method: 'PATCH',
+        token: auth.token,
+        body: JSON.stringify({ status }),
+      });
+      if (selectedRequestsUser) await loadAdminRequests(selectedRequestsUser);
+      await loadAdminUsers();
+    } catch (err) {
+      setAdminStatus(authMessage(err));
+    }
+  }
+
+  async function submitRequest(event) {
+    event.preventDefault();
+    if (!auth?.token) {
+      setRequestStatus('로그인이 필요합니다.');
+      return;
+    }
+    const message = requestForm.message.trim();
+    if (!message || message.length > 1000) {
+      setRequestStatus('요청 내용은 1~1000자로 입력해주세요.');
+      return;
+    }
+    setRequestStatus('관리자에게 보내는 중입니다...');
+    try {
+      await api('/requests', {
+        method: 'POST',
+        token: auth.token,
+        body: JSON.stringify({ type: requestForm.type, message }),
+      });
+      setRequestForm({ type: 'suggestion', message: '' });
+      setRequestStatus('관리자에게 전달되었습니다.');
+    } catch (err) {
+      setRequestStatus(authMessage(err));
+      if (err.status === 401) setAuth(null);
+    }
+  }
+
   async function setUserDisabled(user, disabled) {
     if (!auth?.token || !isAdmin || !user) return;
     setAdminStatus(disabled ? '사용자를 비활성화하는 중입니다...' : '사용자 비활성화를 해제하는 중입니다...');
@@ -510,7 +574,7 @@ export default function App() {
               <div>
                 <p className="text-sm font-bold uppercase tracking-[0.35em] text-indigo-500">Admin Dashboard</p>
                 <h1 className="mt-3 text-4xl font-black tracking-tight">단어 학습 관리자</h1>
-                <p className="mt-2 text-slate-600">회원 정보와 점수 기록을 확인하고, 필요하면 계정을 비활성화할 수 있습니다.</p>
+                <p className="mt-2 text-slate-600">회원 정보, 점수 기록, 건의/요청 쪽지를 확인하고 관리할 수 있습니다.</p>
               </div>
               <div className="flex gap-2">
                 <button type="button" onClick={() => setAdminView('learn')} className="rounded-2xl bg-indigo-600 px-4 py-3 text-sm font-black text-white">학습 페이지</button>
@@ -526,14 +590,14 @@ export default function App() {
             </div>
             {adminStatus && <p className="mt-3 text-sm font-semibold text-slate-600">{adminStatus}</p>}
             <div className="mt-5 overflow-x-auto">
-              <table className="w-full min-w-[920px] border-separate border-spacing-y-2 text-sm">
+              <table className="w-full min-w-[1060px] border-separate border-spacing-y-2 text-sm">
                 <thead className="text-left text-xs uppercase tracking-wider text-slate-400">
                   <tr>
-                    <th className="px-3">아이디</th><th className="px-3">닉네임</th><th className="px-3">실명</th><th className="px-3">생년월일</th><th className="px-3">언어</th><th className="px-3">역할</th><th className="px-3">점수</th><th className="px-3">상태</th><th className="px-3">관리</th>
+                    <th className="px-3">아이디</th><th className="px-3">닉네임</th><th className="px-3">실명</th><th className="px-3">생년월일</th><th className="px-3">언어</th><th className="px-3">역할</th><th className="px-3">점수</th><th className="px-3">요청</th><th className="px-3">상태</th><th className="px-3">관리</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {adminLoading && <tr><td colSpan="9" className="rounded-2xl bg-slate-50 p-4 text-center text-slate-500">불러오는 중입니다...</td></tr>}
+                  {adminLoading && <tr><td colSpan="10" className="rounded-2xl bg-slate-50 p-4 text-center text-slate-500">불러오는 중입니다...</td></tr>}
                   {!adminLoading && adminUsers.map((user) => (
                     <tr key={user.id} className="bg-slate-50">
                       <td className="rounded-l-2xl px-3 py-3 font-bold">{user.username}</td>
@@ -543,10 +607,12 @@ export default function App() {
                       <td className="px-3 py-3">{user.preferred_language}</td>
                       <td className="px-3 py-3">{user.role}</td>
                       <td className="px-3 py-3">최고 {user.best_correct ?? 0} / {user.best_accuracy ?? 0}%</td>
+                      <td className="px-3 py-3"><span className={`rounded-full px-3 py-1 text-xs font-black ${Number(user.unread_request_count || 0) > 0 ? 'bg-rose-100 text-rose-700' : 'bg-slate-200 text-slate-600'}`}>요청 {user.request_count ?? 0} · 새 {user.unread_request_count ?? 0}</span></td>
                       <td className="px-3 py-3">{user.disabled_at ? '비활성' : '정상'}</td>
                       <td className="rounded-r-2xl px-3 py-3">
                         <div className="flex gap-2">
                           <button type="button" onClick={() => loadAdminScores(user)} className="rounded-xl bg-indigo-50 px-3 py-2 font-bold text-indigo-700">점수</button>
+                          <button type="button" onClick={() => loadAdminRequests(user)} className="rounded-xl bg-amber-50 px-3 py-2 font-bold text-amber-700">요청</button>
                           {user.role !== 'admin' && <button type="button" onClick={() => setUserDisabled(user, !user.disabled_at)} className="rounded-xl bg-rose-50 px-3 py-2 font-bold text-rose-700">{user.disabled_at ? '해제' : '비활성'}</button>}
                         </div>
                       </td>
@@ -556,6 +622,36 @@ export default function App() {
               </table>
             </div>
           </section>
+
+
+          {selectedRequestsUser && (
+            <section className="rounded-3xl border border-amber-100 bg-white/85 p-5 shadow-sm backdrop-blur">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 className="text-xl font-black">{selectedRequestsUser.display_name} 요청사항</h2>
+                <button type="button" onClick={() => setSelectedRequestsUser(null)} className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-600">닫기</button>
+              </div>
+              <div className="mt-4 grid gap-3">
+                {adminRequests.length === 0 && <p className="text-sm text-slate-500">보낸 요청사항이 없습니다.</p>}
+                {adminRequests.map((request) => (
+                  <article key={request.id} className="rounded-2xl bg-amber-50/70 p-4 text-sm text-slate-800">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-amber-700">{request.type === 'bug' ? '오류' : request.type === 'word' ? '단어 요청' : request.type === 'other' ? '기타' : '건의'}</span>
+                        <span className={`rounded-full px-3 py-1 text-xs font-black ${request.status === 'unread' ? 'bg-rose-100 text-rose-700' : request.status === 'done' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'}`}>{request.status === 'unread' ? '안 읽음' : request.status === 'done' ? '완료' : '읽음'}</span>
+                      </div>
+                      <span className="text-xs text-slate-500">{new Date(request.created_at).toLocaleString('ko-KR')}</span>
+                    </div>
+                    <p className="mt-3 whitespace-pre-wrap break-words leading-6">{request.message}</p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <button type="button" onClick={() => updateAdminRequestStatus(request, 'read')} className="rounded-xl bg-white px-3 py-2 font-bold text-slate-700">읽음</button>
+                      <button type="button" onClick={() => updateAdminRequestStatus(request, 'done')} className="rounded-xl bg-emerald-600 px-3 py-2 font-bold text-white">완료</button>
+                      <button type="button" onClick={() => updateAdminRequestStatus(request, 'unread')} className="rounded-xl bg-rose-50 px-3 py-2 font-bold text-rose-700">안 읽음</button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
 
           {selectedAdminUser && (
             <section className="rounded-3xl border border-slate-200 bg-white/85 p-5 shadow-sm backdrop-blur">
@@ -678,6 +774,27 @@ export default function App() {
           </section>
 
           <ProgressBar current={answeredCount} total={filteredWords.length} correct={progress.correct} wrong={progress.wrong} examCorrect={progress.examCorrect} examWrong={progress.examWrong} />
+
+
+          <section className="rounded-3xl border border-amber-100 bg-white/80 p-5 shadow-sm backdrop-blur">
+            <h2 className="text-lg font-black">관리자에게 건의/요청</h2>
+            <p className="mt-2 text-sm text-slate-500">오류, 단어 추가, 개선 아이디어를 관리자에게 쪽지처럼 보낼 수 있습니다.</p>
+            <form onSubmit={submitRequest} className="mt-4 space-y-3">
+              <select value={requestForm.type} onChange={(e) => setRequestForm((form) => ({ ...form, type: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-amber-400">
+                <option value="suggestion">건의</option>
+                <option value="bug">오류</option>
+                <option value="word">단어 추가 요청</option>
+                <option value="other">기타</option>
+              </select>
+              <textarea value={requestForm.message} onChange={(e) => setRequestForm((form) => ({ ...form, message: e.target.value.slice(0, 1000) }))} rows="4" placeholder="관리자에게 보낼 내용을 적어주세요." className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-amber-400" />
+              <div className="flex items-center justify-between text-xs text-slate-400">
+                <span>HTML은 텍스트로만 표시됩니다.</span>
+                <span>{requestForm.message.length}/1000</span>
+              </div>
+              <button type="submit" className="w-full rounded-2xl bg-amber-500 px-4 py-3 text-sm font-black text-white transition hover:bg-amber-600">관리자에게 보내기</button>
+              {requestStatus && <p className="text-sm font-semibold text-slate-600">{requestStatus}</p>}
+            </form>
+          </section>
 
           <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur">
             <h2 className="text-lg font-black">시험 점수 저장</h2>
