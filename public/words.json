@@ -898,5 +898,905 @@
     "example": "今日も頑張ります。",
     "exampleMeaning": "오늘도 힘내겠습니다.",
     "exampleReading": "きょうもがんばります / kyou mo ganbarimasu"
+  },
+  {
+    "id": "en-051",
+    "lang": "en",
+    "word": "water",
+    "meaning": "물",
+    "example": "Please drink some water.",
+    "exampleMeaning": "물을 좀 마셔 주세요."
+  },
+  {
+    "id": "en-052",
+    "lang": "en",
+    "word": "milk",
+    "meaning": "우유",
+    "example": "I drink milk with breakfast.",
+    "exampleMeaning": "나는 아침 식사와 함께 우유를 마십니다."
+  },
+  {
+    "id": "en-053",
+    "lang": "en",
+    "word": "bread",
+    "meaning": "빵",
+    "example": "This bread is soft.",
+    "exampleMeaning": "이 빵은 부드럽습니다."
+  },
+  {
+    "id": "en-054",
+    "lang": "en",
+    "word": "rice",
+    "meaning": "밥, 쌀",
+    "example": "We eat rice every day.",
+    "exampleMeaning": "우리는 매일 밥을 먹습니다."
+  },
+  {
+    "id": "en-055",
+    "lang": "en",
+    "word": "egg",
+    "meaning": "달걀",
+    "example": "She boiled an egg.",
+    "exampleMeaning": "그녀는 달걀을 삶았습니다."
+  },
+  {
+    "id": "en-056",
+    "lang": "en",
+    "word": "fish",
+    "meaning": "생선, 물고기",
+    "example": "The fish is fresh.",
+    "exampleMeaning": "그 생선은 신선합니다."
+  },
+  {
+    "id": "en-057",
+    "lang": "en",
+    "word": "meat",
+    "meaning": "고기",
+    "example": "He likes meat and vegetables.",
+    "exampleMeaning": "그는 고기와 채소를 좋아합니다."
+  },
+  {
+    "id": "en-058",
+    "lang": "en",
+    "word": "soup",
+    "meaning": "수프, 국",
+    "example": "The soup is hot.",
+    "exampleMeaning": "그 수프는 뜨겁습니다."
+  },
+  {
+    "id": "en-059",
+    "lang": "en",
+    "word": "salt",
+    "meaning": "소금",
+    "example": "Add a little salt.",
+    "exampleMeaning": "소금을 조금 넣으세요."
+  },
+  {
+    "id": "en-060",
+    "lang": "en",
+    "word": "sugar",
+    "meaning": "설탕",
+    "example": "This tea needs sugar.",
+    "exampleMeaning": "이 차에는 설탕이 필요합니다."
+  },
+  {
+    "id": "en-061",
+    "lang": "en",
+    "word": "cup",
+    "meaning": "컵",
+    "example": "The cup is on the table.",
+    "exampleMeaning": "컵이 탁자 위에 있습니다."
+  },
+  {
+    "id": "en-062",
+    "lang": "en",
+    "word": "plate",
+    "meaning": "접시",
+    "example": "Put the food on the plate.",
+    "exampleMeaning": "음식을 접시에 놓으세요."
+  },
+  {
+    "id": "en-063",
+    "lang": "en",
+    "word": "spoon",
+    "meaning": "숟가락",
+    "example": "I need a spoon.",
+    "exampleMeaning": "나는 숟가락이 필요합니다."
+  },
+  {
+    "id": "en-064",
+    "lang": "en",
+    "word": "fork",
+    "meaning": "포크",
+    "example": "She uses a fork.",
+    "exampleMeaning": "그녀는 포크를 사용합니다."
+  },
+  {
+    "id": "en-065",
+    "lang": "en",
+    "word": "knife",
+    "meaning": "칼",
+    "example": "Be careful with the knife.",
+    "exampleMeaning": "그 칼을 조심하세요."
+  },
+  {
+    "id": "en-066",
+    "lang": "en",
+    "word": "chair",
+    "meaning": "의자",
+    "example": "Please sit on this chair.",
+    "exampleMeaning": "이 의자에 앉아 주세요."
+  },
+  {
+    "id": "en-067",
+    "lang": "en",
+    "word": "desk",
+    "meaning": "책상",
+    "example": "My book is on the desk.",
+    "exampleMeaning": "내 책은 책상 위에 있습니다."
+  },
+  {
+    "id": "en-068",
+    "lang": "en",
+    "word": "bed",
+    "meaning": "침대",
+    "example": "The bed is clean.",
+    "exampleMeaning": "그 침대는 깨끗합니다."
+  },
+  {
+    "id": "en-069",
+    "lang": "en",
+    "word": "room",
+    "meaning": "방",
+    "example": "This room is small.",
+    "exampleMeaning": "이 방은 작습니다."
+  },
+  {
+    "id": "en-070",
+    "lang": "en",
+    "word": "door",
+    "meaning": "문",
+    "example": "Close the door, please.",
+    "exampleMeaning": "문을 닫아 주세요."
+  },
+  {
+    "id": "en-071",
+    "lang": "en",
+    "word": "window",
+    "meaning": "창문",
+    "example": "Open the window.",
+    "exampleMeaning": "창문을 여세요."
+  },
+  {
+    "id": "en-072",
+    "lang": "en",
+    "word": "floor",
+    "meaning": "바닥",
+    "example": "The floor is wet.",
+    "exampleMeaning": "바닥이 젖었습니다."
+  },
+  {
+    "id": "en-073",
+    "lang": "en",
+    "word": "wall",
+    "meaning": "벽",
+    "example": "There is a picture on the wall.",
+    "exampleMeaning": "벽에 그림이 있습니다."
+  },
+  {
+    "id": "en-074",
+    "lang": "en",
+    "word": "light",
+    "meaning": "빛, 전등",
+    "example": "Turn on the light.",
+    "exampleMeaning": "전등을 켜세요."
+  },
+  {
+    "id": "en-075",
+    "lang": "en",
+    "word": "clock",
+    "meaning": "시계",
+    "example": "The clock is slow.",
+    "exampleMeaning": "그 시계는 느립니다."
+  },
+  {
+    "id": "en-076",
+    "lang": "en",
+    "word": "phone",
+    "meaning": "전화기, 휴대폰",
+    "example": "My phone is in my bag.",
+    "exampleMeaning": "내 휴대폰은 가방 안에 있습니다."
+  },
+  {
+    "id": "en-077",
+    "lang": "en",
+    "word": "bag",
+    "meaning": "가방",
+    "example": "This bag is heavy.",
+    "exampleMeaning": "이 가방은 무겁습니다."
+  },
+  {
+    "id": "en-078",
+    "lang": "en",
+    "word": "key",
+    "meaning": "열쇠",
+    "example": "I lost my key.",
+    "exampleMeaning": "나는 열쇠를 잃어버렸습니다."
+  },
+  {
+    "id": "en-079",
+    "lang": "en",
+    "word": "money",
+    "meaning": "돈",
+    "example": "I need some money.",
+    "exampleMeaning": "나는 돈이 조금 필요합니다."
+  },
+  {
+    "id": "en-080",
+    "lang": "en",
+    "word": "store",
+    "meaning": "가게",
+    "example": "The store opens at nine.",
+    "exampleMeaning": "그 가게는 아홉 시에 엽니다."
+  },
+  {
+    "id": "en-081",
+    "lang": "en",
+    "word": "library",
+    "meaning": "도서관",
+    "example": "I study at the library.",
+    "exampleMeaning": "나는 도서관에서 공부합니다."
+  },
+  {
+    "id": "en-082",
+    "lang": "en",
+    "word": "street",
+    "meaning": "거리",
+    "example": "The street is busy.",
+    "exampleMeaning": "그 거리는 붐빕니다."
+  },
+  {
+    "id": "en-083",
+    "lang": "en",
+    "word": "park",
+    "meaning": "공원",
+    "example": "Children play in the park.",
+    "exampleMeaning": "아이들이 공원에서 놉니다."
+  },
+  {
+    "id": "en-084",
+    "lang": "en",
+    "word": "school",
+    "meaning": "학교",
+    "example": "My school is near my house.",
+    "exampleMeaning": "내 학교는 우리 집 근처에 있습니다."
+  },
+  {
+    "id": "en-085",
+    "lang": "en",
+    "word": "hospital",
+    "meaning": "병원",
+    "example": "The hospital is large.",
+    "exampleMeaning": "그 병원은 큽니다."
+  },
+  {
+    "id": "en-086",
+    "lang": "en",
+    "word": "station",
+    "meaning": "역",
+    "example": "Meet me at the station.",
+    "exampleMeaning": "역에서 나를 만나세요."
+  },
+  {
+    "id": "en-087",
+    "lang": "en",
+    "word": "bus",
+    "meaning": "버스",
+    "example": "The bus is late.",
+    "exampleMeaning": "버스가 늦습니다."
+  },
+  {
+    "id": "en-088",
+    "lang": "en",
+    "word": "train",
+    "meaning": "기차",
+    "example": "We take the train.",
+    "exampleMeaning": "우리는 기차를 탑니다."
+  },
+  {
+    "id": "en-089",
+    "lang": "en",
+    "word": "bicycle",
+    "meaning": "자전거",
+    "example": "He rides a bicycle.",
+    "exampleMeaning": "그는 자전거를 탑니다."
+  },
+  {
+    "id": "en-090",
+    "lang": "en",
+    "word": "walk",
+    "meaning": "걷다",
+    "example": "I walk to school.",
+    "exampleMeaning": "나는 학교까지 걸어갑니다."
+  },
+  {
+    "id": "en-091",
+    "lang": "en",
+    "word": "run",
+    "meaning": "달리다",
+    "example": "They run every morning.",
+    "exampleMeaning": "그들은 매일 아침 달립니다."
+  },
+  {
+    "id": "en-092",
+    "lang": "en",
+    "word": "sleep",
+    "meaning": "자다",
+    "example": "The baby sleeps well.",
+    "exampleMeaning": "아기가 잘 잡니다."
+  },
+  {
+    "id": "en-093",
+    "lang": "en",
+    "word": "wake",
+    "meaning": "깨다, 깨우다",
+    "example": "I wake up at seven.",
+    "exampleMeaning": "나는 일곱 시에 일어납니다."
+  },
+  {
+    "id": "en-094",
+    "lang": "en",
+    "word": "wash",
+    "meaning": "씻다",
+    "example": "Wash your hands.",
+    "exampleMeaning": "손을 씻으세요."
+  },
+  {
+    "id": "en-095",
+    "lang": "en",
+    "word": "clean",
+    "meaning": "청소하다, 깨끗한",
+    "example": "I clean my room.",
+    "exampleMeaning": "나는 내 방을 청소합니다."
+  },
+  {
+    "id": "en-096",
+    "lang": "en",
+    "word": "cook",
+    "meaning": "요리하다",
+    "example": "My father can cook.",
+    "exampleMeaning": "우리 아버지는 요리를 할 수 있습니다."
+  },
+  {
+    "id": "en-097",
+    "lang": "en",
+    "word": "buy",
+    "meaning": "사다",
+    "example": "I want to buy a book.",
+    "exampleMeaning": "나는 책을 사고 싶습니다."
+  },
+  {
+    "id": "en-098",
+    "lang": "en",
+    "word": "sell",
+    "meaning": "팔다",
+    "example": "They sell fruit here.",
+    "exampleMeaning": "그들은 여기에서 과일을 팝니다."
+  },
+  {
+    "id": "en-099",
+    "lang": "en",
+    "word": "help",
+    "meaning": "돕다",
+    "example": "Can you help me?",
+    "exampleMeaning": "나를 도와줄 수 있나요?"
+  },
+  {
+    "id": "en-100",
+    "lang": "en",
+    "word": "wait",
+    "meaning": "기다리다",
+    "example": "Please wait here.",
+    "exampleMeaning": "여기서 기다려 주세요."
+  },
+  {
+    "id": "ja-051",
+    "lang": "ja",
+    "word": "水",
+    "reading": "みず / mizu",
+    "meaning": "물",
+    "example": "水を飲みます。",
+    "exampleMeaning": "물을 마십니다.",
+    "exampleReading": "みずをのみます / mizu o nomimasu"
+  },
+  {
+    "id": "ja-052",
+    "lang": "ja",
+    "word": "お茶",
+    "reading": "おちゃ / ocha",
+    "meaning": "차",
+    "example": "お茶が好きです。",
+    "exampleMeaning": "차를 좋아합니다.",
+    "exampleReading": "おちゃがすきです / ocha ga suki desu"
+  },
+  {
+    "id": "ja-053",
+    "lang": "ja",
+    "word": "牛乳",
+    "reading": "ぎゅうにゅう / gyuunyuu",
+    "meaning": "우유",
+    "example": "朝、牛乳を飲みます。",
+    "exampleMeaning": "아침에 우유를 마십니다.",
+    "exampleReading": "あさ、ぎゅうにゅうをのみます / asa, gyuunyuu o nomimasu"
+  },
+  {
+    "id": "ja-054",
+    "lang": "ja",
+    "word": "パン",
+    "reading": "パン / pan",
+    "meaning": "빵",
+    "example": "パンを食べます。",
+    "exampleMeaning": "빵을 먹습니다.",
+    "exampleReading": "パンをたべます / pan o tabemasu"
+  },
+  {
+    "id": "ja-055",
+    "lang": "ja",
+    "word": "ご飯",
+    "reading": "ごはん / gohan",
+    "meaning": "밥",
+    "example": "ご飯を作ります。",
+    "exampleMeaning": "밥을 만듭니다.",
+    "exampleReading": "ごはんをつくります / gohan o tsukurimasu"
+  },
+  {
+    "id": "ja-056",
+    "lang": "ja",
+    "word": "卵",
+    "reading": "たまご / tamago",
+    "meaning": "달걀",
+    "example": "卵を買いました。",
+    "exampleMeaning": "달걀을 샀습니다.",
+    "exampleReading": "たまごをかいました / tamago o kaimashita"
+  },
+  {
+    "id": "ja-057",
+    "lang": "ja",
+    "word": "魚",
+    "reading": "さかな / sakana",
+    "meaning": "생선, 물고기",
+    "example": "魚を食べます。",
+    "exampleMeaning": "생선을 먹습니다.",
+    "exampleReading": "さかなをたべます / sakana o tabemasu"
+  },
+  {
+    "id": "ja-058",
+    "lang": "ja",
+    "word": "肉",
+    "reading": "にく / niku",
+    "meaning": "고기",
+    "example": "肉が好きです。",
+    "exampleMeaning": "고기를 좋아합니다.",
+    "exampleReading": "にくがすきです / niku ga suki desu"
+  },
+  {
+    "id": "ja-059",
+    "lang": "ja",
+    "word": "野菜",
+    "reading": "やさい / yasai",
+    "meaning": "채소",
+    "example": "野菜は体にいいです。",
+    "exampleMeaning": "채소는 몸에 좋습니다.",
+    "exampleReading": "やさいはからだにいいです / yasai wa karada ni ii desu"
+  },
+  {
+    "id": "ja-060",
+    "lang": "ja",
+    "word": "果物",
+    "reading": "くだもの / kudamono",
+    "meaning": "과일",
+    "example": "果物を食べたいです。",
+    "exampleMeaning": "과일을 먹고 싶습니다.",
+    "exampleReading": "くだものをたべたいです / kudamono o tabetai desu"
+  },
+  {
+    "id": "ja-061",
+    "lang": "ja",
+    "word": "皿",
+    "reading": "さら / sara",
+    "meaning": "접시",
+    "example": "皿を洗います。",
+    "exampleMeaning": "접시를 씻습니다.",
+    "exampleReading": "さらをあらいます / sara o araimasu"
+  },
+  {
+    "id": "ja-062",
+    "lang": "ja",
+    "word": "箸",
+    "reading": "はし / hashi",
+    "meaning": "젓가락",
+    "example": "箸を使います。",
+    "exampleMeaning": "젓가락을 사용합니다.",
+    "exampleReading": "はしをつかいます / hashi o tsukaimasu"
+  },
+  {
+    "id": "ja-063",
+    "lang": "ja",
+    "word": "椅子",
+    "reading": "いす / isu",
+    "meaning": "의자",
+    "example": "椅子に座ります。",
+    "exampleMeaning": "의자에 앉습니다.",
+    "exampleReading": "いすにすわります / isu ni suwarimasu"
+  },
+  {
+    "id": "ja-064",
+    "lang": "ja",
+    "word": "机",
+    "reading": "つくえ / tsukue",
+    "meaning": "책상",
+    "example": "机の上に本があります。",
+    "exampleMeaning": "책상 위에 책이 있습니다.",
+    "exampleReading": "つくえのうえにほんがあります / tsukue no ue ni hon ga arimasu"
+  },
+  {
+    "id": "ja-065",
+    "lang": "ja",
+    "word": "部屋",
+    "reading": "へや / heya",
+    "meaning": "방",
+    "example": "部屋を掃除します。",
+    "exampleMeaning": "방을 청소합니다.",
+    "exampleReading": "へやをそうじします / heya o souji shimasu"
+  },
+  {
+    "id": "ja-066",
+    "lang": "ja",
+    "word": "ドア",
+    "reading": "ドア / doa",
+    "meaning": "문",
+    "example": "ドアを開けます。",
+    "exampleMeaning": "문을 엽니다.",
+    "exampleReading": "ドアをあけます / doa o akemasu"
+  },
+  {
+    "id": "ja-067",
+    "lang": "ja",
+    "word": "窓",
+    "reading": "まど / mado",
+    "meaning": "창문",
+    "example": "窓を閉めます。",
+    "exampleMeaning": "창문을 닫습니다.",
+    "exampleReading": "まどをしめます / mado o shimemasu"
+  },
+  {
+    "id": "ja-068",
+    "lang": "ja",
+    "word": "電気",
+    "reading": "でんき / denki",
+    "meaning": "전기, 전등",
+    "example": "電気をつけます。",
+    "exampleMeaning": "전등을 켭니다.",
+    "exampleReading": "でんきをつけます / denki o tsukemasu"
+  },
+  {
+    "id": "ja-069",
+    "lang": "ja",
+    "word": "時計",
+    "reading": "とけい / tokei",
+    "meaning": "시계",
+    "example": "時計を見ます。",
+    "exampleMeaning": "시계를 봅니다.",
+    "exampleReading": "とけいをみます / tokei o mimasu"
+  },
+  {
+    "id": "ja-070",
+    "lang": "ja",
+    "word": "財布",
+    "reading": "さいふ / saifu",
+    "meaning": "지갑",
+    "example": "財布を忘れました。",
+    "exampleMeaning": "지갑을 잊어버렸습니다.",
+    "exampleReading": "さいふをわすれました / saifu o wasuremashita"
+  },
+  {
+    "id": "ja-071",
+    "lang": "ja",
+    "word": "鍵",
+    "reading": "かぎ / kagi",
+    "meaning": "열쇠",
+    "example": "鍵を探しています。",
+    "exampleMeaning": "열쇠를 찾고 있습니다.",
+    "exampleReading": "かぎをさがしています / kagi o sagashiteimasu"
+  },
+  {
+    "id": "ja-072",
+    "lang": "ja",
+    "word": "お金",
+    "reading": "おかね / okane",
+    "meaning": "돈",
+    "example": "お金が必要です。",
+    "exampleMeaning": "돈이 필요합니다.",
+    "exampleReading": "おかねがひつようです / okane ga hitsuyou desu"
+  },
+  {
+    "id": "ja-073",
+    "lang": "ja",
+    "word": "スーパー",
+    "reading": "スーパー / suupaa",
+    "meaning": "슈퍼마켓",
+    "example": "スーパーで買い物します。",
+    "exampleMeaning": "슈퍼마켓에서 쇼핑합니다.",
+    "exampleReading": "スーパーでかいものします / suupaa de kaimono shimasu"
+  },
+  {
+    "id": "ja-074",
+    "lang": "ja",
+    "word": "郵便局",
+    "reading": "ゆうびんきょく / yuubinkyoku",
+    "meaning": "우체국",
+    "example": "郵便局に行きます。",
+    "exampleMeaning": "우체국에 갑니다.",
+    "exampleReading": "ゆうびんきょくにいきます / yuubinkyoku ni ikimasu"
+  },
+  {
+    "id": "ja-075",
+    "lang": "ja",
+    "word": "銀行",
+    "reading": "ぎんこう / ginkou",
+    "meaning": "은행",
+    "example": "銀行でお金を出します。",
+    "exampleMeaning": "은행에서 돈을 찾습니다.",
+    "exampleReading": "ぎんこうでおかねをだします / ginkou de okane o dashimasu"
+  },
+  {
+    "id": "ja-076",
+    "lang": "ja",
+    "word": "図書館",
+    "reading": "としょかん / toshokan",
+    "meaning": "도서관",
+    "example": "図書館で勉強します。",
+    "exampleMeaning": "도서관에서 공부합니다.",
+    "exampleReading": "としょかんでべんきょうします / toshokan de benkyou shimasu"
+  },
+  {
+    "id": "ja-077",
+    "lang": "ja",
+    "word": "公園",
+    "reading": "こうえん / kouen",
+    "meaning": "공원",
+    "example": "公園で休みます。",
+    "exampleMeaning": "공원에서 쉽니다.",
+    "exampleReading": "こうえんでやすみます / kouen de yasumimasu"
+  },
+  {
+    "id": "ja-078",
+    "lang": "ja",
+    "word": "病院",
+    "reading": "びょういん / byouin",
+    "meaning": "병원",
+    "example": "病院に行きました。",
+    "exampleMeaning": "병원에 갔습니다.",
+    "exampleReading": "びょういんにいきました / byouin ni ikimashita"
+  },
+  {
+    "id": "ja-079",
+    "lang": "ja",
+    "word": "走る",
+    "reading": "はしる / hashiru",
+    "meaning": "달리다",
+    "example": "公園で走ります。",
+    "exampleMeaning": "공원에서 달립니다.",
+    "exampleReading": "こうえんではしります / kouen de hashirimasu"
+  },
+  {
+    "id": "ja-080",
+    "lang": "ja",
+    "word": "寝る",
+    "reading": "ねる / neru",
+    "meaning": "자다",
+    "example": "早く寝ます。",
+    "exampleMeaning": "일찍 잡니다.",
+    "exampleReading": "はやくねます / hayaku nemasu"
+  },
+  {
+    "id": "ja-081",
+    "lang": "ja",
+    "word": "起きる",
+    "reading": "おきる / okiru",
+    "meaning": "일어나다",
+    "example": "七時に起きます。",
+    "exampleMeaning": "일곱 시에 일어납니다.",
+    "exampleReading": "しちじにおきます / shichiji ni okimasu"
+  },
+  {
+    "id": "ja-082",
+    "lang": "ja",
+    "word": "洗う",
+    "reading": "あらう / arau",
+    "meaning": "씻다",
+    "example": "手を洗います。",
+    "exampleMeaning": "손을 씻습니다.",
+    "exampleReading": "てをあらいます / te o araimasu"
+  },
+  {
+    "id": "ja-083",
+    "lang": "ja",
+    "word": "掃除",
+    "reading": "そうじ / souji",
+    "meaning": "청소",
+    "example": "毎日掃除します。",
+    "exampleMeaning": "매일 청소합니다.",
+    "exampleReading": "まいにちそうじします / mainichi souji shimasu"
+  },
+  {
+    "id": "ja-084",
+    "lang": "ja",
+    "word": "料理",
+    "reading": "りょうり / ryouri",
+    "meaning": "요리",
+    "example": "料理を作ります。",
+    "exampleMeaning": "요리를 만듭니다.",
+    "exampleReading": "りょうりをつくります / ryouri o tsukurimasu"
+  },
+  {
+    "id": "ja-085",
+    "lang": "ja",
+    "word": "買う",
+    "reading": "かう / kau",
+    "meaning": "사다",
+    "example": "本を買います。",
+    "exampleMeaning": "책을 삽니다.",
+    "exampleReading": "ほんをかいます / hon o kaimasu"
+  },
+  {
+    "id": "ja-086",
+    "lang": "ja",
+    "word": "売る",
+    "reading": "うる / uru",
+    "meaning": "팔다",
+    "example": "果物を売ります。",
+    "exampleMeaning": "과일을 팝니다.",
+    "exampleReading": "くだものをうります / kudamono o urimasu"
+  },
+  {
+    "id": "ja-087",
+    "lang": "ja",
+    "word": "待つ",
+    "reading": "まつ / matsu",
+    "meaning": "기다리다",
+    "example": "ここで待ちます。",
+    "exampleMeaning": "여기서 기다립니다.",
+    "exampleReading": "ここでまちます / koko de machimasu"
+  },
+  {
+    "id": "ja-088",
+    "lang": "ja",
+    "word": "手伝う",
+    "reading": "てつだう / tetsudau",
+    "meaning": "돕다",
+    "example": "母を手伝います。",
+    "exampleMeaning": "어머니를 돕습니다.",
+    "exampleReading": "ははをてつだいます / haha o tetsudaimasu"
+  },
+  {
+    "id": "ja-089",
+    "lang": "ja",
+    "word": "使う",
+    "reading": "つかう / tsukau",
+    "meaning": "사용하다",
+    "example": "スマホを使います。",
+    "exampleMeaning": "스마트폰을 사용합니다.",
+    "exampleReading": "スマホをつかいます / sumaho o tsukaimasu"
+  },
+  {
+    "id": "ja-090",
+    "lang": "ja",
+    "word": "休む",
+    "reading": "やすむ / yasumu",
+    "meaning": "쉬다",
+    "example": "今日は家で休みます。",
+    "exampleMeaning": "오늘은 집에서 쉽니다.",
+    "exampleReading": "きょうはいえでやすみます / kyou wa ie de yasumimasu"
+  },
+  {
+    "id": "ja-091",
+    "lang": "ja",
+    "word": "働く",
+    "reading": "はたらく / hataraku",
+    "meaning": "일하다",
+    "example": "会社で働きます。",
+    "exampleMeaning": "회사에서 일합니다.",
+    "exampleReading": "かいしゃではたらきます / kaisha de hatarakimasu"
+  },
+  {
+    "id": "ja-092",
+    "lang": "ja",
+    "word": "勉強する",
+    "reading": "べんきょうする / benkyou suru",
+    "meaning": "공부하다",
+    "example": "日本語を勉強します。",
+    "exampleMeaning": "일본어를 공부합니다.",
+    "exampleReading": "にほんごをべんきょうします / nihongo o benkyou shimasu"
+  },
+  {
+    "id": "ja-093",
+    "lang": "ja",
+    "word": "練習する",
+    "reading": "れんしゅうする / renshuu suru",
+    "meaning": "연습하다",
+    "example": "毎日練習します。",
+    "exampleMeaning": "매일 연습합니다.",
+    "exampleReading": "まいにちれんしゅうします / mainichi renshuu shimasu"
+  },
+  {
+    "id": "ja-094",
+    "lang": "ja",
+    "word": "会う",
+    "reading": "あう / au",
+    "meaning": "만나다",
+    "example": "友達に会います。",
+    "exampleMeaning": "친구를 만납니다.",
+    "exampleReading": "ともだちにあいます / tomodachi ni aimasu"
+  },
+  {
+    "id": "ja-095",
+    "lang": "ja",
+    "word": "開ける",
+    "reading": "あける / akeru",
+    "meaning": "열다",
+    "example": "窓を開けます。",
+    "exampleMeaning": "창문을 엽니다.",
+    "exampleReading": "まどをあけます / mado o akemasu"
+  },
+  {
+    "id": "ja-096",
+    "lang": "ja",
+    "word": "閉める",
+    "reading": "しめる / shimeru",
+    "meaning": "닫다",
+    "example": "ドアを閉めます。",
+    "exampleMeaning": "문을 닫습니다.",
+    "exampleReading": "ドアをしめます / doa o shimemasu"
+  },
+  {
+    "id": "ja-097",
+    "lang": "ja",
+    "word": "入る",
+    "reading": "はいる / hairu",
+    "meaning": "들어가다",
+    "example": "部屋に入ります。",
+    "exampleMeaning": "방에 들어갑니다.",
+    "exampleReading": "へやにはいります / heya ni hairimasu"
+  },
+  {
+    "id": "ja-098",
+    "lang": "ja",
+    "word": "出る",
+    "reading": "でる / deru",
+    "meaning": "나가다, 나오다",
+    "example": "家を出ます。",
+    "exampleMeaning": "집을 나갑니다.",
+    "exampleReading": "いえをでます / ie o demasu"
+  },
+  {
+    "id": "ja-099",
+    "lang": "ja",
+    "word": "乗る",
+    "reading": "のる / noru",
+    "meaning": "타다",
+    "example": "電車に乗ります。",
+    "exampleMeaning": "전철을 탑니다.",
+    "exampleReading": "でんしゃにのります / densha ni norimasu"
+  },
+  {
+    "id": "ja-100",
+    "lang": "ja",
+    "word": "降りる",
+    "reading": "おりる / oriru",
+    "meaning": "내리다",
+    "example": "次の駅で降ります。",
+    "exampleMeaning": "다음 역에서 내립니다.",
+    "exampleReading": "つぎのえきでおります / tsugi no eki de orimasu"
   }
 ]
