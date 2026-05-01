@@ -34,7 +34,7 @@ export default function App() {
   const [progress, setProgress] = useState(loadProgress);
 
   useEffect(() => {
-    fetch('/words.json')
+    fetch(`${import.meta.env.BASE_URL}words.json`)
       .then((response) => {
         if (!response.ok) throw new Error('words.json을 불러오지 못했습니다.');
         return response.json();
