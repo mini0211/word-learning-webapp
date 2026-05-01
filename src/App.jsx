@@ -139,7 +139,33 @@ export default function App() {
   const [selectedAdminUser, setSelectedAdminUser] = useState(null);
   const [adminStatus, setAdminStatus] = useState('');
   const [adminLoading, setAdminLoading] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
   const isLoggedIn = Boolean(auth?.token && auth?.user);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!auth?.token) {
+      setAuthChecked(true);
+      return () => { cancelled = true; };
+    }
+    setAuthChecked(false);
+    api('/me', { token: auth.token })
+      .then((data) => {
+        if (cancelled) return;
+        const refreshedAuth = { ...auth, user: { ...auth.user, ...data.user } };
+        setAuth(refreshedAuth);
+        if (data.user?.role === 'admin') setAdminView('admin');
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        if (err.status === 401) setAuth(null);
+      })
+      .finally(() => {
+        if (!cancelled) setAuthChecked(true);
+      });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth?.token]);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -410,6 +436,18 @@ export default function App() {
     setExamFeedback(null);
   }
 
+
+  if (!authChecked) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top_left,#dbeafe,transparent_35%),linear-gradient(135deg,#f8fafc,#eef2ff)] px-5 py-8 text-slate-900">
+        <section className="rounded-[2rem] border border-white/70 bg-white/85 p-7 text-center shadow-xl shadow-indigo-100/60 backdrop-blur">
+          <p className="text-sm font-bold uppercase tracking-[0.35em] text-indigo-500">Flashcard Study</p>
+          <h1 className="mt-3 text-2xl font-black tracking-tight">로그인 상태 확인 중</h1>
+          <p className="mt-3 text-sm text-slate-600">서버에서 권한을 다시 확인하고 있습니다.</p>
+        </section>
+      </main>
+    );
+  }
 
   if (!isLoggedIn) {
     return (
