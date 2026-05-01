@@ -3,6 +3,9 @@ import WordCard from './components/WordCard.jsx';
 import ProgressBar from './components/ProgressBar.jsx';
 
 const STORAGE_KEY = 'wordLearningProgress.v2';
+const AUTH_KEY = 'wordLearningAuth.v1';
+const API_BASE = 'https://lumi-storage.taild1716c.ts.net';
+
 const emptyProgress = {
   mode: 'learn',
   filter: 'all',
@@ -16,6 +19,16 @@ const emptyProgress = {
   updatedAt: null,
 };
 
+const emptyAuthForm = {
+  username: '',
+  password: '',
+  passwordConfirm: '',
+  displayName: '',
+  realName: '',
+  birthDate: '',
+  preferredLanguage: 'all',
+};
+
 function loadProgress() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
@@ -23,6 +36,34 @@ function loadProgress() {
   } catch {
     return emptyProgress;
   }
+}
+
+function loadAuth() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(AUTH_KEY));
+    return saved?.token ? saved : null;
+  } catch {
+    return null;
+  }
+}
+
+async function api(path, options = {}) {
+  const response = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options.token ? { Authorization: `Bearer ${options.token}` } : {}),
+      ...(options.headers ?? {}),
+    },
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(data.error || 'api_error');
+    error.status = response.status;
+    error.payload = data;
+    throw error;
+  }
+  return data;
 }
 
 function shuffle(items) {
@@ -53,14 +94,27 @@ function answerCandidates(word) {
 function judgeAnswer(input, word) {
   const normalizedInput = normalizeAnswer(input);
   if (!normalizedInput || !word) return false;
-  return answerCandidates(word).some((candidate) => {
-    const normalizedCandidate = normalizeAnswer(candidate);
-    return normalizedInput === normalizedCandidate;
-  });
+  return answerCandidates(word).some((candidate) => normalizedInput === normalizeAnswer(candidate));
 }
 
 function makeDeck(words) {
   return shuffle(words.map((word) => word.id));
+}
+
+function authMessage(error) {
+  const map = {
+    invalid_username: '아이디는 영문 소문자, 숫자, ., _, - 조합 3~24자로 입력해주세요.',
+    invalid_password: '비밀번호는 8자 이상으로 입력해주세요.',
+    invalid_display_name: '닉네임을 1~30자로 입력해주세요.',
+    invalid_real_name: '실명을 2~30자로 입력해주세요.',
+    invalid_birth_date: '생년월일을 올바르게 입력해주세요.',
+    invalid_preferred_language: '학습 언어를 다시 선택해주세요.',
+    username_taken: '이미 사용 중인 아이디입니다.',
+    invalid_credentials: '아이디 또는 비밀번호가 맞지 않습니다.',
+    missing_token: '로그인이 필요합니다.',
+    invalid_token: '로그인이 만료되었습니다. 다시 로그인해주세요.',
+  };
+  return map[error?.message] || '처리 중 문제가 발생했습니다.';
 }
 
 export default function App() {
@@ -71,6 +125,13 @@ export default function App() {
   const [examAnswer, setExamAnswer] = useState('');
   const [examFeedback, setExamFeedback] = useState(null);
   const [progress, setProgress] = useState(loadProgress);
+  const [auth, setAuth] = useState(loadAuth);
+  const [authMode, setAuthMode] = useState('login');
+  const [authForm, setAuthForm] = useState(emptyAuthForm);
+  const [authStatus, setAuthStatus] = useState('');
+  const [syncStatus, setSyncStatus] = useState('');
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [leaderboardLoading, setLeaderboardLoading] = useState(false);
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}words.json`)
@@ -92,6 +153,11 @@ export default function App() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
   }, [progress]);
 
+  useEffect(() => {
+    if (auth?.token) localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
+    else localStorage.removeItem(AUTH_KEY);
+  }, [auth]);
+
   const filteredWords = useMemo(() => {
     if (progress.filter === 'all') return words;
     return words.filter((word) => word.lang === progress.filter);
@@ -109,6 +175,25 @@ export default function App() {
   const currentWord = wordById.get(currentDeck[currentIndex]);
   const answeredCount = Object.keys(progress.results).filter((id) => filteredWords.some((word) => word.id === id)).length;
   const isExamMode = progress.mode === 'exam';
+  const examTotal = progress.examCorrect + progress.examWrong;
+
+  async function refreshLeaderboard(language = progress.filter) {
+    setLeaderboardLoading(true);
+    try {
+      const query = language === 'all' ? '' : `?language=${language}`;
+      const data = await api(`/leaderboard${query}`);
+      setLeaderboard(data.leaderboard ?? []);
+    } catch {
+      setSyncStatus('랭킹을 불러오지 못했습니다.');
+    } finally {
+      setLeaderboardLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    refreshLeaderboard(progress.filter);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progress.filter]);
 
   useEffect(() => {
     if (!loading && filteredWords.length && !validDeck.length) {
@@ -186,6 +271,66 @@ export default function App() {
     setExamFeedback({ correct, answer: currentWord.meaning, candidates: answerCandidates(currentWord) });
   }
 
+  async function handleAuth(event) {
+    event.preventDefault();
+    setAuthStatus('처리 중입니다...');
+    try {
+      if (authMode === 'register' && authForm.password !== authForm.passwordConfirm) {
+        setAuthStatus('비밀번호 확인이 맞지 않습니다.');
+        return;
+      }
+      const payload = authMode === 'register'
+        ? {
+            username: authForm.username,
+            password: authForm.password,
+            displayName: authForm.displayName,
+            realName: authForm.realName,
+            birthDate: authForm.birthDate,
+            preferredLanguage: authForm.preferredLanguage,
+          }
+        : { username: authForm.username, password: authForm.password };
+      const data = await api(authMode === 'register' ? '/auth/register' : '/auth/login', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      setAuth(data);
+      setAuthStatus(authMode === 'register' ? '회원가입과 로그인이 완료되었습니다.' : '로그인되었습니다.');
+      setAuthForm(emptyAuthForm);
+      if (data.user?.preferredLanguage) changeFilter(data.user.preferredLanguage);
+    } catch (err) {
+      setAuthStatus(authMessage(err));
+    }
+  }
+
+  function logout() {
+    setAuth(null);
+    setAuthStatus('로그아웃되었습니다.');
+  }
+
+  async function submitScore() {
+    if (!auth?.token) {
+      setSyncStatus('점수를 저장하려면 로그인이 필요합니다.');
+      return;
+    }
+    if (!examTotal) {
+      setSyncStatus('시험모드에서 최소 1문제 이상 풀어야 점수를 저장할 수 있습니다.');
+      return;
+    }
+    setSyncStatus('점수를 저장 중입니다...');
+    try {
+      await api('/scores', {
+        method: 'POST',
+        token: auth.token,
+        body: JSON.stringify({ correctCount: progress.examCorrect, wrongCount: progress.examWrong, languageFilter: progress.filter }),
+      });
+      setSyncStatus('점수를 저장했습니다. 랭킹을 새로고침했습니다.');
+      await refreshLeaderboard(progress.filter);
+    } catch (err) {
+      setSyncStatus(authMessage(err));
+      if (err.status === 401) setAuth(null);
+    }
+  }
+
   function resetProgress() {
     localStorage.removeItem(STORAGE_KEY);
     setProgress({ ...emptyProgress, deck: makeDeck(filteredWords) });
@@ -196,22 +341,22 @@ export default function App() {
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,#dbeafe,transparent_35%),linear-gradient(135deg,#f8fafc,#eef2ff)] px-5 py-8 text-slate-900">
-      <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1fr_360px]">
+      <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1fr_380px]">
         <section className="space-y-6">
           <header className="rounded-[2rem] border border-white/70 bg-white/75 p-6 shadow-sm backdrop-blur">
             <p className="text-sm font-bold uppercase tracking-[0.35em] text-indigo-500">Flashcard Study</p>
             <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">영어/일본어 단어 학습</h1>
-            <p className="mt-3 text-slate-600">학습모드는 카드로 뜻을 확인하고, 시험모드는 직접 뜻을 입력해 자동 채점합니다.</p>
+            <p className="mt-3 text-slate-600">학습모드로 뜻을 확인하고, 시험모드 점수를 계정별 랭킹에 저장할 수 있습니다.</p>
           </header>
 
           <div className="flex flex-wrap gap-2">
-            {[['learn', '학습모드'], ['exam', '시험모드']].map(([value, label]) => (
+            {[["learn", "학습모드"], ["exam", "시험모드"]].map(([value, label]) => (
               <button key={value} type="button" onClick={() => changeMode(value)} className={`rounded-full px-5 py-2 text-sm font-bold transition ${progress.mode === value ? 'bg-indigo-600 text-white shadow-lg' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>{label}</button>
             ))}
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {[['all', '전체'], ['en', '영어'], ['ja', '일본어']].map(([value, label]) => (
+            {[["all", "전체"], ["en", "영어"], ["ja", "일본어"]].map(([value, label]) => (
               <button key={value} type="button" onClick={() => changeFilter(value)} className={`rounded-full px-5 py-2 text-sm font-bold transition ${progress.filter === value ? 'bg-slate-950 text-white shadow-lg' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>{label}</button>
             ))}
           </div>
@@ -254,25 +399,86 @@ export default function App() {
         </section>
 
         <aside className="space-y-6">
-          <ProgressBar current={answeredCount} total={filteredWords.length} correct={progress.correct} wrong={progress.wrong} examCorrect={progress.examCorrect} examWrong={progress.examWrong} />
           <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur">
-            <h2 className="text-lg font-black">현재 상태</h2>
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-lg font-black">계정</h2>
+              {auth?.user && <button type="button" onClick={logout} className="text-sm font-bold text-slate-500 hover:text-slate-900">로그아웃</button>}
+            </div>
+            {auth?.user ? (
+              <div className="mt-4 rounded-2xl bg-indigo-50 p-4 text-sm text-indigo-900">
+                <p className="font-black">{auth.user.displayName}님 로그인 중</p>
+                <p className="mt-1">학습 언어: {auth.user.preferredLanguage === 'ja' ? '일본어' : auth.user.preferredLanguage === 'en' ? '영어' : '전체'}</p>
+                <p className="mt-2 text-xs text-indigo-700">실명/생년월일은 관리자 확인용이며 랭킹에는 표시되지 않습니다.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleAuth} className="mt-4 space-y-3">
+                <div className="grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1 text-sm font-bold">
+                  <button type="button" onClick={() => setAuthMode('login')} className={`rounded-xl py-2 ${authMode === 'login' ? 'bg-white shadow-sm' : 'text-slate-500'}`}>로그인</button>
+                  <button type="button" onClick={() => setAuthMode('register')} className={`rounded-xl py-2 ${authMode === 'register' ? 'bg-white shadow-sm' : 'text-slate-500'}`}>회원가입</button>
+                </div>
+                <input value={authForm.username} onChange={(e) => setAuthForm((f) => ({ ...f, username: e.target.value }))} placeholder="아이디" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+                <input value={authForm.password} onChange={(e) => setAuthForm((f) => ({ ...f, password: e.target.value }))} placeholder="비밀번호" type="password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+                {authMode === 'register' && (
+                  <>
+                    <input value={authForm.passwordConfirm} onChange={(e) => setAuthForm((f) => ({ ...f, passwordConfirm: e.target.value }))} placeholder="비밀번호 확인" type="password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+                    <input value={authForm.displayName} onChange={(e) => setAuthForm((f) => ({ ...f, displayName: e.target.value }))} placeholder="닉네임 / 랭킹 표시 이름" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+                    <input value={authForm.realName} onChange={(e) => setAuthForm((f) => ({ ...f, realName: e.target.value }))} placeholder="실명 / 관리자 확인용" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+                    <input value={authForm.birthDate} onChange={(e) => setAuthForm((f) => ({ ...f, birthDate: e.target.value }))} type="date" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+                    <select value={authForm.preferredLanguage} onChange={(e) => setAuthForm((f) => ({ ...f, preferredLanguage: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400">
+                      <option value="all">영어 + 일본어</option>
+                      <option value="en">영어</option>
+                      <option value="ja">일본어</option>
+                    </select>
+                    <p className="text-xs leading-5 text-slate-500">실명과 생년월일은 관리자 확인용으로만 사용하며, 랭킹에는 닉네임만 표시됩니다.</p>
+                  </>
+                )}
+                <button type="submit" className="w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm font-black text-white">{authMode === 'register' ? '회원가입' : '로그인'}</button>
+                {authStatus && <p className="text-sm font-semibold text-slate-600">{authStatus}</p>}
+              </form>
+            )}
+          </section>
+
+          <ProgressBar current={answeredCount} total={filteredWords.length} correct={progress.correct} wrong={progress.wrong} examCorrect={progress.examCorrect} examWrong={progress.examWrong} />
+
+          <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur">
+            <h2 className="text-lg font-black">시험 점수 저장</h2>
+            <p className="mt-2 text-sm text-slate-500">시험모드 결과 {progress.examCorrect}정답 / {progress.examWrong}오답을 현재 필터 랭킹에 저장합니다.</p>
+            <button type="button" onClick={submitScore} className="mt-4 w-full rounded-2xl bg-violet-600 px-4 py-3 text-sm font-black text-white transition hover:bg-violet-700">랭킹에 점수 저장</button>
+            {syncStatus && <p className="mt-3 text-sm font-semibold text-slate-600">{syncStatus}</p>}
+          </section>
+
+          <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur">
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="text-lg font-black">전체 랭킹</h2>
+              <button type="button" onClick={() => refreshLeaderboard(progress.filter)} className="text-sm font-bold text-indigo-600">새로고침</button>
+            </div>
+            <div className="mt-4 space-y-2">
+              {leaderboardLoading && <p className="text-sm text-slate-500">랭킹을 불러오는 중입니다...</p>}
+              {!leaderboardLoading && leaderboard.length === 0 && <p className="text-sm text-slate-500">아직 저장된 점수가 없습니다.</p>}
+              {leaderboard.map((row, index) => (
+                <div key={`${row.display_name}-${row.last_submitted_at}`} className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 text-sm">
+                  <div>
+                    <p className="font-black text-slate-900">{index + 1}. {row.display_name}</p>
+                    <p className="text-xs text-slate-500">도전 {row.attempts}회</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-black text-indigo-600">{row.best_correct}개</p>
+                    <p className="text-xs text-slate-500">정답률 {row.best_accuracy}%</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur">
+            <h2 className="text-lg font-black">학습 상태</h2>
             <dl className="mt-4 space-y-3 text-sm text-slate-600">
               <div className="flex justify-between"><dt>모드</dt><dd>{isExamMode ? '시험모드' : '학습모드'}</dd></div>
-              <div className="flex justify-between"><dt>랜덤 순서</dt><dd>{filteredWords.length ? currentIndex + 1 : 0} / {filteredWords.length}</dd></div>
-              <div className="flex justify-between"><dt>저장 키</dt><dd>{STORAGE_KEY}</dd></div>
+              <div className="flex justify-between"><dt>현재 위치</dt><dd>{filteredWords.length ? currentIndex + 1 : 0} / {filteredWords.length}</dd></div>
               <div className="flex justify-between"><dt>최근 저장</dt><dd>{progress.updatedAt ? new Date(progress.updatedAt).toLocaleString('ko-KR') : '아직 없음'}</dd></div>
             </dl>
             <button type="button" onClick={() => setProgress((prev) => ({ ...prev, deck: makeDeck(filteredWords), deckCursor: 0, updatedAt: new Date().toISOString() }))} className="mt-5 w-full rounded-2xl bg-indigo-50 px-4 py-3 text-sm font-bold text-indigo-700 transition hover:bg-indigo-100">랜덤 순서 다시 섞기</button>
             <button type="button" onClick={resetProgress} className="mt-3 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50">진도 초기화</button>
-          </section>
-          <section className="rounded-3xl bg-slate-950 p-5 text-white shadow-xl">
-            <h2 className="font-black">사용법</h2>
-            <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-6 text-slate-300">
-              <li>학습모드: 카드를 눌러 뜻을 확인한 뒤 정답/오답을 기록합니다.</li>
-              <li>시험모드: 뜻을 직접 입력하면 프로그램이 자동 채점합니다.</li>
-              <li>두 모드 모두 단어는 랜덤 순서로 출제됩니다.</li>
-            </ol>
           </section>
         </aside>
       </div>
