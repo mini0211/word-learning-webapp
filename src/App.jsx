@@ -48,22 +48,33 @@ function loadAuth() {
 }
 
 async function api(path, options = {}) {
-  const response = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.token ? { Authorization: `Bearer ${options.token}` } : {}),
-      ...(options.headers ?? {}),
-    },
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    const error = new Error(data.error || 'api_error');
-    error.status = response.status;
-    error.payload = data;
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), options.timeoutMs ?? 15000);
+  try {
+    const response = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.token ? { Authorization: `Bearer ${options.token}` } : {}),
+        ...(options.headers ?? {}),
+      },
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(data.error || 'api_error');
+      error.status = response.status;
+      error.payload = data;
+      throw error;
+    }
+    return data;
+  } catch (error) {
+    if (error.name === 'AbortError') throw new Error('request_timeout');
+    if (error instanceof TypeError) throw new Error('network_error');
     throw error;
+  } finally {
+    window.clearTimeout(timeout);
   }
-  return data;
 }
 
 function shuffle(items) {
@@ -114,6 +125,9 @@ function authMessage(error) {
     missing_token: '로그인이 필요합니다.',
     invalid_token: '로그인이 만료되었습니다. 다시 로그인해주세요.',
     admin_required: '관리자 권한이 필요합니다.',
+    request_timeout: '서버 응답이 지연되고 있습니다. 잠시 후 다시 시도해주세요.',
+    network_error: '서버에 연결하지 못했습니다. 새로고침 후 다시 시도해주세요.',
+    api_error: '서버 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
   };
   return map[error?.message] || '처리 중 문제가 발생했습니다.';
 }
