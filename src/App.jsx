@@ -132,8 +132,14 @@ export default function App() {
   const [syncStatus, setSyncStatus] = useState('');
   const [leaderboard, setLeaderboard] = useState([]);
   const [leaderboardLoading, setLeaderboardLoading] = useState(false);
+  const isLoggedIn = Boolean(auth?.token && auth?.user);
 
   useEffect(() => {
+    if (!isLoggedIn) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
     fetch(`${import.meta.env.BASE_URL}words.json`)
       .then((response) => {
         if (!response.ok) throw new Error('words.json을 불러오지 못했습니다.');
@@ -147,7 +153,7 @@ export default function App() {
         setError(err.message || '단어 데이터를 불러오지 못했습니다.');
         setLoading(false);
       });
-  }, []);
+  }, [isLoggedIn]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
@@ -178,6 +184,10 @@ export default function App() {
   const examTotal = progress.examCorrect + progress.examWrong;
 
   async function refreshLeaderboard(language = progress.filter) {
+    if (!isLoggedIn) {
+      setLeaderboard([]);
+      return;
+    }
     setLeaderboardLoading(true);
     try {
       const query = language === 'all' ? '' : `?language=${language}`;
@@ -191,9 +201,9 @@ export default function App() {
   }
 
   useEffect(() => {
-    refreshLeaderboard(progress.filter);
+    if (isLoggedIn) refreshLeaderboard(progress.filter);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [progress.filter]);
+  }, [progress.filter, isLoggedIn]);
 
   useEffect(() => {
     if (!loading && filteredWords.length && !validDeck.length) {
@@ -338,6 +348,45 @@ export default function App() {
     setExamAnswer('');
     setExamFeedback(null);
   }
+
+
+  if (!isLoggedIn) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top_left,#dbeafe,transparent_35%),linear-gradient(135deg,#f8fafc,#eef2ff)] px-5 py-8 text-slate-900">
+        <section className="w-full max-w-md rounded-[2rem] border border-white/70 bg-white/85 p-7 shadow-xl shadow-indigo-100/60 backdrop-blur">
+          <p className="text-sm font-bold uppercase tracking-[0.35em] text-indigo-500">Flashcard Study</p>
+          <h1 className="mt-3 text-3xl font-black tracking-tight">로그인 후 이용하세요</h1>
+          <p className="mt-3 text-sm leading-6 text-slate-600">영어/일본어 단어 학습, 시험 점수 저장, 랭킹 조회는 로그인한 사용자만 사용할 수 있습니다.</p>
+
+          <form onSubmit={handleAuth} className="mt-6 space-y-3">
+            <div className="grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1 text-sm font-bold">
+              <button type="button" onClick={() => setAuthMode('login')} className={`rounded-xl py-2 ${authMode === 'login' ? 'bg-white shadow-sm' : 'text-slate-500'}`}>로그인</button>
+              <button type="button" onClick={() => setAuthMode('register')} className={`rounded-xl py-2 ${authMode === 'register' ? 'bg-white shadow-sm' : 'text-slate-500'}`}>회원가입</button>
+            </div>
+            <input value={authForm.username} onChange={(e) => setAuthForm((f) => ({ ...f, username: e.target.value }))} placeholder="아이디" autoComplete="username" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+            <input value={authForm.password} onChange={(e) => setAuthForm((f) => ({ ...f, password: e.target.value }))} placeholder="비밀번호" type="password" autoComplete={authMode === 'register' ? 'new-password' : 'current-password'} className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+            {authMode === 'register' && (
+              <>
+                <input value={authForm.passwordConfirm} onChange={(e) => setAuthForm((f) => ({ ...f, passwordConfirm: e.target.value }))} placeholder="비밀번호 확인" type="password" autoComplete="new-password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+                <input value={authForm.displayName} onChange={(e) => setAuthForm((f) => ({ ...f, displayName: e.target.value }))} placeholder="닉네임 / 랭킹 표시 이름" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+                <input value={authForm.realName} onChange={(e) => setAuthForm((f) => ({ ...f, realName: e.target.value }))} placeholder="실명 / 관리자 확인용" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+                <input value={authForm.birthDate} onChange={(e) => setAuthForm((f) => ({ ...f, birthDate: e.target.value }))} type="date" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+                <select value={authForm.preferredLanguage} onChange={(e) => setAuthForm((f) => ({ ...f, preferredLanguage: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400">
+                  <option value="all">영어 + 일본어</option>
+                  <option value="en">영어</option>
+                  <option value="ja">일본어</option>
+                </select>
+                <p className="rounded-2xl bg-indigo-50 p-3 text-xs leading-5 text-indigo-800">실명과 생년월일은 관리자 확인용으로만 사용하며, 랭킹에는 닉네임만 표시됩니다.</p>
+              </>
+            )}
+            <button type="submit" className="w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm font-black text-white transition hover:bg-slate-800">{authMode === 'register' ? '회원가입 후 시작하기' : '로그인하고 시작하기'}</button>
+            {authStatus && <p className="text-sm font-semibold text-slate-600">{authStatus}</p>}
+          </form>
+        </section>
+      </main>
+    );
+  }
+
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,#dbeafe,transparent_35%),linear-gradient(135deg,#f8fafc,#eef2ff)] px-5 py-8 text-slate-900">
