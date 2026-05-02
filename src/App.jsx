@@ -103,10 +103,20 @@ function answerCandidates(word) {
     .filter(Boolean);
 }
 
-function judgeAnswer(input, word) {
+function isAnswerMatch(input, candidate) {
   const normalizedInput = normalizeAnswer(input);
-  if (!normalizedInput || !word) return false;
-  return answerCandidates(word).some((candidate) => normalizedInput === normalizeAnswer(candidate));
+  const normalizedCandidate = normalizeAnswer(candidate);
+  if (!normalizedInput || !normalizedCandidate) return false;
+  if (normalizedInput === normalizedCandidate) return true;
+
+  // 제한적 부분 일치: 너무 짧은 답은 오답 과잉 인정 위험이 커서 제외한다.
+  if (normalizedInput.length < 3 || normalizedCandidate.length < 3) return false;
+  return normalizedCandidate.includes(normalizedInput) || normalizedInput.includes(normalizedCandidate);
+}
+
+function judgeAnswer(input, word) {
+  if (!input || !word) return false;
+  return answerCandidates(word).some((candidate) => isAnswerMatch(input, candidate));
 }
 
 function makeDeck(words) {

@@ -13,7 +13,12 @@
     "word": "journey",
     "meaning": "여행, 여정",
     "example": "Learning a language is a long journey.",
-    "exampleMeaning": "언어를 배우는 것은 긴 여정입니다."
+    "exampleMeaning": "언어를 배우는 것은 긴 여정입니다.",
+    "acceptedAnswers": [
+      "여행",
+      "여정",
+      "여행길"
+    ]
   },
   {
     "id": "en-003",
@@ -21,7 +26,13 @@
     "word": "brave",
     "meaning": "용감한",
     "example": "She made a brave choice.",
-    "exampleMeaning": "그녀는 용감한 선택을 했습니다."
+    "exampleMeaning": "그녀는 용감한 선택을 했습니다.",
+    "acceptedAnswers": [
+      "용감",
+      "용감하다",
+      "용기있는",
+      "용기 있는"
+    ]
   },
   {
     "id": "en-004",
@@ -37,7 +48,10 @@
     "word": "remember",
     "meaning": "기억하다",
     "example": "I remember this word.",
-    "exampleMeaning": "나는 이 단어를 기억합니다."
+    "exampleMeaning": "나는 이 단어를 기억합니다.",
+    "acceptedAnswers": [
+      "기억"
+    ]
   },
   {
     "id": "en-006",
@@ -45,7 +59,14 @@
     "word": "focus",
     "meaning": "집중하다, 초점",
     "example": "Focus on one card at a time.",
-    "exampleMeaning": "한 번에 카드 하나에 집중하세요."
+    "exampleMeaning": "한 번에 카드 하나에 집중하세요.",
+    "acceptedAnswers": [
+      "집중하다",
+      "집중",
+      "초점",
+      "초점맞추다",
+      "초점을 맞추다"
+    ]
   },
   {
     "id": "en-007",
@@ -53,7 +74,12 @@
     "word": "improve",
     "meaning": "개선하다",
     "example": "Practice helps you improve.",
-    "exampleMeaning": "연습은 당신이 발전하도록 도와줍니다."
+    "exampleMeaning": "연습은 당신이 발전하도록 도와줍니다.",
+    "acceptedAnswers": [
+      "개선",
+      "향상하다",
+      "나아지다"
+    ]
   },
   {
     "id": "en-008",
@@ -61,7 +87,13 @@
     "word": "describe",
     "meaning": "묘사하다, 설명하다",
     "example": "Can you describe this picture?",
-    "exampleMeaning": "이 그림을 설명할 수 있나요?"
+    "exampleMeaning": "이 그림을 설명할 수 있나요?",
+    "acceptedAnswers": [
+      "묘사하다",
+      "묘사",
+      "설명하다",
+      "설명"
+    ]
   },
   {
     "id": "en-009",
@@ -69,7 +101,11 @@
     "word": "choose",
     "meaning": "선택하다",
     "example": "Choose the correct answer.",
-    "exampleMeaning": "정답을 선택하세요."
+    "exampleMeaning": "정답을 선택하세요.",
+    "acceptedAnswers": [
+      "선택",
+      "고르다"
+    ]
   },
   {
     "id": "en-010",
@@ -77,7 +113,10 @@
     "word": "compare",
     "meaning": "비교하다",
     "example": "Compare the two words.",
-    "exampleMeaning": "두 단어를 비교하세요."
+    "exampleMeaning": "두 단어를 비교하세요.",
+    "acceptedAnswers": [
+      "비교"
+    ]
   },
   {
     "id": "en-011",
@@ -85,7 +124,12 @@
     "word": "quiet",
     "meaning": "조용한",
     "example": "This room is quiet.",
-    "exampleMeaning": "이 방은 조용합니다."
+    "exampleMeaning": "이 방은 조용합니다.",
+    "acceptedAnswers": [
+      "조용",
+      "조용하다",
+      "고요한"
+    ]
   },
   {
     "id": "en-012",
@@ -93,7 +137,11 @@
     "word": "quick",
     "meaning": "빠른",
     "example": "Give me a quick answer.",
-    "exampleMeaning": "빠른 답을 주세요."
+    "exampleMeaning": "빠른 답을 주세요.",
+    "acceptedAnswers": [
+      "빠르다",
+      "신속한"
+    ]
   },
   {
     "id": "en-013",
@@ -101,7 +149,15 @@
     "word": "bright",
     "meaning": "밝은, 똑똑한",
     "example": "The room is bright.",
-    "exampleMeaning": "방이 밝습니다."
+    "exampleMeaning": "방이 밝습니다.",
+    "acceptedAnswers": [
+      "밝은",
+      "똑똑한",
+      "똑똑",
+      "똑똑하다",
+      "밝다",
+      "영리한"
+    ]
   },
   {
     "id": "en-014",
@@ -109,7 +165,14 @@
     "word": "careful",
     "meaning": "조심하는, 신중한",
     "example": "Be careful with hot water.",
-    "exampleMeaning": "뜨거운 물을 조심하세요."
+    "exampleMeaning": "뜨거운 물을 조심하세요.",
+    "acceptedAnswers": [
+      "조심하는",
+      "신중한",
+      "신중",
+      "신중하다",
+      "조심하다"
+    ]
   },
   {
     "id": "en-015",
@@ -117,7 +180,13 @@
     "word": "useful",
     "meaning": "유용한",
     "example": "This app is useful.",
-    "exampleMeaning": "이 앱은 유용합니다."
+    "exampleMeaning": "이 앱은 유용합니다.",
+    "acceptedAnswers": [
+      "유용",
+      "유용하다",
+      "쓸모있는",
+      "쓸모 있는"
+    ]
   },
   {
     "id": "en-016",
@@ -133,7 +202,13 @@
     "word": "return",
     "meaning": "돌려주다, 돌아오다",
     "example": "Please return the book.",
-    "exampleMeaning": "책을 돌려주세요."
+    "exampleMeaning": "책을 돌려주세요.",
+    "acceptedAnswers": [
+      "돌려주다",
+      "돌아오다",
+      "반납하다",
+      "돌아가다"
+    ]
   },
   {
     "id": "en-018",
@@ -141,7 +216,11 @@
     "word": "decide",
     "meaning": "결정하다",
     "example": "I decided to study today.",
-    "exampleMeaning": "나는 오늘 공부하기로 결정했습니다."
+    "exampleMeaning": "나는 오늘 공부하기로 결정했습니다.",
+    "acceptedAnswers": [
+      "결정",
+      "정하다"
+    ]
   },
   {
     "id": "en-019",
@@ -149,7 +228,11 @@
     "word": "prepare",
     "meaning": "준비하다",
     "example": "Prepare for the test.",
-    "exampleMeaning": "시험을 준비하세요."
+    "exampleMeaning": "시험을 준비하세요.",
+    "acceptedAnswers": [
+      "준비",
+      "대비하다"
+    ]
   },
   {
     "id": "en-020",
@@ -157,7 +240,10 @@
     "word": "practice",
     "meaning": "연습하다",
     "example": "Practice every day.",
-    "exampleMeaning": "매일 연습하세요."
+    "exampleMeaning": "매일 연습하세요.",
+    "acceptedAnswers": [
+      "연습"
+    ]
   },
   {
     "id": "en-021",
@@ -189,7 +275,12 @@
     "word": "meeting",
     "meaning": "회의, 만남",
     "example": "The meeting starts at nine.",
-    "exampleMeaning": "회의는 아홉 시에 시작합니다."
+    "exampleMeaning": "회의는 아홉 시에 시작합니다.",
+    "acceptedAnswers": [
+      "회의",
+      "만남",
+      "미팅"
+    ]
   },
   {
     "id": "en-025",
@@ -205,7 +296,13 @@
     "word": "answer",
     "meaning": "대답, 정답",
     "example": "Write the answer here.",
-    "exampleMeaning": "여기에 답을 쓰세요."
+    "exampleMeaning": "여기에 답을 쓰세요.",
+    "acceptedAnswers": [
+      "대답",
+      "정답",
+      "답",
+      "응답"
+    ]
   },
   {
     "id": "en-027",
@@ -237,7 +334,13 @@
     "word": "progress",
     "meaning": "진도, 발전",
     "example": "Your progress is saved.",
-    "exampleMeaning": "당신의 진도가 저장되었습니다."
+    "exampleMeaning": "당신의 진도가 저장되었습니다.",
+    "acceptedAnswers": [
+      "진도",
+      "발전",
+      "진행",
+      "발전하다"
+    ]
   },
   {
     "id": "en-031",
@@ -245,7 +348,14 @@
     "word": "simple",
     "meaning": "간단한",
     "example": "Keep the design simple.",
-    "exampleMeaning": "디자인을 간단하게 유지하세요."
+    "exampleMeaning": "디자인을 간단하게 유지하세요.",
+    "acceptedAnswers": [
+      "간단",
+      "간단하다",
+      "단순한",
+      "단순하다",
+      "쉬운"
+    ]
   },
   {
     "id": "en-032",
@@ -253,7 +363,12 @@
     "word": "difficult",
     "meaning": "어려운",
     "example": "This word is difficult.",
-    "exampleMeaning": "이 단어는 어렵습니다."
+    "exampleMeaning": "이 단어는 어렵습니다.",
+    "acceptedAnswers": [
+      "어렵다",
+      "힘든",
+      "힘들다"
+    ]
   },
   {
     "id": "en-033",
@@ -261,7 +376,12 @@
     "word": "important",
     "meaning": "중요한",
     "example": "This is important.",
-    "exampleMeaning": "이것은 중요합니다."
+    "exampleMeaning": "이것은 중요합니다.",
+    "acceptedAnswers": [
+      "중요",
+      "중요하다",
+      "소중한"
+    ]
   },
   {
     "id": "en-034",
@@ -269,7 +389,12 @@
     "word": "possible",
     "meaning": "가능한",
     "example": "It is possible.",
-    "exampleMeaning": "그것은 가능합니다."
+    "exampleMeaning": "그것은 가능합니다.",
+    "acceptedAnswers": [
+      "가능",
+      "가능하다",
+      "할 수 있는"
+    ]
   },
   {
     "id": "en-035",
@@ -277,7 +402,11 @@
     "word": "different",
     "meaning": "다른",
     "example": "These words are different.",
-    "exampleMeaning": "이 단어들은 다릅니다."
+    "exampleMeaning": "이 단어들은 다릅니다.",
+    "acceptedAnswers": [
+      "다르다",
+      "상이한"
+    ]
   },
   {
     "id": "en-036",
@@ -293,7 +422,11 @@
     "word": "meaning",
     "meaning": "뜻, 의미",
     "example": "What is the meaning?",
-    "exampleMeaning": "뜻이 무엇인가요?"
+    "exampleMeaning": "뜻이 무엇인가요?",
+    "acceptedAnswers": [
+      "뜻",
+      "의미"
+    ]
   },
   {
     "id": "en-038",
@@ -301,7 +434,11 @@
     "word": "example",
     "meaning": "예시",
     "example": "Read the example sentence.",
-    "exampleMeaning": "예문을 읽으세요."
+    "exampleMeaning": "예문을 읽으세요.",
+    "acceptedAnswers": [
+      "예",
+      "예문"
+    ]
   },
   {
     "id": "en-039",
@@ -309,7 +446,14 @@
     "word": "review",
     "meaning": "복습하다, 검토",
     "example": "Review wrong answers.",
-    "exampleMeaning": "틀린 답을 복습하세요."
+    "exampleMeaning": "틀린 답을 복습하세요.",
+    "acceptedAnswers": [
+      "복습하다",
+      "복습",
+      "검토",
+      "검토하다",
+      "리뷰"
+    ]
   },
   {
     "id": "en-040",
@@ -317,7 +461,12 @@
     "word": "finish",
     "meaning": "끝내다",
     "example": "Finish today’s lesson.",
-    "exampleMeaning": "오늘 수업을 끝내세요."
+    "exampleMeaning": "오늘 수업을 끝내세요.",
+    "acceptedAnswers": [
+      "끝나다",
+      "마치다",
+      "완료하다"
+    ]
   },
   {
     "id": "en-041",
@@ -325,7 +474,11 @@
     "word": "begin",
     "meaning": "시작하다",
     "example": "Let’s begin.",
-    "exampleMeaning": "시작합시다."
+    "exampleMeaning": "시작합시다.",
+    "acceptedAnswers": [
+      "시작",
+      "시작되다"
+    ]
   },
   {
     "id": "en-042",
@@ -341,7 +494,12 @@
     "word": "speak",
     "meaning": "말하다",
     "example": "Speak slowly.",
-    "exampleMeaning": "천천히 말하세요."
+    "exampleMeaning": "천천히 말하세요.",
+    "acceptedAnswers": [
+      "말",
+      "말하기",
+      "이야기하다"
+    ]
   },
   {
     "id": "en-044",
@@ -349,7 +507,10 @@
     "word": "write",
     "meaning": "쓰다",
     "example": "Write the sentence.",
-    "exampleMeaning": "문장을 쓰세요."
+    "exampleMeaning": "문장을 쓰세요.",
+    "acceptedAnswers": [
+      "작성하다"
+    ]
   },
   {
     "id": "en-045",
@@ -365,7 +526,10 @@
     "word": "often",
     "meaning": "자주",
     "example": "I often study at night.",
-    "exampleMeaning": "나는 밤에 자주 공부합니다."
+    "exampleMeaning": "나는 밤에 자주 공부합니다.",
+    "acceptedAnswers": [
+      "빈번히"
+    ]
   },
   {
     "id": "en-047",
@@ -373,7 +537,11 @@
     "word": "always",
     "meaning": "항상",
     "example": "Always save your work.",
-    "exampleMeaning": "항상 작업을 저장하세요."
+    "exampleMeaning": "항상 작업을 저장하세요.",
+    "acceptedAnswers": [
+      "늘",
+      "언제나"
+    ]
   },
   {
     "id": "en-048",
@@ -381,7 +549,10 @@
     "word": "sometimes",
     "meaning": "가끔",
     "example": "I sometimes forget words.",
-    "exampleMeaning": "나는 가끔 단어를 잊어버립니다."
+    "exampleMeaning": "나는 가끔 단어를 잊어버립니다.",
+    "acceptedAnswers": [
+      "때때로"
+    ]
   },
   {
     "id": "en-049",
@@ -389,7 +560,10 @@
     "word": "almost",
     "meaning": "거의",
     "example": "We are almost done.",
-    "exampleMeaning": "우리는 거의 끝났습니다."
+    "exampleMeaning": "우리는 거의 끝났습니다.",
+    "acceptedAnswers": [
+      "대부분"
+    ]
   },
   {
     "id": "en-050",
@@ -397,7 +571,11 @@
     "word": "enough",
     "meaning": "충분한",
     "example": "That is enough for today.",
-    "exampleMeaning": "오늘은 그 정도면 충분합니다."
+    "exampleMeaning": "오늘은 그 정도면 충분합니다.",
+    "acceptedAnswers": [
+      "충분",
+      "충분하다"
+    ]
   },
   {
     "id": "ja-001",
@@ -407,7 +585,12 @@
     "meaning": "고마워",
     "example": "手伝ってくれてありがとう。",
     "exampleMeaning": "도와줘서 고마워.",
-    "exampleReading": "てつだってくれてありがとう / tetsudatte kurete arigatou"
+    "exampleReading": "てつだってくれてありがとう / tetsudatte kurete arigatou",
+    "acceptedAnswers": [
+      "고맙다",
+      "감사합니다",
+      "감사"
+    ]
   },
   {
     "id": "ja-002",
@@ -437,7 +620,13 @@
     "meaning": "조용함, 조용한",
     "example": "静かな部屋で本を読みます。",
     "exampleMeaning": "조용한 방에서 책을 읽습니다.",
-    "exampleReading": "しずかなへやでほんをよみます / shizuka na heya de hon o yomimasu"
+    "exampleReading": "しずかなへやでほんをよみます / shizuka na heya de hon o yomimasu",
+    "acceptedAnswers": [
+      "조용함",
+      "조용하다",
+      "조용한",
+      "조용"
+    ]
   },
   {
     "id": "ja-005",
@@ -447,7 +636,11 @@
     "meaning": "새로운",
     "example": "新しい単語を覚えます。",
     "exampleMeaning": "새로운 단어를 외웁니다.",
-    "exampleReading": "あたらしいたんごをおぼえます / atarashii tango o oboemasu"
+    "exampleReading": "あたらしいたんごをおぼえます / atarashii tango o oboemasu",
+    "acceptedAnswers": [
+      "새롭다",
+      "새것의"
+    ]
   },
   {
     "id": "ja-006",
@@ -457,7 +650,11 @@
     "meaning": "나, 저",
     "example": "私は学生です。",
     "exampleMeaning": "저는 학생입니다.",
-    "exampleReading": "わたしはがくせいです / watashi wa gakusei desu"
+    "exampleReading": "わたしはがくせいです / watashi wa gakusei desu",
+    "acceptedAnswers": [
+      "나",
+      "저"
+    ]
   },
   {
     "id": "ja-007",
@@ -537,7 +734,11 @@
     "meaning": "말, 단어",
     "example": "新しい言葉を覚えます。",
     "exampleMeaning": "새로운 말을 외웁니다.",
-    "exampleReading": "あたらしいことばをおぼえます / atarashii kotoba o oboemasu"
+    "exampleReading": "あたらしいことばをおぼえます / atarashii kotoba o oboemasu",
+    "acceptedAnswers": [
+      "말",
+      "단어"
+    ]
   },
   {
     "id": "ja-015",
@@ -547,7 +748,11 @@
     "meaning": "의미, 뜻",
     "example": "この意味は何ですか。",
     "exampleMeaning": "이 뜻은 무엇입니까?",
-    "exampleReading": "このいみはなんですか / kono imi wa nan desu ka"
+    "exampleReading": "このいみはなんですか / kono imi wa nan desu ka",
+    "acceptedAnswers": [
+      "의미",
+      "뜻"
+    ]
   },
   {
     "id": "ja-016",
@@ -577,7 +782,13 @@
     "meaning": "듣다, 묻다",
     "example": "音楽を聞きます。",
     "exampleMeaning": "음악을 듣습니다.",
-    "exampleReading": "おんがくをききます / ongaku o kikimasu"
+    "exampleReading": "おんがくをききます / ongaku o kikimasu",
+    "acceptedAnswers": [
+      "듣다",
+      "묻다",
+      "질문하다",
+      "묻기"
+    ]
   },
   {
     "id": "ja-019",
@@ -587,7 +798,11 @@
     "meaning": "말하다",
     "example": "日本語を話します。",
     "exampleMeaning": "일본어를 말합니다.",
-    "exampleReading": "にほんごをはなします / nihongo o hanashimasu"
+    "exampleReading": "にほんごをはなします / nihongo o hanashimasu",
+    "acceptedAnswers": [
+      "말",
+      "이야기하다"
+    ]
   },
   {
     "id": "ja-020",
@@ -627,7 +842,11 @@
     "meaning": "돌아가다",
     "example": "家に帰ります。",
     "exampleMeaning": "집에 돌아갑니다.",
-    "exampleReading": "いえにかえります / ie ni kaerimasu"
+    "exampleReading": "いえにかえります / ie ni kaerimasu",
+    "acceptedAnswers": [
+      "귀가하다",
+      "돌아오다"
+    ]
   },
   {
     "id": "ja-024",
@@ -677,7 +896,11 @@
     "meaning": "높다, 비싸다",
     "example": "この時計は高いです。",
     "exampleMeaning": "이 시계는 비쌉니다.",
-    "exampleReading": "このとけいはたかいです / kono tokei wa takai desu"
+    "exampleReading": "このとけいはたかいです / kono tokei wa takai desu",
+    "acceptedAnswers": [
+      "높다",
+      "비싸다"
+    ]
   },
   {
     "id": "ja-029",
@@ -697,7 +920,11 @@
     "meaning": "이르다, 빠르다",
     "example": "朝が早いです。",
     "exampleMeaning": "아침이 이릅니다.",
-    "exampleReading": "あさがはやいです / asa ga hayai desu"
+    "exampleReading": "あさがはやいです / asa ga hayai desu",
+    "acceptedAnswers": [
+      "이르다",
+      "빠르다"
+    ]
   },
   {
     "id": "ja-031",
@@ -717,7 +944,13 @@
     "meaning": "쉽다, 상냥하다",
     "example": "この問題は易しいです。",
     "exampleMeaning": "이 문제는 쉽습니다.",
-    "exampleReading": "このもんだいはやさしいです / kono mondai wa yasashii desu"
+    "exampleReading": "このもんだいはやさしいです / kono mondai wa yasashii desu",
+    "acceptedAnswers": [
+      "쉽다",
+      "상냥하다",
+      "상냥",
+      "친절하다"
+    ]
   },
   {
     "id": "ja-033",
@@ -727,7 +960,12 @@
     "meaning": "즐겁다",
     "example": "勉強は楽しいです。",
     "exampleMeaning": "공부는 즐겁습니다.",
-    "exampleReading": "べんきょうはたのしいです / benkyou wa tanoshii desu"
+    "exampleReading": "べんきょうはたのしいです / benkyou wa tanoshii desu",
+    "acceptedAnswers": [
+      "즐거운",
+      "재미있다",
+      "재미있는"
+    ]
   },
   {
     "id": "ja-034",
@@ -747,7 +985,13 @@
     "meaning": "편리함, 편리한",
     "example": "このアプリは便利です。",
     "exampleMeaning": "이 앱은 편리합니다.",
-    "exampleReading": "このアプリはべんりです / kono apuri wa benri desu"
+    "exampleReading": "このアプリはべんりです / kono apuri wa benri desu",
+    "acceptedAnswers": [
+      "편리함",
+      "편리하다",
+      "편리한",
+      "편리"
+    ]
   },
   {
     "id": "ja-036",
@@ -827,7 +1071,11 @@
     "meaning": "낮, 점심",
     "example": "昼に会います。",
     "exampleMeaning": "낮에 만납니다.",
-    "exampleReading": "ひるにあいます / hiru ni aimasu"
+    "exampleReading": "ひるにあいます / hiru ni aimasu",
+    "acceptedAnswers": [
+      "낮",
+      "점심"
+    ]
   },
   {
     "id": "ja-044",
@@ -857,7 +1105,10 @@
     "meaning": "조금",
     "example": "少し待ってください。",
     "exampleMeaning": "조금 기다려 주세요.",
-    "exampleReading": "すこしまってください / sukoshi matte kudasai"
+    "exampleReading": "すこしまってください / sukoshi matte kudasai",
+    "acceptedAnswers": [
+      "약간"
+    ]
   },
   {
     "id": "ja-047",
@@ -867,7 +1118,11 @@
     "meaning": "전부",
     "example": "全部覚えました。",
     "exampleMeaning": "전부 외웠습니다.",
-    "exampleReading": "ぜんぶおぼえました / zenbu oboemashita"
+    "exampleReading": "ぜんぶおぼえました / zenbu oboemashita",
+    "acceptedAnswers": [
+      "모두",
+      "전체"
+    ]
   },
   {
     "id": "ja-048",
@@ -877,7 +1132,11 @@
     "meaning": "한 번 더",
     "example": "もう一度お願いします。",
     "exampleMeaning": "한 번 더 부탁합니다.",
-    "exampleReading": "もういちどおねがいします / mou ichido onegai shimasu"
+    "exampleReading": "もういちどおねがいします / mou ichido onegai shimasu",
+    "acceptedAnswers": [
+      "다시",
+      "한번더"
+    ]
   },
   {
     "id": "ja-049",
@@ -887,7 +1146,11 @@
     "meaning": "괜찮음",
     "example": "大丈夫です。",
     "exampleMeaning": "괜찮습니다.",
-    "exampleReading": "だいじょうぶです / daijoubu desu"
+    "exampleReading": "だいじょうぶです / daijoubu desu",
+    "acceptedAnswers": [
+      "괜찮다",
+      "괜찮아"
+    ]
   },
   {
     "id": "ja-050",
@@ -897,7 +1160,13 @@
     "meaning": "힘내다, 노력하다",
     "example": "今日も頑張ります。",
     "exampleMeaning": "오늘도 힘내겠습니다.",
-    "exampleReading": "きょうもがんばります / kyou mo ganbarimasu"
+    "exampleReading": "きょうもがんばります / kyou mo ganbarimasu",
+    "acceptedAnswers": [
+      "힘내다",
+      "노력하다",
+      "노력",
+      "힘내"
+    ]
   },
   {
     "id": "en-051",
@@ -929,7 +1198,12 @@
     "word": "rice",
     "meaning": "밥, 쌀",
     "example": "We eat rice every day.",
-    "exampleMeaning": "우리는 매일 밥을 먹습니다."
+    "exampleMeaning": "우리는 매일 밥을 먹습니다.",
+    "acceptedAnswers": [
+      "밥",
+      "쌀",
+      "쌀밥"
+    ]
   },
   {
     "id": "en-055",
@@ -937,7 +1211,10 @@
     "word": "egg",
     "meaning": "달걀",
     "example": "She boiled an egg.",
-    "exampleMeaning": "그녀는 달걀을 삶았습니다."
+    "exampleMeaning": "그녀는 달걀을 삶았습니다.",
+    "acceptedAnswers": [
+      "계란"
+    ]
   },
   {
     "id": "en-056",
@@ -945,7 +1222,11 @@
     "word": "fish",
     "meaning": "생선, 물고기",
     "example": "The fish is fresh.",
-    "exampleMeaning": "그 생선은 신선합니다."
+    "exampleMeaning": "그 생선은 신선합니다.",
+    "acceptedAnswers": [
+      "생선",
+      "물고기"
+    ]
   },
   {
     "id": "en-057",
@@ -961,7 +1242,12 @@
     "word": "soup",
     "meaning": "수프, 국",
     "example": "The soup is hot.",
-    "exampleMeaning": "그 수프는 뜨겁습니다."
+    "exampleMeaning": "그 수프는 뜨겁습니다.",
+    "acceptedAnswers": [
+      "수프",
+      "국",
+      "국물"
+    ]
   },
   {
     "id": "en-059",
@@ -1001,7 +1287,10 @@
     "word": "spoon",
     "meaning": "숟가락",
     "example": "I need a spoon.",
-    "exampleMeaning": "나는 숟가락이 필요합니다."
+    "exampleMeaning": "나는 숟가락이 필요합니다.",
+    "acceptedAnswers": [
+      "수저"
+    ]
   },
   {
     "id": "en-064",
@@ -1057,7 +1346,10 @@
     "word": "door",
     "meaning": "문",
     "example": "Close the door, please.",
-    "exampleMeaning": "문을 닫아 주세요."
+    "exampleMeaning": "문을 닫아 주세요.",
+    "acceptedAnswers": [
+      "문짝"
+    ]
   },
   {
     "id": "en-071",
@@ -1089,7 +1381,11 @@
     "word": "light",
     "meaning": "빛, 전등",
     "example": "Turn on the light.",
-    "exampleMeaning": "전등을 켜세요."
+    "exampleMeaning": "전등을 켜세요.",
+    "acceptedAnswers": [
+      "빛",
+      "전등"
+    ]
   },
   {
     "id": "en-075",
@@ -1105,7 +1401,14 @@
     "word": "phone",
     "meaning": "전화기, 휴대폰",
     "example": "My phone is in my bag.",
-    "exampleMeaning": "내 휴대폰은 가방 안에 있습니다."
+    "exampleMeaning": "내 휴대폰은 가방 안에 있습니다.",
+    "acceptedAnswers": [
+      "전화기",
+      "휴대폰",
+      "전화",
+      "휴대전화",
+      "핸드폰"
+    ]
   },
   {
     "id": "en-077",
@@ -1137,7 +1440,10 @@
     "word": "store",
     "meaning": "가게",
     "example": "The store opens at nine.",
-    "exampleMeaning": "그 가게는 아홉 시에 엽니다."
+    "exampleMeaning": "그 가게는 아홉 시에 엽니다.",
+    "acceptedAnswers": [
+      "상점"
+    ]
   },
   {
     "id": "en-081",
@@ -1153,7 +1459,10 @@
     "word": "street",
     "meaning": "거리",
     "example": "The street is busy.",
-    "exampleMeaning": "그 거리는 붐빕니다."
+    "exampleMeaning": "그 거리는 붐빕니다.",
+    "acceptedAnswers": [
+      "길"
+    ]
   },
   {
     "id": "en-083",
@@ -1185,7 +1494,10 @@
     "word": "station",
     "meaning": "역",
     "example": "Meet me at the station.",
-    "exampleMeaning": "역에서 나를 만나세요."
+    "exampleMeaning": "역에서 나를 만나세요.",
+    "acceptedAnswers": [
+      "정거장"
+    ]
   },
   {
     "id": "en-087",
@@ -1217,7 +1529,11 @@
     "word": "walk",
     "meaning": "걷다",
     "example": "I walk to school.",
-    "exampleMeaning": "나는 학교까지 걸어갑니다."
+    "exampleMeaning": "나는 학교까지 걸어갑니다.",
+    "acceptedAnswers": [
+      "걷기",
+      "걸어가다"
+    ]
   },
   {
     "id": "en-091",
@@ -1225,7 +1541,11 @@
     "word": "run",
     "meaning": "달리다",
     "example": "They run every morning.",
-    "exampleMeaning": "그들은 매일 아침 달립니다."
+    "exampleMeaning": "그들은 매일 아침 달립니다.",
+    "acceptedAnswers": [
+      "뛰다",
+      "달려가다"
+    ]
   },
   {
     "id": "en-092",
@@ -1233,7 +1553,10 @@
     "word": "sleep",
     "meaning": "자다",
     "example": "The baby sleeps well.",
-    "exampleMeaning": "아기가 잘 잡니다."
+    "exampleMeaning": "아기가 잘 잡니다.",
+    "acceptedAnswers": [
+      "잠자다"
+    ]
   },
   {
     "id": "en-093",
@@ -1241,7 +1564,13 @@
     "word": "wake",
     "meaning": "깨다, 깨우다",
     "example": "I wake up at seven.",
-    "exampleMeaning": "나는 일곱 시에 일어납니다."
+    "exampleMeaning": "나는 일곱 시에 일어납니다.",
+    "acceptedAnswers": [
+      "깨다",
+      "깨우다",
+      "일어나다",
+      "깨우기"
+    ]
   },
   {
     "id": "en-094",
@@ -1249,7 +1578,11 @@
     "word": "wash",
     "meaning": "씻다",
     "example": "Wash your hands.",
-    "exampleMeaning": "손을 씻으세요."
+    "exampleMeaning": "손을 씻으세요.",
+    "acceptedAnswers": [
+      "씻기",
+      "세척하다"
+    ]
   },
   {
     "id": "en-095",
@@ -1257,7 +1590,14 @@
     "word": "clean",
     "meaning": "청소하다, 깨끗한",
     "example": "I clean my room.",
-    "exampleMeaning": "나는 내 방을 청소합니다."
+    "exampleMeaning": "나는 내 방을 청소합니다.",
+    "acceptedAnswers": [
+      "청소하다",
+      "청소",
+      "깨끗한",
+      "깨끗",
+      "깨끗하다"
+    ]
   },
   {
     "id": "en-096",
@@ -1265,7 +1605,10 @@
     "word": "cook",
     "meaning": "요리하다",
     "example": "My father can cook.",
-    "exampleMeaning": "우리 아버지는 요리를 할 수 있습니다."
+    "exampleMeaning": "우리 아버지는 요리를 할 수 있습니다.",
+    "acceptedAnswers": [
+      "요리"
+    ]
   },
   {
     "id": "en-097",
@@ -1273,7 +1616,10 @@
     "word": "buy",
     "meaning": "사다",
     "example": "I want to buy a book.",
-    "exampleMeaning": "나는 책을 사고 싶습니다."
+    "exampleMeaning": "나는 책을 사고 싶습니다.",
+    "acceptedAnswers": [
+      "구매하다"
+    ]
   },
   {
     "id": "en-098",
@@ -1289,7 +1635,11 @@
     "word": "help",
     "meaning": "돕다",
     "example": "Can you help me?",
-    "exampleMeaning": "나를 도와줄 수 있나요?"
+    "exampleMeaning": "나를 도와줄 수 있나요?",
+    "acceptedAnswers": [
+      "도와주다",
+      "도움"
+    ]
   },
   {
     "id": "en-100",
@@ -1367,7 +1717,11 @@
     "meaning": "생선, 물고기",
     "example": "魚を食べます。",
     "exampleMeaning": "생선을 먹습니다.",
-    "exampleReading": "さかなをたべます / sakana o tabemasu"
+    "exampleReading": "さかなをたべます / sakana o tabemasu",
+    "acceptedAnswers": [
+      "생선",
+      "물고기"
+    ]
   },
   {
     "id": "ja-058",
@@ -1477,7 +1831,11 @@
     "meaning": "전기, 전등",
     "example": "電気をつけます。",
     "exampleMeaning": "전등을 켭니다.",
-    "exampleReading": "でんきをつけます / denki o tsukemasu"
+    "exampleReading": "でんきをつけます / denki o tsukemasu",
+    "acceptedAnswers": [
+      "전기",
+      "전등"
+    ]
   },
   {
     "id": "ja-069",
@@ -1527,7 +1885,11 @@
     "meaning": "슈퍼마켓",
     "example": "スーパーで買い物します。",
     "exampleMeaning": "슈퍼마켓에서 쇼핑합니다.",
-    "exampleReading": "スーパーでかいものします / suupaa de kaimono shimasu"
+    "exampleReading": "スーパーでかいものします / suupaa de kaimono shimasu",
+    "acceptedAnswers": [
+      "마트",
+      "슈퍼"
+    ]
   },
   {
     "id": "ja-074",
@@ -1587,7 +1949,11 @@
     "meaning": "달리다",
     "example": "公園で走ります。",
     "exampleMeaning": "공원에서 달립니다.",
-    "exampleReading": "こうえんではしります / kouen de hashirimasu"
+    "exampleReading": "こうえんではしります / kouen de hashirimasu",
+    "acceptedAnswers": [
+      "뛰다",
+      "달려가다"
+    ]
   },
   {
     "id": "ja-080",
@@ -1607,7 +1973,11 @@
     "meaning": "일어나다",
     "example": "七時に起きます。",
     "exampleMeaning": "일곱 시에 일어납니다.",
-    "exampleReading": "しちじにおきます / shichiji ni okimasu"
+    "exampleReading": "しちじにおきます / shichiji ni okimasu",
+    "acceptedAnswers": [
+      "깨다",
+      "기상하다"
+    ]
   },
   {
     "id": "ja-082",
@@ -1617,7 +1987,10 @@
     "meaning": "씻다",
     "example": "手を洗います。",
     "exampleMeaning": "손을 씻습니다.",
-    "exampleReading": "てをあらいます / te o araimasu"
+    "exampleReading": "てをあらいます / te o araimasu",
+    "acceptedAnswers": [
+      "씻기"
+    ]
   },
   {
     "id": "ja-083",
@@ -1627,7 +2000,10 @@
     "meaning": "청소",
     "example": "毎日掃除します。",
     "exampleMeaning": "매일 청소합니다.",
-    "exampleReading": "まいにちそうじします / mainichi souji shimasu"
+    "exampleReading": "まいにちそうじします / mainichi souji shimasu",
+    "acceptedAnswers": [
+      "청소하다"
+    ]
   },
   {
     "id": "ja-084",
@@ -1637,7 +2013,10 @@
     "meaning": "요리",
     "example": "料理を作ります。",
     "exampleMeaning": "요리를 만듭니다.",
-    "exampleReading": "りょうりをつくります / ryouri o tsukurimasu"
+    "exampleReading": "りょうりをつくります / ryouri o tsukurimasu",
+    "acceptedAnswers": [
+      "요리하다"
+    ]
   },
   {
     "id": "ja-085",
@@ -1647,7 +2026,10 @@
     "meaning": "사다",
     "example": "本を買います。",
     "exampleMeaning": "책을 삽니다.",
-    "exampleReading": "ほんをかいます / hon o kaimasu"
+    "exampleReading": "ほんをかいます / hon o kaimasu",
+    "acceptedAnswers": [
+      "구매하다"
+    ]
   },
   {
     "id": "ja-086",
@@ -1677,7 +2059,11 @@
     "meaning": "돕다",
     "example": "母を手伝います。",
     "exampleMeaning": "어머니를 돕습니다.",
-    "exampleReading": "ははをてつだいます / haha o tetsudaimasu"
+    "exampleReading": "ははをてつだいます / haha o tetsudaimasu",
+    "acceptedAnswers": [
+      "도와주다",
+      "도움"
+    ]
   },
   {
     "id": "ja-089",
@@ -1687,7 +2073,12 @@
     "meaning": "사용하다",
     "example": "スマホを使います。",
     "exampleMeaning": "스마트폰을 사용합니다.",
-    "exampleReading": "スマホをつかいます / sumaho o tsukaimasu"
+    "exampleReading": "スマホをつかいます / sumaho o tsukaimasu",
+    "acceptedAnswers": [
+      "사용",
+      "쓰다",
+      "이용하다"
+    ]
   },
   {
     "id": "ja-090",
@@ -1697,7 +2088,11 @@
     "meaning": "쉬다",
     "example": "今日は家で休みます。",
     "exampleMeaning": "오늘은 집에서 쉽니다.",
-    "exampleReading": "きょうはいえでやすみます / kyou wa ie de yasumimasu"
+    "exampleReading": "きょうはいえでやすみます / kyou wa ie de yasumimasu",
+    "acceptedAnswers": [
+      "휴식하다",
+      "쉬기"
+    ]
   },
   {
     "id": "ja-091",
@@ -1707,7 +2102,10 @@
     "meaning": "일하다",
     "example": "会社で働きます。",
     "exampleMeaning": "회사에서 일합니다.",
-    "exampleReading": "かいしゃではたらきます / kaisha de hatarakimasu"
+    "exampleReading": "かいしゃではたらきます / kaisha de hatarakimasu",
+    "acceptedAnswers": [
+      "일"
+    ]
   },
   {
     "id": "ja-092",
@@ -1717,7 +2115,10 @@
     "meaning": "공부하다",
     "example": "日本語を勉強します。",
     "exampleMeaning": "일본어를 공부합니다.",
-    "exampleReading": "にほんごをべんきょうします / nihongo o benkyou shimasu"
+    "exampleReading": "にほんごをべんきょうします / nihongo o benkyou shimasu",
+    "acceptedAnswers": [
+      "공부"
+    ]
   },
   {
     "id": "ja-093",
@@ -1727,7 +2128,10 @@
     "meaning": "연습하다",
     "example": "毎日練習します。",
     "exampleMeaning": "매일 연습합니다.",
-    "exampleReading": "まいにちれんしゅうします / mainichi renshuu shimasu"
+    "exampleReading": "まいにちれんしゅうします / mainichi renshuu shimasu",
+    "acceptedAnswers": [
+      "연습"
+    ]
   },
   {
     "id": "ja-094",
@@ -1747,7 +2151,10 @@
     "meaning": "열다",
     "example": "窓を開けます。",
     "exampleMeaning": "창문을 엽니다.",
-    "exampleReading": "まどをあけます / mado o akemasu"
+    "exampleReading": "まどをあけます / mado o akemasu",
+    "acceptedAnswers": [
+      "열기"
+    ]
   },
   {
     "id": "ja-096",
@@ -1757,7 +2164,10 @@
     "meaning": "닫다",
     "example": "ドアを閉めます。",
     "exampleMeaning": "문을 닫습니다.",
-    "exampleReading": "ドアをしめます / doa o shimemasu"
+    "exampleReading": "ドアをしめます / doa o shimemasu",
+    "acceptedAnswers": [
+      "닫기"
+    ]
   },
   {
     "id": "ja-097",
@@ -1767,7 +2177,10 @@
     "meaning": "들어가다",
     "example": "部屋に入ります。",
     "exampleMeaning": "방에 들어갑니다.",
-    "exampleReading": "へやにはいります / heya ni hairimasu"
+    "exampleReading": "へやにはいります / heya ni hairimasu",
+    "acceptedAnswers": [
+      "들어오다"
+    ]
   },
   {
     "id": "ja-098",
@@ -1777,7 +2190,11 @@
     "meaning": "나가다, 나오다",
     "example": "家を出ます。",
     "exampleMeaning": "집을 나갑니다.",
-    "exampleReading": "いえをでます / ie o demasu"
+    "exampleReading": "いえをでます / ie o demasu",
+    "acceptedAnswers": [
+      "나가다",
+      "나오다"
+    ]
   },
   {
     "id": "ja-099",
