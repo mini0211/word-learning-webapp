@@ -141,6 +141,13 @@ function authMessage(error) {
   return map[error?.message] || '처리 중 문제가 발생했습니다.';
 }
 
+function formatBirthDate(value) {
+  if (!value) return '';
+  const [year, month, day] = String(value).split('-');
+  if (!year || !month || !day) return value;
+  return `${year}년 ${Number(month)}월 ${Number(day)}일`;
+}
+
 export default function App() {
   const [words, setWords] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -244,6 +251,7 @@ export default function App() {
   const currentDeck = validDeck.length ? validDeck : makeDeck(filteredWords);
   const currentIndex = currentDeck.length ? progress.deckCursor % currentDeck.length : 0;
   const currentWord = wordById.get(currentDeck[currentIndex]);
+  const learningPosition = currentDeck.length ? currentIndex + 1 : 0;
   const answeredCount = Object.keys(progress.results).filter((id) => filteredWords.some((word) => word.id === id)).length;
   const isExamMode = progress.mode === 'exam';
   const examTotal = progress.examCorrect + progress.examWrong;
@@ -332,6 +340,9 @@ export default function App() {
     const deltaCorrect = (result === 'correct' ? 1 : 0) - (previous === 'correct' ? 1 : 0);
     const deltaWrong = (result === 'wrong' ? 1 : 0) - (previous === 'wrong' ? 1 : 0);
 
+    // 뒷면을 본 상태에서 다음 단어로 바뀌면 다음 카드의 정답이 순간적으로 보일 수 있어,
+    // 먼저 앞면으로 접은 뒤 다음 카드로 이동한다.
+    setFlipped(false);
     setProgress((prev) => ({
       ...prev,
       results: nextResults,
@@ -339,7 +350,7 @@ export default function App() {
       wrong: Math.max(0, prev.wrong + deltaWrong),
       updatedAt: new Date().toISOString(),
     }));
-    setTimeout(moveNext, 0);
+    setTimeout(moveNext, flipped ? 180 : 0);
   }
 
   function submitExam(event) {
@@ -627,7 +638,11 @@ export default function App() {
                 <input value={authForm.passwordConfirm} onChange={(e) => setAuthForm((f) => ({ ...f, passwordConfirm: e.target.value }))} placeholder="비밀번호 확인" type="password" autoComplete="new-password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
                 <input value={authForm.displayName} onChange={(e) => setAuthForm((f) => ({ ...f, displayName: e.target.value }))} placeholder="닉네임 / 랭킹 표시 이름" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
                 <input value={authForm.realName} onChange={(e) => setAuthForm((f) => ({ ...f, realName: e.target.value }))} placeholder="실명 / 관리자 확인용" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
-                <input value={authForm.birthDate} onChange={(e) => setAuthForm((f) => ({ ...f, birthDate: e.target.value }))} type="date" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+                <label className="block text-left text-xs font-black text-slate-500">
+                  생년월일
+                  <input value={authForm.birthDate} onChange={(e) => setAuthForm((f) => ({ ...f, birthDate: e.target.value }))} type="date" className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none focus:border-indigo-400" />
+                </label>
+                {authForm.birthDate && <p className="-mt-1 text-left text-xs font-semibold text-indigo-600">선택한 생년월일: {formatBirthDate(authForm.birthDate)}</p>}
                 <select value={authForm.preferredLanguage} onChange={(e) => setAuthForm((f) => ({ ...f, preferredLanguage: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400">
                   <option value="all">영어 + 일본어</option>
                   <option value="en">영어</option>
@@ -820,7 +835,15 @@ export default function App() {
           {loading && <div className="rounded-3xl bg-white p-8 text-center shadow-sm">단어 데이터를 불러오는 중입니다...</div>}
           {error && <div className="rounded-3xl bg-rose-50 p-8 text-center font-semibold text-rose-700">{error}</div>}
 
-          {!loading && !error && !isExamMode && <WordCard word={currentWord} flipped={flipped} onFlip={() => setFlipped((value) => !value)} />}
+          {!loading && !error && !isExamMode && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between rounded-2xl border border-indigo-100 bg-white/85 px-4 py-3 text-sm font-black text-slate-700 shadow-sm sm:px-5">
+                <span>현재 단어</span>
+                <span className="rounded-full bg-indigo-600 px-3 py-1 text-white">학습 {learningPosition} / {currentDeck.length || filteredWords.length}</span>
+              </div>
+              <WordCard key={currentWord?.id ?? 'empty-word'} word={currentWord} flipped={flipped} onFlip={() => setFlipped((value) => !value)} />
+            </div>
+          )}
 
           {!loading && !error && isExamMode && (
             <section className="rounded-[2rem] border border-violet-100 bg-white p-8 shadow-xl shadow-violet-100/60">
@@ -889,7 +912,11 @@ export default function App() {
                     <input value={authForm.passwordConfirm} onChange={(e) => setAuthForm((f) => ({ ...f, passwordConfirm: e.target.value }))} placeholder="비밀번호 확인" type="password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
                     <input value={authForm.displayName} onChange={(e) => setAuthForm((f) => ({ ...f, displayName: e.target.value }))} placeholder="닉네임 / 랭킹 표시 이름" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
                     <input value={authForm.realName} onChange={(e) => setAuthForm((f) => ({ ...f, realName: e.target.value }))} placeholder="실명 / 관리자 확인용" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
-                    <input value={authForm.birthDate} onChange={(e) => setAuthForm((f) => ({ ...f, birthDate: e.target.value }))} type="date" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+                    <label className="block text-left text-xs font-black text-slate-500">
+                  생년월일
+                  <input value={authForm.birthDate} onChange={(e) => setAuthForm((f) => ({ ...f, birthDate: e.target.value }))} type="date" className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none focus:border-indigo-400" />
+                </label>
+                {authForm.birthDate && <p className="-mt-1 text-left text-xs font-semibold text-indigo-600">선택한 생년월일: {formatBirthDate(authForm.birthDate)}</p>}
                     <select value={authForm.preferredLanguage} onChange={(e) => setAuthForm((f) => ({ ...f, preferredLanguage: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400">
                       <option value="all">영어 + 일본어</option>
                       <option value="en">영어</option>
