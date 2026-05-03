@@ -1003,7 +1003,13 @@ export default function App() {
                             <p className="mt-2 text-sm">정답: {examFeedback.answer}</p>
                             {examFeedback.aiGrade && (
                               <p className="mt-2 text-xs opacity-80">
-                                AI 판정: {examFeedback.aiGrade.verdict ?? '확인 실패'} · 신뢰도 {Math.round(Number(examFeedback.aiGrade.confidence || 0) * 100)}%
+                                {examFeedback.aiGrade.verdict === 'correct'
+                                  ? `AI 판정: 정답 인정 · 신뢰도 ${Math.round(Number(examFeedback.aiGrade.confidence || 0) * 100)}%`
+                                  : examFeedback.aiGrade.verdict === 'partial'
+                                    ? 'AI 판정: 의미는 가깝지만 정답으로 인정하지 않음'
+                                    : examFeedback.aiGrade.verdict === 'wrong'
+                                      ? 'AI 판정: 정답으로 인정하지 않음'
+                                      : 'AI 판정: 확인하지 못함'}
                               </p>
                             )}
                             {examFeedback.source === 'ai-local-cache' && <p className="mt-2 text-xs opacity-80">이전에 AI가 정답 처리한 답안이라 바로 인정했습니다.</p>}
