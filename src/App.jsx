@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import WordCard from './components/WordCard.jsx';
+import WordCard, { SpeakButton } from './components/WordCard.jsx';
 import ProgressBar from './components/ProgressBar.jsx';
 
 const STORAGE_KEY = 'wordLearningProgress.v2';
@@ -991,7 +991,10 @@ export default function App() {
                     ) : (
                       <>
                         <p className="text-sm font-medium uppercase tracking-[0.35em] text-slate-400">QUESTION</p>
-                        <h2 className="mt-4 break-words text-5xl font-black tracking-tight text-slate-950 sm:text-6xl">{currentWord?.word ?? '-'}</h2>
+                        <div className="mt-4 flex flex-wrap items-center justify-center gap-3 sm:justify-start">
+                          <h2 className="break-words text-5xl font-black tracking-tight text-slate-950 sm:text-6xl">{currentWord?.word ?? '-'}</h2>
+                          {currentWord && <SpeakButton text={currentWord.word} lang={currentWord.lang === 'ja' ? 'ja-JP' : 'en-US'} label="단어 듣기" />}
+                        </div>
                         {currentWord?.reading && <p className="mt-4 text-xl text-slate-500">{currentWord.reading}</p>}
                         <form onSubmit={submitExam} className="mt-8 space-y-4">
                           <input value={examAnswer} onChange={(event) => setExamAnswer(event.target.value)} disabled={!!examFeedback || aiChecking} placeholder="뜻을 입력하세요. 예: 사과" className="w-full rounded-2xl border border-slate-200 px-5 py-4 text-lg outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:bg-slate-50" />

@@ -77,7 +77,7 @@ function speakText(text, lang, onStatus) {
   setTimeout(speak, 250);
 }
 
-function SpeakButton({ text, lang, label, variant = 'light' }) {
+export function SpeakButton({ text, lang, label, variant = 'light' }) {
   const [status, setStatus] = useState('');
   const [supported, setSupported] = useState(true);
   const isDark = variant === 'dark';
