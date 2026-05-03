@@ -449,7 +449,7 @@ export default function App() {
         aiGrade = await api('/grade-answer', {
           method: 'POST',
           token: auth.token,
-          timeoutMs: 5000,
+          timeoutMs: 12000,
           body: JSON.stringify({ word: currentWord, answer: examAnswer }),
         });
         correct = Boolean(aiGrade.accepted);
