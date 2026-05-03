@@ -189,6 +189,8 @@ export default function App() {
   const [resetPasswordStatus, setResetPasswordStatus] = useState('');
   const [adminLoading, setAdminLoading] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
+  const [activeView, setActiveView] = useState('learn');
+  const [menuOpen, setMenuOpen] = useState(false);
   const isLoggedIn = Boolean(auth?.token && auth?.user);
 
   useEffect(() => {
@@ -326,6 +328,18 @@ export default function App() {
     setExamAnswer('');
     setExamFeedback(null);
     setProgress((prev) => ({ ...prev, examLimit: limit, deck: rebuildDeck(), deckCursor: 0, examCorrect: 0, examWrong: 0, results: {}, updatedAt: new Date().toISOString() }));
+  }
+
+  function navigate(view) {
+    setMenuOpen(false);
+    if (view === 'admin') {
+      setAdminView('admin');
+      return;
+    }
+    if (view === 'learn' || view === 'exam') {
+      changeMode(view);
+    }
+    setActiveView(view);
   }
 
   function moveNext() {
@@ -808,217 +822,258 @@ export default function App() {
   }
 
 
+  const menuItems = [
+    { id: 'learn', label: '학습', icon: '📚' },
+    { id: 'exam', label: '시험', icon: '📝' },
+    { id: 'leaderboard', label: '랭킹', icon: '🏆' },
+    { id: 'profile', label: '내 정보', icon: '👤' },
+    { id: 'request', label: '관리자에게 건의', icon: '💬' },
+    ...(isAdmin ? [{ id: 'admin', label: '관리자 메뉴', icon: '🛠️' }] : []),
+  ];
+
+  const activeTitle = menuItems.find((item) => item.id === activeView)?.label ?? '학습';
+
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,#dbeafe,transparent_35%),linear-gradient(135deg,#f8fafc,#eef2ff)] px-5 py-8 text-slate-900">
-      <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1fr_380px]">
-        <section className="space-y-6">
-          <header className="rounded-[2rem] border border-white/70 bg-white/75 p-6 shadow-sm backdrop-blur">
-            <p className="text-sm font-bold uppercase tracking-[0.35em] text-indigo-500">Flashcard Study</p>
-            <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">영어/일본어 단어 학습</h1>
-            <p className="mt-3 text-slate-600">학습모드로 뜻을 확인하고, 시험모드 점수를 계정별 랭킹에 저장할 수 있습니다.</p>
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,#dbeafe,transparent_35%),linear-gradient(135deg,#f8fafc,#eef2ff)] px-4 py-5 text-slate-900 sm:px-5 sm:py-8">
+      <div className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[1fr_320px]">
+        <section className="space-y-5">
+          <header className="sticky top-3 z-20 rounded-[2rem] border border-white/70 bg-white/85 p-5 shadow-sm backdrop-blur sm:p-6 lg:static">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.35em] text-indigo-500 sm:text-sm">Flashcard Study</p>
+                <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">{activeTitle}</h1>
+                <p className="mt-2 text-sm leading-6 text-slate-600 sm:text-base">앱 메뉴로 학습, 시험, 랭킹, 내 정보, 건의 화면을 전환합니다.</p>
+              </div>
+              <button type="button" onClick={() => setMenuOpen(true)} className="rounded-2xl bg-slate-950 px-4 py-3 text-sm font-black text-white shadow-lg shadow-slate-200 lg:hidden" aria-label="메뉴 열기">☰</button>
+            </div>
           </header>
 
-          <div className="flex flex-wrap gap-2">
-            {[["learn", "학습모드"], ["exam", "시험모드"]].map(([value, label]) => (
-              <button key={value} type="button" onClick={() => changeMode(value)} className={`rounded-full px-5 py-2 text-sm font-bold transition ${progress.mode === value ? 'bg-indigo-600 text-white shadow-lg' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>{label}</button>
-            ))}
-          </div>
-
-          {isExamMode && (
-            <div className="rounded-3xl border border-violet-100 bg-white/80 p-4 shadow-sm">
-              <p className="text-sm font-black text-slate-700">시험 문제 수</p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {[25, 50, 100].map((limit) => (
-                  <button key={limit} type="button" onClick={() => changeExamLimit(limit)} className={`rounded-full px-5 py-2 text-sm font-bold transition ${examLimit === limit ? 'bg-violet-600 text-white shadow-lg' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>{limit}문제</button>
-                ))}
-              </div>
-              <p className="mt-2 text-xs text-slate-500">문제 수를 바꾸면 현재 시험 진행상황이 초기화됩니다.</p>
-            </div>
-          )}
-
-          <div className="flex flex-wrap gap-2">
-            {[["all", "전체"], ["en", "영어"], ["ja", "일본어"]].map(([value, label]) => (
-              <button key={value} type="button" onClick={() => changeFilter(value)} className={`rounded-full px-5 py-2 text-sm font-bold transition ${progress.filter === value ? 'bg-slate-950 text-white shadow-lg' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>{label}</button>
-            ))}
-          </div>
-
-          {loading && <div className="rounded-3xl bg-white p-8 text-center shadow-sm">단어 데이터를 불러오는 중입니다...</div>}
-          {error && <div className="rounded-3xl bg-rose-50 p-8 text-center font-semibold text-rose-700">{error}</div>}
-
-          {!loading && !error && !isExamMode && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between rounded-2xl border border-indigo-100 bg-white/85 px-4 py-3 text-sm font-black text-slate-700 shadow-sm sm:px-5">
-                <span>현재 단어</span>
-                <span className="rounded-full bg-indigo-600 px-3 py-1 text-white">학습 {learningPosition} / {currentDeck.length || filteredWords.length}</span>
-              </div>
-              <WordCard key={currentWord?.id ?? 'empty-word'} word={currentWord} flipped={flipped} onFlip={() => setFlipped((value) => !value)} />
-            </div>
-          )}
-
-          {!loading && !error && isExamMode && (
-            <section className="rounded-[2rem] border border-violet-100 bg-white p-8 shadow-xl shadow-violet-100/60">
-              <div className="mb-6 flex items-center justify-between">
-                <span className="rounded-full bg-violet-50 px-3 py-1 text-sm font-semibold text-violet-600">시험모드 · {examLimit}문제</span>
-                <span className="text-sm text-slate-400">{Math.min(examTotal + 1, examLimit)} / {examLimit}</span>
-              </div>
-              {examCompleted ? (
-                <div className="rounded-3xl bg-violet-50 p-6 text-center">
-                  <p className="text-2xl font-black text-violet-700">시험 완료</p>
-                  <p className="mt-3 text-slate-600">{examLimit}문제 중 {progress.examCorrect}개 정답, {progress.examWrong}개 오답입니다.</p>
-                  <p className="mt-1 text-sm text-slate-500">오른쪽의 점수 저장 버튼으로 랭킹에 기록할 수 있습니다.</p>
+          {(activeView === 'learn' || activeView === 'exam') && (
+            <>
+              <section className="space-y-5 rounded-[2rem] border border-white/70 bg-white/75 p-4 shadow-sm backdrop-blur sm:p-6">
+                <div className="flex flex-wrap gap-2">
+                  {[["learn", "학습모드"], ["exam", "시험모드"]].map(([value, label]) => (
+                    <button key={value} type="button" onClick={() => navigate(value)} className={`rounded-full px-5 py-2 text-sm font-bold transition ${progress.mode === value ? 'bg-indigo-600 text-white shadow-lg' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>{label}</button>
+                  ))}
                 </div>
-              ) : (
-                <>
-              <p className="text-sm font-medium uppercase tracking-[0.35em] text-slate-400">QUESTION</p>
-              <h2 className="mt-4 break-words text-5xl font-black tracking-tight text-slate-950 sm:text-6xl">{currentWord?.word ?? '-'}</h2>
-              {currentWord?.reading && <p className="mt-4 text-xl text-slate-500">{currentWord.reading}</p>}
-              <form onSubmit={submitExam} className="mt-8 space-y-4">
-                <input value={examAnswer} onChange={(event) => setExamAnswer(event.target.value)} disabled={!!examFeedback} placeholder="뜻을 입력하세요. 예: 사과" className="w-full rounded-2xl border border-slate-200 px-5 py-4 text-lg outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:bg-slate-50" />
-                <button type="submit" disabled={!currentWord || !examAnswer.trim() || !!examFeedback} className="w-full rounded-2xl bg-violet-600 px-6 py-4 text-lg font-black text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5 hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-40">정답 확인</button>
-              </form>
-              {examFeedback && (
-                <div className={`mt-6 rounded-2xl p-5 ${examFeedback.correct ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}`}>
-                  <p className="text-lg font-black">{examFeedback.correct ? '정답입니다!' : '오답입니다.'}</p>
-                  <p className="mt-2 text-sm">정답: {examFeedback.answer}</p>
-                  <button type="button" onClick={moveNext} className="mt-4 rounded-xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">{examTotal >= examLimit ? '시험 결과 보기' : '다음 랜덤 단어'}</button>
+
+                {isExamMode && (
+                  <div className="rounded-3xl border border-violet-100 bg-white/80 p-4 shadow-sm">
+                    <p className="text-sm font-black text-slate-700">시험 문제 수</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {[25, 50, 100].map((limit) => (
+                        <button key={limit} type="button" onClick={() => changeExamLimit(limit)} className={`rounded-full px-5 py-2 text-sm font-bold transition ${examLimit === limit ? 'bg-violet-600 text-white shadow-lg' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>{limit}문제</button>
+                      ))}
+                    </div>
+                    <p className="mt-2 text-xs text-slate-500">문제 수를 바꾸면 현재 시험 진행상황이 초기화됩니다.</p>
+                  </div>
+                )}
+
+                <div className="flex flex-wrap gap-2">
+                  {[["all", "전체"], ["en", "영어"], ["ja", "일본어"]].map(([value, label]) => (
+                    <button key={value} type="button" onClick={() => changeFilter(value)} className={`rounded-full px-5 py-2 text-sm font-bold transition ${progress.filter === value ? 'bg-slate-950 text-white shadow-lg' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>{label}</button>
+                  ))}
+                </div>
+
+                {loading && <div className="rounded-3xl bg-white p-8 text-center shadow-sm">단어 데이터를 불러오는 중입니다...</div>}
+                {error && <div className="rounded-3xl bg-rose-50 p-8 text-center font-semibold text-rose-700">{error}</div>}
+
+                {!loading && !error && !isExamMode && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between rounded-2xl border border-indigo-100 bg-white/85 px-4 py-3 text-sm font-black text-slate-700 shadow-sm sm:px-5">
+                      <span>현재 단어</span>
+                      <span className="rounded-full bg-indigo-600 px-3 py-1 text-white">학습 {learningPosition} / {currentDeck.length || filteredWords.length}</span>
+                    </div>
+                    <WordCard key={currentWord?.id ?? 'empty-word'} word={currentWord} flipped={flipped} onFlip={() => setFlipped((value) => !value)} />
+                  </div>
+                )}
+
+                {!loading && !error && isExamMode && (
+                  <section className="rounded-[2rem] border border-violet-100 bg-white p-6 shadow-xl shadow-violet-100/60 sm:p-8">
+                    <div className="mb-6 flex items-center justify-between">
+                      <span className="rounded-full bg-violet-50 px-3 py-1 text-sm font-semibold text-violet-600">시험모드 · {examLimit}문제</span>
+                      <span className="text-sm text-slate-400">{Math.min(examTotal + 1, examLimit)} / {examLimit}</span>
+                    </div>
+                    {examCompleted ? (
+                      <div className="rounded-3xl bg-violet-50 p-6 text-center">
+                        <p className="text-2xl font-black text-violet-700">시험 완료</p>
+                        <p className="mt-3 text-slate-600">{examLimit}문제 중 {progress.examCorrect}개 정답, {progress.examWrong}개 오답입니다.</p>
+                        <p className="mt-1 text-sm text-slate-500">랭킹 화면에서 점수를 저장할 수 있습니다.</p>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-sm font-medium uppercase tracking-[0.35em] text-slate-400">QUESTION</p>
+                        <h2 className="mt-4 break-words text-5xl font-black tracking-tight text-slate-950 sm:text-6xl">{currentWord?.word ?? '-'}</h2>
+                        {currentWord?.reading && <p className="mt-4 text-xl text-slate-500">{currentWord.reading}</p>}
+                        <form onSubmit={submitExam} className="mt-8 space-y-4">
+                          <input value={examAnswer} onChange={(event) => setExamAnswer(event.target.value)} disabled={!!examFeedback} placeholder="뜻을 입력하세요. 예: 사과" className="w-full rounded-2xl border border-slate-200 px-5 py-4 text-lg outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:bg-slate-50" />
+                          <button type="submit" disabled={!currentWord || !examAnswer.trim() || !!examFeedback} className="w-full rounded-2xl bg-violet-600 px-6 py-4 text-lg font-black text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5 hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-40">정답 확인</button>
+                        </form>
+                        {examFeedback && (
+                          <div className={`mt-6 rounded-2xl p-5 ${examFeedback.correct ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}`}>
+                            <p className="text-lg font-black">{examFeedback.correct ? '정답입니다!' : '오답입니다.'}</p>
+                            <p className="mt-2 text-sm">정답: {examFeedback.answer}</p>
+                            <button type="button" onClick={moveNext} className="mt-4 rounded-xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">{examTotal >= examLimit ? '시험 결과 보기' : '다음 랜덤 단어'}</button>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </section>
+                )}
+              </section>
+
+              {!isExamMode && (
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <button type="button" onClick={() => answer('wrong')} disabled={!currentWord} className="rounded-3xl bg-rose-500 px-6 py-4 text-lg font-black text-white shadow-lg shadow-rose-200 transition hover:-translate-y-0.5 hover:bg-rose-600 disabled:cursor-not-allowed disabled:opacity-40">오답</button>
+                  <button type="button" onClick={() => answer('correct')} disabled={!currentWord} className="rounded-3xl bg-emerald-500 px-6 py-4 text-lg font-black text-white shadow-lg shadow-emerald-200 transition hover:-translate-y-0.5 hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-40">정답</button>
+                  <button type="button" onClick={moveNext} disabled={!currentWord} className="rounded-3xl bg-slate-900 px-6 py-4 text-lg font-black text-white shadow-lg shadow-slate-200 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40">건너뛰기</button>
                 </div>
               )}
-                </>
-              )}
+            </>
+          )}
+
+          {activeView === 'leaderboard' && (
+            <section className="space-y-5 rounded-[2rem] border border-white/70 bg-white/80 p-5 shadow-sm backdrop-blur sm:p-6">
+              <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm">
+                <h2 className="text-lg font-black">시험 점수 저장</h2>
+                <p className="mt-2 text-sm text-slate-500">{examLimit}문제 시험 결과 {progress.examCorrect}정답 / {progress.examWrong}오답을 현재 필터 랭킹에 저장합니다.</p>
+                <button type="button" onClick={submitScore} className="mt-4 w-full rounded-2xl bg-violet-600 px-4 py-3 text-sm font-black text-white transition hover:bg-violet-700">랭킹에 점수 저장</button>
+                {syncStatus && <p className="mt-3 text-sm font-semibold text-slate-600">{syncStatus}</p>}
+              </section>
+
+              <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm">
+                <div className="flex items-center justify-between gap-2">
+                  <h2 className="text-lg font-black">{examLimit}문제 랭킹</h2>
+                  <button type="button" onClick={() => refreshLeaderboard(progress.filter)} className="text-sm font-bold text-indigo-600">새로고침</button>
+                </div>
+                <div className="mt-4 space-y-2">
+                  {leaderboardLoading && <p className="text-sm text-slate-500">랭킹을 불러오는 중입니다...</p>}
+                  {!leaderboardLoading && leaderboard.length === 0 && <p className="text-sm text-slate-500">아직 저장된 점수가 없습니다.</p>}
+                  {leaderboard.map((row, index) => (
+                    <div key={`${row.display_name}-${row.last_submitted_at}`} className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 text-sm">
+                      <div>
+                        <p className="font-black text-slate-900">{index + 1}. {row.display_name}</p>
+                        <p className="text-xs text-slate-500">{row.question_count ?? examLimit}문제 · 도전 {row.attempts}회</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-black text-indigo-600">{row.best_correct}개</p>
+                        <p className="text-xs text-slate-500">정답률 {row.best_accuracy}%</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
             </section>
           )}
 
-          {!isExamMode && (
-            <div className="grid gap-3 sm:grid-cols-3">
-              <button type="button" onClick={() => answer('wrong')} disabled={!currentWord} className="rounded-3xl bg-rose-500 px-6 py-4 text-lg font-black text-white shadow-lg shadow-rose-200 transition hover:-translate-y-0.5 hover:bg-rose-600 disabled:cursor-not-allowed disabled:opacity-40">오답</button>
-              <button type="button" onClick={() => answer('correct')} disabled={!currentWord} className="rounded-3xl bg-emerald-500 px-6 py-4 text-lg font-black text-white shadow-lg shadow-emerald-200 transition hover:-translate-y-0.5 hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-40">정답</button>
-              <button type="button" onClick={moveNext} disabled={!currentWord} className="rounded-3xl bg-slate-900 px-6 py-4 text-lg font-black text-white shadow-lg shadow-slate-200 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40">건너뛰기</button>
-            </div>
+          {activeView === 'profile' && (
+            <section className="space-y-5 rounded-[2rem] border border-white/70 bg-white/80 p-5 shadow-sm backdrop-blur sm:p-6">
+              <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <h2 className="text-lg font-black">내 정보</h2>
+                  <button type="button" onClick={logout} className="text-sm font-bold text-slate-500 hover:text-slate-900">로그아웃</button>
+                </div>
+                <div className="mt-4 rounded-2xl bg-indigo-50 p-4 text-sm text-indigo-900">
+                  <p className="font-black">{auth.user.displayName}님 로그인 중</p>
+                  <p className="mt-1">학습 언어: {auth.user.preferredLanguage === 'ja' ? '일본어' : auth.user.preferredLanguage === 'en' ? '영어' : '전체'}</p>
+                  <p className="mt-2 text-xs text-indigo-700">실명/생년월일은 관리자 확인용이며 랭킹에는 표시되지 않습니다.</p>
+                </div>
+              </section>
+
+              <ProgressBar current={answeredCount} total={filteredWords.length} correct={progress.correct} wrong={progress.wrong} examCorrect={progress.examCorrect} examWrong={progress.examWrong} />
+
+              <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm">
+                <h2 className="text-lg font-black">비밀번호 변경</h2>
+                <p className="mt-2 text-sm text-slate-500">{auth.user.displayName || auth.user.username}님 계정의 비밀번호만 변경할 수 있습니다.</p>
+                <form onSubmit={changeOwnPassword} className="mt-4 space-y-3">
+                  <input type="password" value={passwordForm.currentPassword} onChange={(e) => setPasswordForm((form) => ({ ...form, currentPassword: e.target.value }))} placeholder="현재 비밀번호" autoComplete="current-password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+                  <input type="password" value={passwordForm.newPassword} onChange={(e) => setPasswordForm((form) => ({ ...form, newPassword: e.target.value }))} placeholder="새 비밀번호" autoComplete="new-password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+                  <input type="password" value={passwordForm.confirmPassword} onChange={(e) => setPasswordForm((form) => ({ ...form, confirmPassword: e.target.value }))} placeholder="새 비밀번호 확인" autoComplete="new-password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
+                  <button type="submit" className="w-full rounded-2xl bg-indigo-600 px-4 py-3 text-sm font-black text-white">비밀번호 변경</button>
+                  {passwordStatus && <p className="text-sm font-semibold text-slate-600">{passwordStatus}</p>}
+                </form>
+              </section>
+
+              <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm">
+                <h2 className="text-lg font-black">학습 상태</h2>
+                <dl className="mt-4 space-y-3 text-sm text-slate-600">
+                  <div className="flex justify-between"><dt>모드</dt><dd>{isExamMode ? '시험모드' : '학습모드'}</dd></div>
+                  <div className="flex justify-between"><dt>현재 위치</dt><dd>{isExamMode ? `${Math.min(examTotal, examLimit)} / ${examLimit}` : `${filteredWords.length ? currentIndex + 1 : 0} / ${filteredWords.length}`}</dd></div>
+                  <div className="flex justify-between"><dt>최근 저장</dt><dd>{progress.updatedAt ? new Date(progress.updatedAt).toLocaleString('ko-KR') : '아직 없음'}</dd></div>
+                </dl>
+                <button type="button" onClick={() => setProgress((prev) => ({ ...prev, deck: makeDeck(filteredWords), deckCursor: 0, updatedAt: new Date().toISOString() }))} className="mt-5 w-full rounded-2xl bg-indigo-50 px-4 py-3 text-sm font-bold text-indigo-700 transition hover:bg-indigo-100">랜덤 순서 다시 섞기</button>
+                <button type="button" onClick={resetProgress} className="mt-3 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50">진도 초기화</button>
+              </section>
+            </section>
+          )}
+
+          {activeView === 'request' && (
+            <section className="rounded-[2rem] border border-amber-100 bg-white/80 p-5 shadow-sm backdrop-blur sm:p-6">
+              <h2 className="text-xl font-black">관리자에게 건의/요청</h2>
+              <p className="mt-2 text-sm text-slate-500">오류, 단어 추가, 개선 아이디어를 관리자에게 쪽지처럼 보낼 수 있습니다.</p>
+              <form onSubmit={submitRequest} className="mt-5 space-y-3">
+                <select value={requestForm.type} onChange={(e) => setRequestForm((form) => ({ ...form, type: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-amber-400">
+                  <option value="suggestion">건의</option>
+                  <option value="bug">오류</option>
+                  <option value="word">단어 추가 요청</option>
+                  <option value="other">기타</option>
+                </select>
+                <textarea value={requestForm.message} onChange={(e) => setRequestForm((form) => ({ ...form, message: e.target.value.slice(0, 1000) }))} rows="8" placeholder="관리자에게 보낼 내용을 적어주세요." className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-amber-400" />
+                <div className="flex items-center justify-between text-xs text-slate-400">
+                  <span>HTML은 텍스트로만 표시됩니다.</span>
+                  <span>{requestForm.message.length}/1000</span>
+                </div>
+                <button type="submit" className="w-full rounded-2xl bg-amber-500 px-4 py-3 text-sm font-black text-white transition hover:bg-amber-600">관리자에게 보내기</button>
+                {requestStatus && <p className="text-sm font-semibold text-slate-600">{requestStatus}</p>}
+              </form>
+            </section>
           )}
         </section>
 
-        <aside className="space-y-6">
-          <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur">
-            <div className="flex items-center justify-between gap-3">
-              <h2 className="text-lg font-black">계정</h2>
-              {auth?.user && <div className="flex gap-2">{isAdmin && <button type="button" onClick={() => setAdminView('admin')} className="text-sm font-bold text-indigo-600 hover:text-indigo-800">관리자</button>}<button type="button" onClick={logout} className="text-sm font-bold text-slate-500 hover:text-slate-900">로그아웃</button></div>}
+        <aside className="hidden lg:block">
+          <div className="sticky top-8 space-y-3 rounded-[2rem] border border-white/70 bg-white/85 p-4 shadow-xl shadow-indigo-100/50 backdrop-blur">
+            <div className="px-2 py-2">
+              <p className="text-xs font-black uppercase tracking-[0.3em] text-indigo-500">Menu</p>
+              <p className="mt-2 text-sm font-semibold text-slate-500">{auth.user.displayName || auth.user.username}님</p>
             </div>
-            {auth?.user ? (
-              <div className="mt-4 rounded-2xl bg-indigo-50 p-4 text-sm text-indigo-900">
-                <p className="font-black">{auth.user.displayName}님 로그인 중</p>
-                <p className="mt-1">학습 언어: {auth.user.preferredLanguage === 'ja' ? '일본어' : auth.user.preferredLanguage === 'en' ? '영어' : '전체'}</p>
-                <p className="mt-2 text-xs text-indigo-700">실명/생년월일은 관리자 확인용이며 랭킹에는 표시되지 않습니다.</p>
-              </div>
-            ) : (
-              <form onSubmit={handleAuth} className="mt-4 space-y-3">
-                <div className="grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1 text-sm font-bold">
-                  <button type="button" onClick={() => setAuthMode('login')} className={`rounded-xl py-2 ${authMode === 'login' ? 'bg-white shadow-sm' : 'text-slate-500'}`}>로그인</button>
-                  <button type="button" onClick={() => setAuthMode('register')} className={`rounded-xl py-2 ${authMode === 'register' ? 'bg-white shadow-sm' : 'text-slate-500'}`}>회원가입</button>
-                </div>
-                <input value={authForm.username} onChange={(e) => setAuthForm((f) => ({ ...f, username: e.target.value }))} placeholder="아이디" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
-                <input value={authForm.password} onChange={(e) => setAuthForm((f) => ({ ...f, password: e.target.value }))} placeholder="비밀번호" type="password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
-                {authMode === 'register' && (
-                  <>
-                    <input value={authForm.passwordConfirm} onChange={(e) => setAuthForm((f) => ({ ...f, passwordConfirm: e.target.value }))} placeholder="비밀번호 확인" type="password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
-                    <input value={authForm.displayName} onChange={(e) => setAuthForm((f) => ({ ...f, displayName: e.target.value }))} placeholder="닉네임 / 랭킹 표시 이름" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
-                    <input value={authForm.realName} onChange={(e) => setAuthForm((f) => ({ ...f, realName: e.target.value }))} placeholder="실명 / 관리자 확인용" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
-                    <label className="block text-left text-xs font-black text-slate-500">
-                  생년월일
-                  <input value={authForm.birthDate} onChange={(e) => setAuthForm((f) => ({ ...f, birthDate: e.target.value }))} type="date" className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none focus:border-indigo-400" />
-                </label>
-                {authForm.birthDate && <p className="-mt-1 text-left text-xs font-semibold text-indigo-600">선택한 생년월일: {formatBirthDate(authForm.birthDate)}</p>}
-                    <select value={authForm.preferredLanguage} onChange={(e) => setAuthForm((f) => ({ ...f, preferredLanguage: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400">
-                      <option value="all">영어 + 일본어</option>
-                      <option value="en">영어</option>
-                      <option value="ja">일본어</option>
-                    </select>
-                    <p className="text-xs leading-5 text-slate-500">실명과 생년월일은 관리자 확인용으로만 사용하며, 랭킹에는 닉네임만 표시됩니다.</p>
-                  </>
-                )}
-                <button type="submit" className="w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm font-black text-white">{authMode === 'register' ? '회원가입' : '로그인'}</button>
-                {authStatus && <p className="text-sm font-semibold text-slate-600">{authStatus}</p>}
-              </form>
-            )}
-          </section>
-
-          <ProgressBar current={answeredCount} total={filteredWords.length} correct={progress.correct} wrong={progress.wrong} examCorrect={progress.examCorrect} examWrong={progress.examWrong} />
-
-
-          <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur">
-            <h2 className="text-lg font-black">내 정보 / 비밀번호 변경</h2>
-            <p className="mt-2 text-sm text-slate-500">{auth.user.displayName || auth.user.username}님 계정의 비밀번호만 변경할 수 있습니다.</p>
-            <form onSubmit={changeOwnPassword} className="mt-4 space-y-3">
-              <input type="password" value={passwordForm.currentPassword} onChange={(e) => setPasswordForm((form) => ({ ...form, currentPassword: e.target.value }))} placeholder="현재 비밀번호" autoComplete="current-password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
-              <input type="password" value={passwordForm.newPassword} onChange={(e) => setPasswordForm((form) => ({ ...form, newPassword: e.target.value }))} placeholder="새 비밀번호" autoComplete="new-password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
-              <input type="password" value={passwordForm.confirmPassword} onChange={(e) => setPasswordForm((form) => ({ ...form, confirmPassword: e.target.value }))} placeholder="새 비밀번호 확인" autoComplete="new-password" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-400" />
-              <button type="submit" className="w-full rounded-2xl bg-indigo-600 px-4 py-3 text-sm font-black text-white">비밀번호 변경</button>
-              {passwordStatus && <p className="text-sm font-semibold text-slate-600">{passwordStatus}</p>}
-            </form>
-          </section>
-
-
-          <section className="rounded-3xl border border-amber-100 bg-white/80 p-5 shadow-sm backdrop-blur">
-            <h2 className="text-lg font-black">관리자에게 건의/요청</h2>
-            <p className="mt-2 text-sm text-slate-500">오류, 단어 추가, 개선 아이디어를 관리자에게 쪽지처럼 보낼 수 있습니다.</p>
-            <form onSubmit={submitRequest} className="mt-4 space-y-3">
-              <select value={requestForm.type} onChange={(e) => setRequestForm((form) => ({ ...form, type: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-amber-400">
-                <option value="suggestion">건의</option>
-                <option value="bug">오류</option>
-                <option value="word">단어 추가 요청</option>
-                <option value="other">기타</option>
-              </select>
-              <textarea value={requestForm.message} onChange={(e) => setRequestForm((form) => ({ ...form, message: e.target.value.slice(0, 1000) }))} rows="4" placeholder="관리자에게 보낼 내용을 적어주세요." className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-amber-400" />
-              <div className="flex items-center justify-between text-xs text-slate-400">
-                <span>HTML은 텍스트로만 표시됩니다.</span>
-                <span>{requestForm.message.length}/1000</span>
-              </div>
-              <button type="submit" className="w-full rounded-2xl bg-amber-500 px-4 py-3 text-sm font-black text-white transition hover:bg-amber-600">관리자에게 보내기</button>
-              {requestStatus && <p className="text-sm font-semibold text-slate-600">{requestStatus}</p>}
-            </form>
-          </section>
-
-          <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur">
-            <h2 className="text-lg font-black">시험 점수 저장</h2>
-            <p className="mt-2 text-sm text-slate-500">{examLimit}문제 시험 결과 {progress.examCorrect}정답 / {progress.examWrong}오답을 현재 필터 랭킹에 저장합니다.</p>
-            <button type="button" onClick={submitScore} className="mt-4 w-full rounded-2xl bg-violet-600 px-4 py-3 text-sm font-black text-white transition hover:bg-violet-700">랭킹에 점수 저장</button>
-            {syncStatus && <p className="mt-3 text-sm font-semibold text-slate-600">{syncStatus}</p>}
-          </section>
-
-          <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur">
-            <div className="flex items-center justify-between gap-2">
-              <h2 className="text-lg font-black">{examLimit}문제 랭킹</h2>
-              <button type="button" onClick={() => refreshLeaderboard(progress.filter)} className="text-sm font-bold text-indigo-600">새로고침</button>
-            </div>
-            <div className="mt-4 space-y-2">
-              {leaderboardLoading && <p className="text-sm text-slate-500">랭킹을 불러오는 중입니다...</p>}
-              {!leaderboardLoading && leaderboard.length === 0 && <p className="text-sm text-slate-500">아직 저장된 점수가 없습니다.</p>}
-              {leaderboard.map((row, index) => (
-                <div key={`${row.display_name}-${row.last_submitted_at}`} className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 text-sm">
-                  <div>
-                    <p className="font-black text-slate-900">{index + 1}. {row.display_name}</p>
-                    <p className="text-xs text-slate-500">{row.question_count ?? examLimit}문제 · 도전 {row.attempts}회</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-black text-indigo-600">{row.best_correct}개</p>
-                    <p className="text-xs text-slate-500">정답률 {row.best_accuracy}%</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur">
-            <h2 className="text-lg font-black">학습 상태</h2>
-            <dl className="mt-4 space-y-3 text-sm text-slate-600">
-              <div className="flex justify-between"><dt>모드</dt><dd>{isExamMode ? '시험모드' : '학습모드'}</dd></div>
-              <div className="flex justify-between"><dt>현재 위치</dt><dd>{isExamMode ? `${Math.min(examTotal, examLimit)} / ${examLimit}` : `${filteredWords.length ? currentIndex + 1 : 0} / ${filteredWords.length}`}</dd></div>
-              <div className="flex justify-between"><dt>최근 저장</dt><dd>{progress.updatedAt ? new Date(progress.updatedAt).toLocaleString('ko-KR') : '아직 없음'}</dd></div>
-            </dl>
-            <button type="button" onClick={() => setProgress((prev) => ({ ...prev, deck: makeDeck(filteredWords), deckCursor: 0, updatedAt: new Date().toISOString() }))} className="mt-5 w-full rounded-2xl bg-indigo-50 px-4 py-3 text-sm font-bold text-indigo-700 transition hover:bg-indigo-100">랜덤 순서 다시 섞기</button>
-            <button type="button" onClick={resetProgress} className="mt-3 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50">진도 초기화</button>
-          </section>
+            {menuItems.map((item) => (
+              <button key={item.id} type="button" onClick={() => navigate(item.id)} className={`flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left text-sm font-black transition ${activeView === item.id ? 'bg-slate-950 text-white shadow-lg' : 'bg-white text-slate-700 hover:bg-indigo-50 hover:text-indigo-700'}`}>
+                <span><span className="mr-2">{item.icon}</span>{item.label}</span>
+                <span>›</span>
+              </button>
+            ))}
+            <button type="button" onClick={logout} className="flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left text-sm font-black text-rose-600 transition hover:bg-rose-50">
+              <span><span className="mr-2">🚪</span>로그아웃</span>
+              <span>›</span>
+            </button>
+          </div>
         </aside>
       </div>
+
+      {menuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <button type="button" aria-label="메뉴 닫기" onClick={() => setMenuOpen(false)} className="absolute inset-0 bg-slate-950/35 backdrop-blur-sm" />
+          <nav className="absolute right-0 top-0 flex h-full w-[82vw] max-w-sm flex-col gap-3 rounded-l-[2rem] bg-white p-5 shadow-2xl">
+            <div className="mb-2 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.3em] text-indigo-500">Menu</p>
+                <p className="mt-2 text-sm font-semibold text-slate-500">{auth.user.displayName || auth.user.username}님</p>
+              </div>
+              <button type="button" onClick={() => setMenuOpen(false)} className="rounded-2xl bg-slate-100 px-4 py-3 text-lg font-black">×</button>
+            </div>
+            {menuItems.map((item) => (
+              <button key={item.id} type="button" onClick={() => navigate(item.id)} className={`flex items-center justify-between rounded-2xl px-4 py-4 text-left text-base font-black transition ${activeView === item.id ? 'bg-slate-950 text-white shadow-lg' : 'bg-slate-50 text-slate-700'}`}>
+                <span><span className="mr-3">{item.icon}</span>{item.label}</span>
+                <span>›</span>
+              </button>
+            ))}
+            <button type="button" onClick={logout} className="mt-auto flex items-center justify-between rounded-2xl bg-rose-50 px-4 py-4 text-left text-base font-black text-rose-600">
+              <span><span className="mr-3">🚪</span>로그아웃</span>
+              <span>›</span>
+            </button>
+          </nav>
+        </div>
+      )}
     </main>
   );
 }
