@@ -9,16 +9,37 @@ function getSpeechSupport() {
   return typeof window !== 'undefined' && 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
 }
 
+function scoreVoice(voice, lang) {
+  const wantedLang = lang.toLowerCase();
+  const baseLang = wantedLang.split('-')[0];
+  const voiceLang = String(voice.lang || '').toLowerCase();
+  const name = String(voice.name || '').toLowerCase();
+  let score = 0;
+
+  if (voiceLang === wantedLang) score += 100;
+  else if (voiceLang.startsWith(baseLang)) score += 70;
+  if (voice.default) score += 5;
+
+  const preferredEnglish = ['samantha', 'google us english', 'google uk english female', 'karen', 'moira', 'tessa', 'victoria', 'ava', 'allison', 'susan', 'zira'];
+  const preferredJapanese = ['kyoko', 'google 日本語', 'google japanese', 'otoya', 'sayaka', 'haruka'];
+  const avoid = ['daniel', 'alex', 'fred', 'tom', 'david', 'mark', 'male', 'compact', 'whisper', 'novelty'];
+  const preferred = baseLang === 'ja' ? preferredJapanese : preferredEnglish;
+
+  preferred.forEach((keyword, index) => {
+    if (name.includes(keyword)) score += 60 - index;
+  });
+  avoid.forEach((keyword) => {
+    if (name.includes(keyword)) score -= 40;
+  });
+
+  return score;
+}
+
 function pickVoice(lang) {
   if (!getSpeechSupport()) return null;
   const voices = window.speechSynthesis.getVoices();
-  const baseLang = lang.split('-')[0].toLowerCase();
-  return (
-    voices.find((voice) => voice.lang?.toLowerCase() === lang.toLowerCase()) ||
-    voices.find((voice) => voice.lang?.toLowerCase().startsWith(baseLang)) ||
-    voices.find((voice) => voice.default) ||
-    null
-  );
+  if (!voices.length) return null;
+  return [...voices].sort((a, b) => scoreVoice(b, lang) - scoreVoice(a, lang))[0] || null;
 }
 
 function speakText(text, lang, onStatus) {
@@ -38,8 +59,8 @@ function speakText(text, lang, onStatus) {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = lang;
     utterance.voice = pickVoice(lang);
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
+    utterance.rate = 0.88;
+    utterance.pitch = 1.05;
     utterance.volume = 1;
     utterance.onstart = () => onStatus?.('재생 중...');
     utterance.onend = () => onStatus?.('');
