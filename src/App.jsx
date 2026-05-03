@@ -4,6 +4,7 @@ import ProgressBar from './components/ProgressBar.jsx';
 
 const STORAGE_KEY = 'wordLearningProgress.v2';
 const AUTH_KEY = 'wordLearningAuth.v1';
+const AI_ACCEPTED_KEY = 'wordLearningAiAcceptedAnswers.v1';
 const API_BASE = 'https://lumi-storage.taild1716c.ts.net';
 
 const emptyProgress = {
@@ -108,6 +109,8 @@ function isAnswerMatch(input, candidate) {
   const normalizedCandidate = normalizeAnswer(candidate);
   if (!normalizedInput || !normalizedCandidate) return false;
   if (normalizedInput === normalizedCandidate) return true;
+  const inputTokens = String(input ?? '').split(/[\s.,!?，、。·・~`'"“”‘’()\[\]{}:;/_\-]+/).map(normalizeAnswer).filter(Boolean);
+  if (inputTokens.includes(normalizedCandidate)) return true;
 
   // 제한적 부분 일치: 너무 짧은 답은 오답 과잉 인정 위험이 커서 제외한다.
   if (normalizedInput.length < 3 || normalizedCandidate.length < 3) return false;
@@ -117,6 +120,45 @@ function isAnswerMatch(input, candidate) {
 function judgeAnswer(input, word) {
   if (!input || !word) return false;
   return answerCandidates(word).some((candidate) => isAnswerMatch(input, candidate));
+}
+
+function aiCacheKey(wordId, answer) {
+  return `${wordId}:${normalizeAnswer(answer)}`;
+}
+
+function loadAcceptedAiAnswers() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(AI_ACCEPTED_KEY));
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function isAcceptedByAiCache(word, answer) {
+  if (!word?.id) return false;
+  const cache = loadAcceptedAiAnswers();
+  const entry = cache[aiCacheKey(word.id, answer)];
+  if (!entry) return false;
+  if (entry.expiresAt && new Date(entry.expiresAt).getTime() < Date.now()) return false;
+  return entry.verdict === 'correct' && Number(entry.confidence || 0) >= 0.85;
+}
+
+function rememberAiAcceptedAnswer(word, answer, grade) {
+  if (!word?.id) return;
+  const cache = loadAcceptedAiAnswers();
+  const key = aiCacheKey(word.id, answer);
+  cache[key] = {
+    wordId: word.id,
+    answer: normalizeAnswer(answer),
+    verdict: grade.verdict,
+    confidence: grade.confidence,
+    source: grade.source || 'ai',
+    createdAt: new Date().toISOString(),
+    expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 90).toISOString(),
+  };
+  const entries = Object.entries(cache).slice(-500);
+  localStorage.setItem(AI_ACCEPTED_KEY, JSON.stringify(Object.fromEntries(entries)));
 }
 
 function makeDeck(words) {
@@ -165,6 +207,7 @@ export default function App() {
   const [flipped, setFlipped] = useState(false);
   const [examAnswer, setExamAnswer] = useState('');
   const [examFeedback, setExamFeedback] = useState(null);
+  const [aiChecking, setAiChecking] = useState(false);
   const [progress, setProgress] = useState(loadProgress);
   const [auth, setAuth] = useState(loadAuth);
   const [authMode, setAuthMode] = useState('login');
@@ -355,6 +398,7 @@ export default function App() {
     setFlipped(false);
     setExamAnswer('');
     setExamFeedback(null);
+    setAiChecking(false);
   }
 
   function answer(result) {
@@ -377,10 +421,33 @@ export default function App() {
     setTimeout(moveNext, flipped ? 180 : 0);
   }
 
-  function submitExam(event) {
+  async function submitExam(event) {
     event.preventDefault();
-    if (!currentWord || examFeedback || examCompleted) return;
-    const correct = judgeAnswer(examAnswer, currentWord);
+    if (!currentWord || examFeedback || examCompleted || aiChecking) return;
+
+    const localCorrect = judgeAnswer(examAnswer, currentWord);
+    let correct = localCorrect || isAcceptedByAiCache(currentWord, examAnswer);
+    let aiGrade = null;
+
+    if (!correct && auth?.token) {
+      setAiChecking(true);
+      try {
+        aiGrade = await api('/grade-answer', {
+          method: 'POST',
+          token: auth.token,
+          timeoutMs: 5000,
+          body: JSON.stringify({ word: currentWord, answer: examAnswer }),
+        });
+        correct = Boolean(aiGrade.accepted);
+        if (correct && aiGrade.cacheable) rememberAiAcceptedAnswer(currentWord, examAnswer, aiGrade);
+      } catch (err) {
+        aiGrade = { source: 'fallback:client_error', error: err.message };
+        if (err.status === 401) setAuth(null);
+      } finally {
+        setAiChecking(false);
+      }
+    }
+
     const result = correct ? 'correct' : 'wrong';
     const previous = progress.results[currentWord.id];
     const nextResults = { ...progress.results, [currentWord.id]: result };
@@ -396,7 +463,13 @@ export default function App() {
       examWrong: prev.examWrong + (correct ? 0 : 1),
       updatedAt: new Date().toISOString(),
     }));
-    setExamFeedback({ correct, answer: currentWord.meaning, candidates: answerCandidates(currentWord) });
+    setExamFeedback({
+      correct,
+      answer: currentWord.meaning,
+      candidates: answerCandidates(currentWord),
+      aiGrade,
+      source: localCorrect ? 'local-rule' : correct && !aiGrade ? 'ai-local-cache' : aiGrade?.source,
+    });
   }
 
   async function handleAuth(event) {
@@ -627,6 +700,7 @@ export default function App() {
     setFlipped(false);
     setExamAnswer('');
     setExamFeedback(null);
+    setAiChecking(false);
   }
 
 
@@ -906,13 +980,19 @@ export default function App() {
                         <h2 className="mt-4 break-words text-5xl font-black tracking-tight text-slate-950 sm:text-6xl">{currentWord?.word ?? '-'}</h2>
                         {currentWord?.reading && <p className="mt-4 text-xl text-slate-500">{currentWord.reading}</p>}
                         <form onSubmit={submitExam} className="mt-8 space-y-4">
-                          <input value={examAnswer} onChange={(event) => setExamAnswer(event.target.value)} disabled={!!examFeedback} placeholder="뜻을 입력하세요. 예: 사과" className="w-full rounded-2xl border border-slate-200 px-5 py-4 text-lg outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:bg-slate-50" />
-                          <button type="submit" disabled={!currentWord || !examAnswer.trim() || !!examFeedback} className="w-full rounded-2xl bg-violet-600 px-6 py-4 text-lg font-black text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5 hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-40">정답 확인</button>
+                          <input value={examAnswer} onChange={(event) => setExamAnswer(event.target.value)} disabled={!!examFeedback || aiChecking} placeholder="뜻을 입력하세요. 예: 사과" className="w-full rounded-2xl border border-slate-200 px-5 py-4 text-lg outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:bg-slate-50" />
+                          <button type="submit" disabled={!currentWord || !examAnswer.trim() || !!examFeedback || aiChecking} className="w-full rounded-2xl bg-violet-600 px-6 py-4 text-lg font-black text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5 hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-40">{aiChecking ? 'AI가 확인 중…' : '정답 확인'}</button>
                         </form>
                         {examFeedback && (
                           <div className={`mt-6 rounded-2xl p-5 ${examFeedback.correct ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}`}>
                             <p className="text-lg font-black">{examFeedback.correct ? '정답입니다!' : '오답입니다.'}</p>
                             <p className="mt-2 text-sm">정답: {examFeedback.answer}</p>
+                            {examFeedback.aiGrade && (
+                              <p className="mt-2 text-xs opacity-80">
+                                AI 판정: {examFeedback.aiGrade.verdict ?? '확인 실패'} · 신뢰도 {Math.round(Number(examFeedback.aiGrade.confidence || 0) * 100)}%
+                              </p>
+                            )}
+                            {examFeedback.source === 'ai-local-cache' && <p className="mt-2 text-xs opacity-80">이전에 AI가 정답 처리한 답안이라 바로 인정했습니다.</p>}
                             <button type="button" onClick={moveNext} className="mt-4 rounded-xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">{examTotal >= examLimit ? '시험 결과 보기' : '다음 랜덤 단어'}</button>
                           </div>
                         )}
