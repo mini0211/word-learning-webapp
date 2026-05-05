@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+
+const API_BASE = 'https://lumi-storage.taild1716c.ts.net';
 
 function isAndroidEdge() {
   if (typeof navigator === 'undefined') return false;
@@ -42,16 +44,51 @@ function pickVoice(lang) {
   return [...voices].sort((a, b) => scoreVoice(b, lang) - scoreVoice(a, lang))[0] || null;
 }
 
-function speakText(text, lang, onStatus) {
+async function playServerTts(text, lang, onStatus) {
+  const normalizedLang = lang.toLowerCase().startsWith('ja') ? 'ja' : 'en';
+  const url = `${API_BASE}/word-tts?lang=${encodeURIComponent(normalizedLang)}&text=${encodeURIComponent(text)}`;
+  onStatus?.('서버 음성 준비 중...');
+  const audio = new Audio(url);
+  audio.preload = 'auto';
+  await new Promise((resolve, reject) => {
+    const cleanup = () => {
+      audio.oncanplaythrough = null;
+      audio.onerror = null;
+      audio.onended = null;
+    };
+    audio.oncanplaythrough = () => {
+      audio.play()
+        .then(() => {
+          onStatus?.('재생 중...');
+          resolve();
+        })
+        .catch((error) => {
+          cleanup();
+          reject(error);
+        });
+    };
+    audio.onerror = () => {
+      cleanup();
+      reject(new Error('server_tts_failed'));
+    };
+    audio.onended = () => {
+      cleanup();
+      onStatus?.('');
+    };
+    audio.load();
+  });
+}
+
+function speakWithBrowser(text, lang, onStatus) {
   if (!text || !getSpeechSupport()) {
-    onStatus?.('이 브라우저는 음성 재생을 지원하지 않을 수 있습니다.');
+    onStatus?.('서버 음성 재생에 실패했고, 이 브라우저는 기기 음성도 지원하지 않을 수 있습니다.');
     return;
   }
 
   const speak = () => {
     const voices = window.speechSynthesis.getVoices();
     if (!voices.length) {
-      onStatus?.('사용 가능한 음성 엔진을 찾지 못했습니다. Chrome 또는 기기 TTS 설정을 확인해주세요.');
+      onStatus?.('서버 음성 재생에 실패했고, 사용 가능한 기기 음성 엔진도 찾지 못했습니다.');
       return;
     }
 
@@ -62,9 +99,9 @@ function speakText(text, lang, onStatus) {
     utterance.rate = 0.88;
     utterance.pitch = 1.05;
     utterance.volume = 1;
-    utterance.onstart = () => onStatus?.('재생 중...');
+    utterance.onstart = () => onStatus?.('기기 음성으로 재생 중...');
     utterance.onend = () => onStatus?.('');
-    utterance.onerror = () => onStatus?.('음성 재생에 실패했습니다. 다른 브라우저나 기기 TTS 설정을 확인해주세요.');
+    utterance.onerror = () => onStatus?.('음성 재생에 실패했습니다. 네트워크 또는 기기 TTS 설정을 확인해주세요.');
     window.speechSynthesis.speak(utterance);
   };
 
@@ -77,14 +114,18 @@ function speakText(text, lang, onStatus) {
   setTimeout(speak, 250);
 }
 
+async function speakText(text, lang, onStatus) {
+  if (!text) return;
+  try {
+    await playServerTts(text, lang, onStatus);
+  } catch {
+    speakWithBrowser(text, lang, onStatus);
+  }
+}
+
 export function SpeakButton({ text, lang, label, variant = 'light' }) {
   const [status, setStatus] = useState('');
-  const [supported, setSupported] = useState(true);
   const isDark = variant === 'dark';
-
-  useEffect(() => {
-    setSupported(getSpeechSupport());
-  }, []);
 
   return (
     <div className="inline-flex flex-col items-start gap-1">
@@ -94,7 +135,7 @@ export function SpeakButton({ text, lang, label, variant = 'light' }) {
           event.stopPropagation();
           speakText(text, lang, setStatus);
         }}
-        disabled={!supported}
+        disabled={!text}
         className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50 ${
           isDark ? 'bg-white/20 text-white hover:bg-white/30' : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
         }`}
@@ -144,7 +185,7 @@ export default function WordCard({ word, flipped, onFlip }) {
               <SpeakButton text={word.word} lang={speechLang} label="단어 듣기" />
             </div>
             {word.reading && <p className="mt-4 text-xl text-slate-500">{word.reading}</p>}
-            {androidEdgeWarning && <p className="mt-4 rounded-2xl bg-amber-50 p-3 text-xs leading-5 text-amber-700">Android Edge에서는 기기 음성 엔진에 따라 소리가 안 날 수 있습니다. 안 들리면 Chrome으로 접속하거나 휴대폰 TTS 설정을 확인해주세요.</p>}
+            {androidEdgeWarning && <p className="mt-4 rounded-2xl bg-amber-50 p-3 text-xs leading-5 text-amber-700">서버 음성을 먼저 재생합니다. 실패하면 기기 음성으로 자동 전환합니다.</p>}
           </div>
           <p className="text-sm text-slate-400">학습모드는 뜻과 예문 해석을 볼 수 있습니다</p>
         </section>
@@ -165,7 +206,7 @@ export default function WordCard({ word, flipped, onFlip }) {
                 </div>
                 {word.lang === 'ja' && word.exampleReading && <p className="text-sm text-white/80">발음: {word.exampleReading}</p>}
                 {word.exampleMeaning && <p className="text-sm text-white/90">뜻: {word.exampleMeaning}</p>}
-                {androidEdgeWarning && <p className="rounded-xl bg-white/15 p-3 text-xs text-white/80">Android Edge에서 소리가 안 나면 Chrome 사용을 권장합니다.</p>}
+                {androidEdgeWarning && <p className="rounded-xl bg-white/15 p-3 text-xs text-white/80">서버 음성이 실패하면 기기 음성으로 자동 전환합니다.</p>}
               </div>
             )}
           </div>
