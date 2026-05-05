@@ -13,6 +13,8 @@ const emptyProgress = {
   deck: [],
   deckCursor: 0,
   results: {},
+  wordStats: {},
+  studyFilter: 'all',
   correct: 0,
   wrong: 0,
   examCorrect: 0,
@@ -34,7 +36,7 @@ const emptyAuthForm = {
 function loadProgress() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    return { ...emptyProgress, ...saved, results: saved?.results ?? {}, deck: saved?.deck ?? [] };
+    return { ...emptyProgress, ...saved, results: saved?.results ?? {}, wordStats: saved?.wordStats ?? {}, deck: saved?.deck ?? [] };
   } catch {
     return emptyProgress;
   }
@@ -134,6 +136,63 @@ function isAnswerMatch(input, candidate) {
 function judgeAnswer(input, word) {
   if (!input || !word) return false;
   return answerCandidates(word).some((candidate) => isAnswerMatch(input, candidate));
+}
+
+
+function initialWordStats() {
+  return { seen: 0, correct: 0, wrong: 0, streak: 0, lastResult: null, lastAnswer: '', lastAiReason: '', updatedAt: null };
+}
+
+function nextWordStats(current, isCorrect, answer = '', aiGrade = null) {
+  const prev = { ...initialWordStats(), ...(current ?? {}) };
+  return {
+    ...prev,
+    seen: prev.seen + 1,
+    correct: prev.correct + (isCorrect ? 1 : 0),
+    wrong: prev.wrong + (isCorrect ? 0 : 1),
+    streak: isCorrect ? Math.max(0, prev.streak) + 1 : Math.min(0, prev.streak) - 1,
+    lastResult: isCorrect ? 'correct' : 'wrong',
+    lastAnswer: String(answer ?? '').slice(0, 80),
+    lastAiReason: aiGrade?.reason || aiGrade?.explanation || '',
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+function getWordStatus(word, statsMap = {}) {
+  const stats = { ...initialWordStats(), ...(statsMap[word?.id] ?? {}) };
+  if (!word?.id || stats.seen === 0) return 'new';
+  if (stats.wrong >= 2 || stats.streak <= -2) return 'frequentWrong';
+  if (stats.lastResult === 'wrong' || stats.wrong > 0) return 'review';
+  if (stats.correct >= 3 || stats.streak >= 3) return 'mastered';
+  return 'learning';
+}
+
+function statusLabel(status) {
+  const labels = {
+    all: '전체 상태',
+    reviewAll: '오답 전체',
+    new: '처음 봄',
+    learning: '학습 중',
+    review: '오답 복습',
+    frequentWrong: '자주 틀림',
+    mastered: '익숙함',
+  };
+  return labels[status] || labels.all;
+}
+
+function aiReasonText(feedback) {
+  const grade = feedback?.aiGrade;
+  if (!grade) {
+    if (feedback?.source === 'local-rule') return '기본 정답 목록과 일치해서 정답 처리했습니다.';
+    if (feedback?.source === 'ai-local-cache') return '이전에 AI가 정답으로 인정한 답안이라 다시 인정했습니다.';
+    return '';
+  }
+  if (grade.reason || grade.explanation) return grade.reason || grade.explanation;
+  if (grade.verdict === 'correct') return '뜻이 정답과 충분히 같아서 정답으로 인정했습니다.';
+  if (grade.verdict === 'partial') return '의미는 일부 가깝지만 정답으로 인정하기에는 부족합니다.';
+  if (grade.verdict === 'wrong') return '입력한 뜻이 정답 의미와 다르다고 판단했습니다.';
+  if (grade.error) return 'AI 확인에 실패해서 기본 채점 결과를 사용했습니다.';
+  return 'AI가 추가로 의미를 확인했습니다.';
 }
 
 function aiCacheKey(wordId, answer) {
@@ -305,10 +364,17 @@ export default function App() {
     else localStorage.removeItem(AUTH_KEY);
   }, [auth]);
 
-  const filteredWords = useMemo(() => {
+  const languageWords = useMemo(() => {
     if (progress.filter === 'all') return words;
     return words.filter((word) => word.lang === progress.filter);
   }, [words, progress.filter]);
+
+  const filteredWords = useMemo(() => {
+    const studyFilter = progress.studyFilter ?? 'all';
+    if (studyFilter === 'all') return languageWords;
+    if (studyFilter === 'reviewAll') return languageWords.filter((word) => ['review', 'frequentWrong'].includes(getWordStatus(word, progress.wordStats)));
+    return languageWords.filter((word) => getWordStatus(word, progress.wordStats) === studyFilter);
+  }, [languageWords, progress.studyFilter, progress.wordStats]);
 
   const wordById = useMemo(() => new Map(words.map((word) => [word.id, word])), [words]);
 
@@ -327,6 +393,13 @@ export default function App() {
   const examLimit = [25, 50, 100].includes(Number(progress.examLimit)) ? Number(progress.examLimit) : 25;
   const examCompleted = isExamMode && examTotal >= examLimit;
   const isAdmin = auth?.user?.role === 'admin';
+  const statusCounts = useMemo(() => {
+    const base = { all: languageWords.length, reviewAll: 0, new: 0, learning: 0, review: 0, frequentWrong: 0, mastered: 0 };
+    languageWords.forEach((word) => { base[getWordStatus(word, progress.wordStats)] += 1; });
+    base.reviewAll = base.review + base.frequentWrong;
+    return base;
+  }, [languageWords, progress.wordStats]);
+  const reviewCount = statusCounts.reviewAll;
 
   async function refreshLeaderboard(language = progress.filter) {
     if (!isLoggedIn) {
@@ -359,8 +432,31 @@ export default function App() {
 
   function rebuildDeck(overrides = {}) {
     const targetFilter = overrides.filter ?? progress.filter;
-    const targetWords = targetFilter === 'all' ? words : words.filter((word) => word.lang === targetFilter);
+    const targetStudyFilter = overrides.studyFilter ?? progress.studyFilter ?? 'all';
+    const byLanguage = targetFilter === 'all' ? words : words.filter((word) => word.lang === targetFilter);
+    const targetWords = targetStudyFilter === 'all'
+      ? byLanguage
+      : targetStudyFilter === 'reviewAll'
+        ? byLanguage.filter((word) => ['review', 'frequentWrong'].includes(getWordStatus(word, progress.wordStats)))
+        : byLanguage.filter((word) => getWordStatus(word, progress.wordStats) === targetStudyFilter);
     return makeDeck(targetWords);
+  }
+
+  function changeStudyFilter(studyFilter) {
+    if (studyFilter === (progress.studyFilter ?? 'all')) return;
+    setFlipped(false);
+    setExamAnswer('');
+    setExamFeedback(null);
+    setProgress((prev) => ({ ...prev, studyFilter, deck: rebuildDeck({ studyFilter }), deckCursor: 0, updatedAt: new Date().toISOString() }));
+  }
+
+  function startWrongReview() {
+    const target = 'reviewAll';
+    setActiveView('exam');
+    setFlipped(false);
+    setExamAnswer('');
+    setExamFeedback(null);
+    setProgress((prev) => ({ ...prev, mode: 'exam', studyFilter: target, deck: rebuildDeck({ studyFilter: target }), deckCursor: 0, examCorrect: 0, examWrong: 0, results: {}, updatedAt: new Date().toISOString() }));
   }
 
   function changeFilter(filter) {
@@ -428,6 +524,7 @@ export default function App() {
     setProgress((prev) => ({
       ...prev,
       results: nextResults,
+      wordStats: { ...prev.wordStats, [currentWord.id]: nextWordStats(prev.wordStats?.[currentWord.id], result === 'correct') },
       correct: Math.max(0, prev.correct + deltaCorrect),
       wrong: Math.max(0, prev.wrong + deltaWrong),
       updatedAt: new Date().toISOString(),
@@ -471,6 +568,7 @@ export default function App() {
     setProgress((prev) => ({
       ...prev,
       results: nextResults,
+      wordStats: { ...prev.wordStats, [currentWord.id]: nextWordStats(prev.wordStats?.[currentWord.id], correct, examAnswer, aiGrade) },
       correct: Math.max(0, prev.correct + deltaCorrect),
       wrong: Math.max(0, prev.wrong + deltaWrong),
       examCorrect: prev.examCorrect + (correct ? 1 : 0),
@@ -483,6 +581,7 @@ export default function App() {
       candidates: answerCandidates(currentWord),
       aiGrade,
       source: localCorrect ? 'local-rule' : correct && !aiGrade ? 'ai-local-cache' : aiGrade?.source,
+      reason: aiReasonText({ aiGrade, source: localCorrect ? 'local-rule' : correct && !aiGrade ? 'ai-local-cache' : aiGrade?.source }),
     });
   }
 
@@ -963,10 +1062,26 @@ export default function App() {
                   ))}
                 </div>
 
+                <div className="rounded-3xl border border-slate-200 bg-white/80 p-4 shadow-sm">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-sm font-black text-slate-700">학습 상태 필터</p>
+                    <button type="button" onClick={startWrongReview} disabled={reviewCount === 0} className="rounded-full bg-rose-500 px-4 py-2 text-sm font-black text-white transition hover:bg-rose-600 disabled:cursor-not-allowed disabled:opacity-40">오답만 다시 풀기 {reviewCount > 0 ? `(${reviewCount})` : ''}</button>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {[['all', '전체 상태'], ['reviewAll', '오답 전체'], ['new', '처음 봄'], ['learning', '학습 중'], ['review', '오답 복습'], ['frequentWrong', '자주 틀림'], ['mastered', '익숙함']].map(([value, label]) => (
+                      <button key={value} type="button" onClick={() => changeStudyFilter(value)} className={`rounded-full px-4 py-2 text-xs font-bold transition ${(progress.studyFilter ?? 'all') === value ? 'bg-slate-950 text-white shadow-lg' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>{label} <span className="opacity-70">{statusCounts[value] ?? 0}</span></button>
+                    ))}
+                  </div>
+                  <p className="mt-2 text-xs text-slate-500">정답/오답 기록에 따라 처음 봄, 학습 중, 오답 복습, 자주 틀림, 익숙함으로 자동 분류됩니다.</p>
+                </div>
+
                 {loading && <div className="rounded-3xl bg-white p-8 text-center shadow-sm">단어 데이터를 불러오는 중입니다...</div>}
                 {error && <div className="rounded-3xl bg-rose-50 p-8 text-center font-semibold text-rose-700">{error}</div>}
+                {!loading && !error && filteredWords.length === 0 && (
+                  <div className="rounded-3xl bg-white p-8 text-center text-sm font-semibold text-slate-500">{statusLabel(progress.studyFilter ?? 'all')} 조건에 맞는 단어가 없습니다. 다른 필터를 선택해 주세요.</div>
+                )}
 
-                {!loading && !error && !isExamMode && (
+                {!loading && !error && filteredWords.length > 0 && !isExamMode && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between rounded-2xl border border-indigo-100 bg-white/85 px-4 py-3 text-sm font-black text-slate-700 shadow-sm sm:px-5">
                       <span>현재 단어</span>
@@ -976,7 +1091,7 @@ export default function App() {
                   </div>
                 )}
 
-                {!loading && !error && isExamMode && (
+                {!loading && !error && filteredWords.length > 0 && isExamMode && (
                   <section className="rounded-[2rem] border border-violet-100 bg-white p-6 shadow-xl shadow-violet-100/60 sm:p-8">
                     <div className="mb-6 flex items-center justify-between">
                       <span className="rounded-full bg-violet-50 px-3 py-1 text-sm font-semibold text-violet-600">시험모드 · {examLimit}문제</span>
@@ -1004,6 +1119,7 @@ export default function App() {
                           <div className={`mt-6 rounded-2xl p-5 ${examFeedback.correct ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}`}>
                             <p className="text-lg font-black">{examFeedback.correct ? '정답입니다!' : '오답입니다.'}</p>
                             <p className="mt-2 text-sm">정답: {examFeedback.answer}</p>
+                            {examFeedback.reason && <p className="mt-2 rounded-xl bg-white/60 p-3 text-sm font-semibold leading-6">이유: {examFeedback.reason}</p>}
                             {examFeedback.aiGrade && (
                               <p className="mt-2 text-xs opacity-80">
                                 {examFeedback.aiGrade.verdict === 'correct'
@@ -1084,6 +1200,18 @@ export default function App() {
               </section>
 
               <ProgressBar current={answeredCount} total={filteredWords.length} correct={progress.correct} wrong={progress.wrong} examCorrect={progress.examCorrect} examWrong={progress.examWrong} />
+
+              <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm">
+                <h2 className="text-lg font-black">단어 상태 요약</h2>
+                <div className="mt-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
+                  {['new', 'learning', 'review', 'frequentWrong', 'mastered'].map((status) => (
+                    <button key={status} type="button" onClick={() => { setActiveView('learn'); changeStudyFilter(status); }} className="rounded-2xl bg-slate-50 px-4 py-3 text-left font-bold text-slate-700 transition hover:bg-indigo-50 hover:text-indigo-700">
+                      <span className="block text-xs text-slate-400">{statusLabel(status)}</span>
+                      <span className="text-lg font-black">{statusCounts[status]}</span>
+                    </button>
+                  ))}
+                </div>
+              </section>
 
               <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm">
                 <h2 className="text-lg font-black">비밀번호 변경</h2>
