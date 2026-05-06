@@ -52,11 +52,11 @@ async function playServerTts(text, lang, onStatus) {
   audio.preload = 'auto';
   await new Promise((resolve, reject) => {
     const cleanup = () => {
-      audio.oncanplaythrough = null;
+      audio.oncanplay = null;
       audio.onerror = null;
       audio.onended = null;
     };
-    audio.oncanplaythrough = () => {
+    audio.oncanplay = () => {
       audio.play()
         .then(() => {
           onStatus?.('재생 중...');
@@ -116,6 +116,10 @@ function speakWithBrowser(text, lang, onStatus) {
 
 async function speakText(text, lang, onStatus) {
   if (!text) return;
+  if (getSpeechSupport()) {
+    speakWithBrowser(text, lang, onStatus);
+    return;
+  }
   try {
     await playServerTts(text, lang, onStatus);
   } catch {
@@ -185,7 +189,7 @@ export default function WordCard({ word, flipped, onFlip }) {
               <SpeakButton text={word.word} lang={speechLang} label="단어 듣기" />
             </div>
             {word.reading && <p className="mt-4 text-xl text-slate-500">{word.reading}</p>}
-            {androidEdgeWarning && <p className="mt-4 rounded-2xl bg-amber-50 p-3 text-xs leading-5 text-amber-700">서버 음성을 먼저 재생합니다. 실패하면 기기 음성으로 자동 전환합니다.</p>}
+            {androidEdgeWarning && <p className="mt-4 rounded-2xl bg-amber-50 p-3 text-xs leading-5 text-amber-700">기기 음성을 먼저 재생합니다. 지원되지 않으면 서버 음성으로 전환합니다.</p>}
           </div>
           <p className="text-sm text-slate-400">학습모드는 뜻과 예문 해석을 볼 수 있습니다</p>
         </section>
@@ -206,7 +210,7 @@ export default function WordCard({ word, flipped, onFlip }) {
                 </div>
                 {word.lang === 'ja' && word.exampleReading && <p className="text-sm text-white/80">발음: {word.exampleReading}</p>}
                 {word.exampleMeaning && <p className="text-sm text-white/90">뜻: {word.exampleMeaning}</p>}
-                {androidEdgeWarning && <p className="rounded-xl bg-white/15 p-3 text-xs text-white/80">서버 음성이 실패하면 기기 음성으로 자동 전환합니다.</p>}
+                {androidEdgeWarning && <p className="rounded-xl bg-white/15 p-3 text-xs text-white/80">기기 음성이 지원되지 않으면 서버 음성으로 전환합니다.</p>}
               </div>
             )}
           </div>
