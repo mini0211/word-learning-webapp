@@ -678,6 +678,1215 @@
     "difficulty": 2
   },
   {
+    "id": "en-051",
+    "lang": "en",
+    "word": "water",
+    "meaning": "물",
+    "example": "Please drink some water.",
+    "exampleMeaning": "물을 좀 마셔 주세요.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-052",
+    "lang": "en",
+    "word": "milk",
+    "meaning": "우유",
+    "example": "I drink milk with breakfast.",
+    "exampleMeaning": "나는 아침 식사와 함께 우유를 마십니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-053",
+    "lang": "en",
+    "word": "bread",
+    "meaning": "빵",
+    "example": "This bread is soft.",
+    "exampleMeaning": "이 빵은 부드럽습니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-054",
+    "lang": "en",
+    "word": "rice",
+    "meaning": "밥, 쌀",
+    "example": "We eat rice every day.",
+    "exampleMeaning": "우리는 매일 밥을 먹습니다.",
+    "acceptedAnswers": [
+      "밥",
+      "쌀",
+      "쌀밥"
+    ],
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-055",
+    "lang": "en",
+    "word": "egg",
+    "meaning": "달걀",
+    "example": "She boiled an egg.",
+    "exampleMeaning": "그녀는 달걀을 삶았습니다.",
+    "acceptedAnswers": [
+      "계란"
+    ],
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-056",
+    "lang": "en",
+    "word": "fish",
+    "meaning": "생선, 물고기",
+    "example": "The fish is fresh.",
+    "exampleMeaning": "그 생선은 신선합니다.",
+    "acceptedAnswers": [
+      "생선",
+      "물고기"
+    ],
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-057",
+    "lang": "en",
+    "word": "meat",
+    "meaning": "고기",
+    "example": "He likes meat and vegetables.",
+    "exampleMeaning": "그는 고기와 채소를 좋아합니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-058",
+    "lang": "en",
+    "word": "soup",
+    "meaning": "수프, 국",
+    "example": "The soup is hot.",
+    "exampleMeaning": "그 수프는 뜨겁습니다.",
+    "acceptedAnswers": [
+      "수프",
+      "국",
+      "국물"
+    ],
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-059",
+    "lang": "en",
+    "word": "salt",
+    "meaning": "소금",
+    "example": "Add a little salt.",
+    "exampleMeaning": "소금을 조금 넣으세요.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-060",
+    "lang": "en",
+    "word": "sugar",
+    "meaning": "설탕",
+    "example": "This tea needs sugar.",
+    "exampleMeaning": "이 차에는 설탕이 필요합니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-061",
+    "lang": "en",
+    "word": "cup",
+    "meaning": "컵",
+    "example": "The cup is on the table.",
+    "exampleMeaning": "컵이 탁자 위에 있습니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-062",
+    "lang": "en",
+    "word": "plate",
+    "meaning": "접시",
+    "example": "Put the food on the plate.",
+    "exampleMeaning": "음식을 접시에 놓으세요.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-063",
+    "lang": "en",
+    "word": "spoon",
+    "meaning": "숟가락",
+    "example": "I need a spoon.",
+    "exampleMeaning": "나는 숟가락이 필요합니다.",
+    "acceptedAnswers": [
+      "수저"
+    ],
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-064",
+    "lang": "en",
+    "word": "fork",
+    "meaning": "포크",
+    "example": "She uses a fork.",
+    "exampleMeaning": "그녀는 포크를 사용합니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-065",
+    "lang": "en",
+    "word": "knife",
+    "meaning": "칼",
+    "example": "Be careful with the knife.",
+    "exampleMeaning": "그 칼을 조심하세요.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-066",
+    "lang": "en",
+    "word": "chair",
+    "meaning": "의자",
+    "example": "Please sit on this chair.",
+    "exampleMeaning": "이 의자에 앉아 주세요.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-067",
+    "lang": "en",
+    "word": "desk",
+    "meaning": "책상",
+    "example": "My book is on the desk.",
+    "exampleMeaning": "내 책은 책상 위에 있습니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-068",
+    "lang": "en",
+    "word": "bed",
+    "meaning": "침대",
+    "example": "The bed is clean.",
+    "exampleMeaning": "그 침대는 깨끗합니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-069",
+    "lang": "en",
+    "word": "room",
+    "meaning": "방",
+    "example": "This room is small.",
+    "exampleMeaning": "이 방은 작습니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-070",
+    "lang": "en",
+    "word": "door",
+    "meaning": "문",
+    "example": "Close the door, please.",
+    "exampleMeaning": "문을 닫아 주세요.",
+    "acceptedAnswers": [
+      "문짝"
+    ],
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-071",
+    "lang": "en",
+    "word": "window",
+    "meaning": "창문",
+    "example": "Open the window.",
+    "exampleMeaning": "창문을 여세요.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-072",
+    "lang": "en",
+    "word": "floor",
+    "meaning": "바닥",
+    "example": "The floor is wet.",
+    "exampleMeaning": "바닥이 젖었습니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-073",
+    "lang": "en",
+    "word": "wall",
+    "meaning": "벽",
+    "example": "There is a picture on the wall.",
+    "exampleMeaning": "벽에 그림이 있습니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-074",
+    "lang": "en",
+    "word": "light",
+    "meaning": "빛, 전등",
+    "example": "Turn on the light.",
+    "exampleMeaning": "전등을 켜세요.",
+    "acceptedAnswers": [
+      "빛",
+      "전등"
+    ],
+    "level": "intermediate",
+    "difficulty": 2
+  },
+  {
+    "id": "en-075",
+    "lang": "en",
+    "word": "clock",
+    "meaning": "시계",
+    "example": "The clock is slow.",
+    "exampleMeaning": "그 시계는 느립니다.",
+    "level": "intermediate",
+    "difficulty": 2
+  },
+  {
+    "id": "en-076",
+    "lang": "en",
+    "word": "phone",
+    "meaning": "전화기, 휴대폰",
+    "example": "My phone is in my bag.",
+    "exampleMeaning": "내 휴대폰은 가방 안에 있습니다.",
+    "acceptedAnswers": [
+      "전화기",
+      "휴대폰",
+      "전화",
+      "휴대전화",
+      "핸드폰"
+    ],
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-077",
+    "lang": "en",
+    "word": "bag",
+    "meaning": "가방",
+    "example": "This bag is heavy.",
+    "exampleMeaning": "이 가방은 무겁습니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-078",
+    "lang": "en",
+    "word": "key",
+    "meaning": "열쇠",
+    "example": "I lost my key.",
+    "exampleMeaning": "나는 열쇠를 잃어버렸습니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-079",
+    "lang": "en",
+    "word": "money",
+    "meaning": "돈",
+    "example": "I need some money.",
+    "exampleMeaning": "나는 돈이 조금 필요합니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-080",
+    "lang": "en",
+    "word": "store",
+    "meaning": "가게",
+    "example": "The store opens at nine.",
+    "exampleMeaning": "그 가게는 아홉 시에 엽니다.",
+    "acceptedAnswers": [
+      "상점"
+    ],
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-081",
+    "lang": "en",
+    "word": "library",
+    "meaning": "도서관",
+    "example": "I study at the library.",
+    "exampleMeaning": "나는 도서관에서 공부합니다.",
+    "level": "intermediate",
+    "difficulty": 2
+  },
+  {
+    "id": "en-082",
+    "lang": "en",
+    "word": "street",
+    "meaning": "거리",
+    "example": "The street is busy.",
+    "exampleMeaning": "그 거리는 붐빕니다.",
+    "acceptedAnswers": [
+      "길"
+    ],
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-083",
+    "lang": "en",
+    "word": "park",
+    "meaning": "공원",
+    "example": "Children play in the park.",
+    "exampleMeaning": "아이들이 공원에서 놉니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-084",
+    "lang": "en",
+    "word": "school",
+    "meaning": "학교",
+    "example": "My school is near my house.",
+    "exampleMeaning": "내 학교는 우리 집 근처에 있습니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-085",
+    "lang": "en",
+    "word": "hospital",
+    "meaning": "병원",
+    "example": "The hospital is large.",
+    "exampleMeaning": "그 병원은 큽니다.",
+    "level": "intermediate",
+    "difficulty": 2
+  },
+  {
+    "id": "en-086",
+    "lang": "en",
+    "word": "station",
+    "meaning": "역",
+    "example": "Meet me at the station.",
+    "exampleMeaning": "역에서 나를 만나세요.",
+    "acceptedAnswers": [
+      "정거장"
+    ],
+    "level": "intermediate",
+    "difficulty": 2
+  },
+  {
+    "id": "en-087",
+    "lang": "en",
+    "word": "bus",
+    "meaning": "버스",
+    "example": "The bus is late.",
+    "exampleMeaning": "버스가 늦습니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-088",
+    "lang": "en",
+    "word": "train",
+    "meaning": "기차",
+    "example": "We take the train.",
+    "exampleMeaning": "우리는 기차를 탑니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-089",
+    "lang": "en",
+    "word": "bicycle",
+    "meaning": "자전거",
+    "example": "He rides a bicycle.",
+    "exampleMeaning": "그는 자전거를 탑니다.",
+    "level": "intermediate",
+    "difficulty": 2
+  },
+  {
+    "id": "en-090",
+    "lang": "en",
+    "word": "walk",
+    "meaning": "걷다",
+    "example": "I walk to school.",
+    "exampleMeaning": "나는 학교까지 걸어갑니다.",
+    "acceptedAnswers": [
+      "걷기",
+      "걸어가다"
+    ],
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-091",
+    "lang": "en",
+    "word": "run",
+    "meaning": "달리다",
+    "example": "They run every morning.",
+    "exampleMeaning": "그들은 매일 아침 달립니다.",
+    "acceptedAnswers": [
+      "뛰다",
+      "달려가다"
+    ],
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-092",
+    "lang": "en",
+    "word": "sleep",
+    "meaning": "자다",
+    "example": "The baby sleeps well.",
+    "exampleMeaning": "아기가 잘 잡니다.",
+    "acceptedAnswers": [
+      "잠자다"
+    ],
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-093",
+    "lang": "en",
+    "word": "wake",
+    "meaning": "깨다, 깨우다",
+    "example": "I wake up at seven.",
+    "exampleMeaning": "나는 일곱 시에 일어납니다.",
+    "acceptedAnswers": [
+      "깨다",
+      "깨우다",
+      "일어나다",
+      "깨우기"
+    ],
+    "level": "intermediate",
+    "difficulty": 2
+  },
+  {
+    "id": "en-094",
+    "lang": "en",
+    "word": "wash",
+    "meaning": "씻다",
+    "example": "Wash your hands.",
+    "exampleMeaning": "손을 씻으세요.",
+    "acceptedAnswers": [
+      "씻기",
+      "세척하다"
+    ],
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-095",
+    "lang": "en",
+    "word": "clean",
+    "meaning": "청소하다, 깨끗한",
+    "example": "I clean my room.",
+    "exampleMeaning": "나는 내 방을 청소합니다.",
+    "acceptedAnswers": [
+      "청소하다",
+      "청소",
+      "깨끗한",
+      "깨끗",
+      "깨끗하다"
+    ],
+    "level": "intermediate",
+    "difficulty": 2
+  },
+  {
+    "id": "en-096",
+    "lang": "en",
+    "word": "cook",
+    "meaning": "요리하다",
+    "example": "My father can cook.",
+    "exampleMeaning": "우리 아버지는 요리를 할 수 있습니다.",
+    "acceptedAnswers": [
+      "요리"
+    ],
+    "level": "intermediate",
+    "difficulty": 2
+  },
+  {
+    "id": "en-097",
+    "lang": "en",
+    "word": "buy",
+    "meaning": "사다",
+    "example": "I want to buy a book.",
+    "exampleMeaning": "나는 책을 사고 싶습니다.",
+    "acceptedAnswers": [
+      "구매하다"
+    ],
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-098",
+    "lang": "en",
+    "word": "sell",
+    "meaning": "팔다",
+    "example": "They sell fruit here.",
+    "exampleMeaning": "그들은 여기에서 과일을 팝니다.",
+    "level": "intermediate",
+    "difficulty": 2
+  },
+  {
+    "id": "en-099",
+    "lang": "en",
+    "word": "help",
+    "meaning": "돕다",
+    "example": "Can you help me?",
+    "exampleMeaning": "나를 도와줄 수 있나요?",
+    "acceptedAnswers": [
+      "도와주다",
+      "도움"
+    ],
+    "level": "intermediate",
+    "difficulty": 2
+  },
+  {
+    "id": "en-100",
+    "lang": "en",
+    "word": "wait",
+    "meaning": "기다리다",
+    "example": "Please wait here.",
+    "exampleMeaning": "여기서 기다려 주세요.",
+    "level": "intermediate",
+    "difficulty": 2
+  },
+  {
+    "id": "en-101",
+    "lang": "en",
+    "word": "family",
+    "meaning": "가족",
+    "example": "My family eats dinner together.",
+    "exampleMeaning": "우리 가족은 함께 저녁을 먹습니다.",
+    "level": "beginner",
+    "difficulty": 1,
+    "acceptedAnswers": [
+      "가족들"
+    ]
+  },
+  {
+    "id": "en-102",
+    "lang": "en",
+    "word": "child",
+    "meaning": "아이, 어린이",
+    "example": "The child reads a book.",
+    "exampleMeaning": "그 아이는 책을 읽습니다.",
+    "level": "beginner",
+    "difficulty": 1,
+    "acceptedAnswers": [
+      "아이",
+      "어린이"
+    ]
+  },
+  {
+    "id": "en-103",
+    "lang": "en",
+    "word": "food",
+    "meaning": "음식",
+    "example": "This food is warm.",
+    "exampleMeaning": "이 음식은 따뜻합니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-104",
+    "lang": "en",
+    "word": "morning",
+    "meaning": "아침",
+    "example": "I study in the morning.",
+    "exampleMeaning": "나는 아침에 공부합니다.",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "en-105",
+    "lang": "en",
+    "word": "happy",
+    "meaning": "행복한, 기쁜",
+    "example": "I am happy today.",
+    "exampleMeaning": "나는 오늘 행복합니다.",
+    "level": "beginner",
+    "difficulty": 1,
+    "acceptedAnswers": [
+      "행복하다",
+      "기쁜",
+      "기쁘다"
+    ]
+  },
+  {
+    "id": "en-106",
+    "lang": "en",
+    "word": "neighbor",
+    "meaning": "이웃",
+    "example": "My neighbor is very kind.",
+    "exampleMeaning": "내 이웃은 매우 친절합니다.",
+    "level": "intermediate",
+    "difficulty": 2
+  },
+  {
+    "id": "en-107",
+    "lang": "en",
+    "word": "schedule",
+    "meaning": "일정",
+    "example": "Check your schedule before the meeting.",
+    "exampleMeaning": "회의 전에 일정을 확인하세요.",
+    "level": "intermediate",
+    "difficulty": 2,
+    "acceptedAnswers": [
+      "스케줄"
+    ]
+  },
+  {
+    "id": "en-108",
+    "lang": "en",
+    "word": "explain",
+    "meaning": "설명하다",
+    "example": "Please explain the rule again.",
+    "exampleMeaning": "규칙을 다시 설명해 주세요.",
+    "level": "intermediate",
+    "difficulty": 2,
+    "acceptedAnswers": [
+      "설명"
+    ]
+  },
+  {
+    "id": "en-109",
+    "lang": "en",
+    "word": "collect",
+    "meaning": "모으다, 수집하다",
+    "example": "She collects useful examples.",
+    "exampleMeaning": "그녀는 유용한 예시를 모읍니다.",
+    "level": "intermediate",
+    "difficulty": 2,
+    "acceptedAnswers": [
+      "수집하다",
+      "모으다"
+    ]
+  },
+  {
+    "id": "en-110",
+    "lang": "en",
+    "word": "protect",
+    "meaning": "보호하다",
+    "example": "We protect personal information.",
+    "exampleMeaning": "우리는 개인정보를 보호합니다.",
+    "level": "intermediate",
+    "difficulty": 2,
+    "acceptedAnswers": [
+      "보호"
+    ]
+  },
+  {
+    "id": "en-111",
+    "lang": "en",
+    "word": "invite",
+    "meaning": "초대하다",
+    "example": "I will invite my friend.",
+    "exampleMeaning": "나는 친구를 초대할 것입니다.",
+    "level": "intermediate",
+    "difficulty": 2,
+    "acceptedAnswers": [
+      "초대"
+    ]
+  },
+  {
+    "id": "en-112",
+    "lang": "en",
+    "word": "arrive",
+    "meaning": "도착하다",
+    "example": "The train will arrive soon.",
+    "exampleMeaning": "기차가 곧 도착할 것입니다.",
+    "level": "intermediate",
+    "difficulty": 2,
+    "acceptedAnswers": [
+      "도착"
+    ]
+  },
+  {
+    "id": "en-113",
+    "lang": "en",
+    "word": "exercise",
+    "meaning": "운동하다, 운동",
+    "example": "I exercise after work.",
+    "exampleMeaning": "나는 일 후에 운동합니다.",
+    "level": "intermediate",
+    "difficulty": 2,
+    "acceptedAnswers": [
+      "운동하다",
+      "운동"
+    ]
+  },
+  {
+    "id": "en-114",
+    "lang": "en",
+    "word": "healthy",
+    "meaning": "건강한",
+    "example": "Healthy habits are important.",
+    "exampleMeaning": "건강한 습관은 중요합니다.",
+    "level": "intermediate",
+    "difficulty": 2,
+    "acceptedAnswers": [
+      "건강하다"
+    ]
+  },
+  {
+    "id": "en-115",
+    "lang": "en",
+    "word": "promise",
+    "meaning": "약속하다, 약속",
+    "example": "I promise to practice every day.",
+    "exampleMeaning": "나는 매일 연습하겠다고 약속합니다.",
+    "level": "intermediate",
+    "difficulty": 2,
+    "acceptedAnswers": [
+      "약속",
+      "약속하다"
+    ]
+  },
+  {
+    "id": "en-116",
+    "lang": "en",
+    "word": "analyze",
+    "meaning": "분석하다",
+    "example": "We analyze the test result.",
+    "exampleMeaning": "우리는 시험 결과를 분석합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "분석"
+    ]
+  },
+  {
+    "id": "en-117",
+    "lang": "en",
+    "word": "evaluate",
+    "meaning": "평가하다",
+    "example": "The teacher evaluates each answer.",
+    "exampleMeaning": "선생님은 각 답을 평가합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "평가"
+    ]
+  },
+  {
+    "id": "en-118",
+    "lang": "en",
+    "word": "evidence",
+    "meaning": "증거",
+    "example": "The report needs clear evidence.",
+    "exampleMeaning": "그 보고서에는 명확한 증거가 필요합니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "en-119",
+    "lang": "en",
+    "word": "strategy",
+    "meaning": "전략",
+    "example": "A good strategy saves time.",
+    "exampleMeaning": "좋은 전략은 시간을 절약합니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "en-120",
+    "lang": "en",
+    "word": "efficient",
+    "meaning": "효율적인",
+    "example": "This method is efficient.",
+    "exampleMeaning": "이 방법은 효율적입니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "효율적"
+    ]
+  },
+  {
+    "id": "en-121",
+    "lang": "en",
+    "word": "accurate",
+    "meaning": "정확한",
+    "example": "Give an accurate answer.",
+    "exampleMeaning": "정확한 답을 주세요.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "정확하다"
+    ]
+  },
+  {
+    "id": "en-122",
+    "lang": "en",
+    "word": "creative",
+    "meaning": "창의적인",
+    "example": "Creative ideas can solve problems.",
+    "exampleMeaning": "창의적인 아이디어는 문제를 해결할 수 있습니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "창의적"
+    ]
+  },
+  {
+    "id": "en-123",
+    "lang": "en",
+    "word": "confident",
+    "meaning": "자신감 있는",
+    "example": "She sounds confident during the presentation.",
+    "exampleMeaning": "그녀는 발표 중 자신감 있게 들립니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "자신있는",
+      "자신감 있다"
+    ]
+  },
+  {
+    "id": "en-124",
+    "lang": "en",
+    "word": "responsibility",
+    "meaning": "책임",
+    "example": "Responsibility grows with experience.",
+    "exampleMeaning": "책임은 경험과 함께 커집니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "en-125",
+    "lang": "en",
+    "word": "opportunity",
+    "meaning": "기회",
+    "example": "This is a good opportunity to learn.",
+    "exampleMeaning": "이것은 배울 좋은 기회입니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "en-126",
+    "lang": "en",
+    "word": "environment",
+    "meaning": "환경",
+    "example": "We should protect the environment.",
+    "exampleMeaning": "우리는 환경을 보호해야 합니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "en-127",
+    "lang": "en",
+    "word": "technology",
+    "meaning": "기술",
+    "example": "Technology changes our daily life.",
+    "exampleMeaning": "기술은 우리의 일상을 바꿉니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "en-128",
+    "lang": "en",
+    "word": "culture",
+    "meaning": "문화",
+    "example": "Language and culture are connected.",
+    "exampleMeaning": "언어와 문화는 연결되어 있습니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "en-129",
+    "lang": "en",
+    "word": "society",
+    "meaning": "사회",
+    "example": "Society changes quickly.",
+    "exampleMeaning": "사회는 빠르게 변합니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "en-130",
+    "lang": "en",
+    "word": "economy",
+    "meaning": "경제",
+    "example": "The economy affects many jobs.",
+    "exampleMeaning": "경제는 많은 일자리에 영향을 줍니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "en-131",
+    "lang": "en",
+    "word": "policy",
+    "meaning": "정책",
+    "example": "The new policy starts tomorrow.",
+    "exampleMeaning": "새 정책은 내일부터 시작됩니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "en-132",
+    "lang": "en",
+    "word": "negotiate",
+    "meaning": "협상하다",
+    "example": "They negotiate the price carefully.",
+    "exampleMeaning": "그들은 가격을 신중하게 협상합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "협상"
+    ]
+  },
+  {
+    "id": "en-133",
+    "lang": "en",
+    "word": "persuade",
+    "meaning": "설득하다",
+    "example": "He tried to persuade the team.",
+    "exampleMeaning": "그는 팀을 설득하려고 했습니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "설득"
+    ]
+  },
+  {
+    "id": "en-134",
+    "lang": "en",
+    "word": "maintain",
+    "meaning": "유지하다",
+    "example": "Maintain a steady study habit.",
+    "exampleMeaning": "꾸준한 학습 습관을 유지하세요.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "유지"
+    ]
+  },
+  {
+    "id": "en-135",
+    "lang": "en",
+    "word": "recognize",
+    "meaning": "인식하다, 알아보다",
+    "example": "I recognize this pattern.",
+    "exampleMeaning": "나는 이 패턴을 인식합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "알아보다",
+      "인식"
+    ]
+  },
+  {
+    "id": "en-136",
+    "lang": "en",
+    "word": "influence",
+    "meaning": "영향, 영향을 주다",
+    "example": "Your choice can influence the result.",
+    "exampleMeaning": "당신의 선택은 결과에 영향을 줄 수 있습니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "영향을 주다",
+      "영향"
+    ]
+  },
+  {
+    "id": "en-137",
+    "lang": "en",
+    "word": "solution",
+    "meaning": "해결책",
+    "example": "We found a simple solution.",
+    "exampleMeaning": "우리는 간단한 해결책을 찾았습니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "해법"
+    ]
+  },
+  {
+    "id": "en-138",
+    "lang": "en",
+    "word": "challenge",
+    "meaning": "도전, 어려움",
+    "example": "This challenge will improve your skill.",
+    "exampleMeaning": "이 도전은 당신의 실력을 향상시킬 것입니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "도전",
+      "과제"
+    ]
+  },
+  {
+    "id": "en-139",
+    "lang": "en",
+    "word": "benefit",
+    "meaning": "이점, 혜택",
+    "example": "Daily review has many benefits.",
+    "exampleMeaning": "매일 복습하는 것은 많은 이점이 있습니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "이점",
+      "혜택"
+    ]
+  },
+  {
+    "id": "en-140",
+    "lang": "en",
+    "word": "consequence",
+    "meaning": "결과, 영향",
+    "example": "Every action has a consequence.",
+    "exampleMeaning": "모든 행동에는 결과가 있습니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "결과",
+      "영향"
+    ]
+  },
+  {
+    "id": "en-141",
+    "lang": "en",
+    "word": "requirement",
+    "meaning": "요구 사항, 필요 조건",
+    "example": "Check the requirement before you start.",
+    "exampleMeaning": "시작하기 전에 요구 사항을 확인하세요.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "요구사항",
+      "필요 조건"
+    ]
+  },
+  {
+    "id": "en-142",
+    "lang": "en",
+    "word": "priority",
+    "meaning": "우선순위",
+    "example": "Set your top priority first.",
+    "exampleMeaning": "가장 중요한 우선순위를 먼저 정하세요.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "우선 순위"
+    ]
+  },
+  {
+    "id": "en-143",
+    "lang": "en",
+    "word": "resource",
+    "meaning": "자원, 자료",
+    "example": "Use this resource for review.",
+    "exampleMeaning": "복습을 위해 이 자료를 사용하세요.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "자원",
+      "자료"
+    ]
+  },
+  {
+    "id": "en-144",
+    "lang": "en",
+    "word": "expand",
+    "meaning": "확장하다, 넓히다",
+    "example": "Reading helps expand vocabulary.",
+    "exampleMeaning": "읽기는 어휘를 확장하는 데 도움이 됩니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "넓히다",
+      "확장"
+    ]
+  },
+  {
+    "id": "en-145",
+    "lang": "en",
+    "word": "reduce",
+    "meaning": "줄이다",
+    "example": "We need to reduce mistakes.",
+    "exampleMeaning": "우리는 실수를 줄여야 합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "감소시키다"
+    ]
+  },
+  {
+    "id": "en-146",
+    "lang": "en",
+    "word": "prevent",
+    "meaning": "막다, 예방하다",
+    "example": "Good habits prevent common mistakes.",
+    "exampleMeaning": "좋은 습관은 흔한 실수를 막습니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "예방하다",
+      "막다"
+    ]
+  },
+  {
+    "id": "en-147",
+    "lang": "en",
+    "word": "achieve",
+    "meaning": "달성하다",
+    "example": "You can achieve your goal.",
+    "exampleMeaning": "당신은 목표를 달성할 수 있습니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "달성"
+    ]
+  },
+  {
+    "id": "en-148",
+    "lang": "en",
+    "word": "adapt",
+    "meaning": "적응하다",
+    "example": "Learners adapt to new patterns.",
+    "exampleMeaning": "학습자는 새로운 패턴에 적응합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "적응"
+    ]
+  },
+  {
+    "id": "en-149",
+    "lang": "en",
+    "word": "manage",
+    "meaning": "관리하다",
+    "example": "Manage your time during the exam.",
+    "exampleMeaning": "시험 중 시간을 관리하세요.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "관리"
+    ]
+  },
+  {
+    "id": "en-150",
+    "lang": "en",
+    "word": "assumption",
+    "meaning": "가정, 추정",
+    "example": "Check your assumption before you decide.",
+    "exampleMeaning": "결정하기 전에 당신의 가정을 확인하세요.",
+    "acceptedAnswers": [
+      "가정",
+      "추정"
+    ],
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
     "id": "ja-001",
     "lang": "ja",
     "word": "ありがとう",
@@ -1369,587 +2578,6 @@
     "difficulty": 3
   },
   {
-    "id": "en-051",
-    "lang": "en",
-    "word": "water",
-    "meaning": "물",
-    "example": "Please drink some water.",
-    "exampleMeaning": "물을 좀 마셔 주세요.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-052",
-    "lang": "en",
-    "word": "milk",
-    "meaning": "우유",
-    "example": "I drink milk with breakfast.",
-    "exampleMeaning": "나는 아침 식사와 함께 우유를 마십니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-053",
-    "lang": "en",
-    "word": "bread",
-    "meaning": "빵",
-    "example": "This bread is soft.",
-    "exampleMeaning": "이 빵은 부드럽습니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-054",
-    "lang": "en",
-    "word": "rice",
-    "meaning": "밥, 쌀",
-    "example": "We eat rice every day.",
-    "exampleMeaning": "우리는 매일 밥을 먹습니다.",
-    "acceptedAnswers": [
-      "밥",
-      "쌀",
-      "쌀밥"
-    ],
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-055",
-    "lang": "en",
-    "word": "egg",
-    "meaning": "달걀",
-    "example": "She boiled an egg.",
-    "exampleMeaning": "그녀는 달걀을 삶았습니다.",
-    "acceptedAnswers": [
-      "계란"
-    ],
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-056",
-    "lang": "en",
-    "word": "fish",
-    "meaning": "생선, 물고기",
-    "example": "The fish is fresh.",
-    "exampleMeaning": "그 생선은 신선합니다.",
-    "acceptedAnswers": [
-      "생선",
-      "물고기"
-    ],
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-057",
-    "lang": "en",
-    "word": "meat",
-    "meaning": "고기",
-    "example": "He likes meat and vegetables.",
-    "exampleMeaning": "그는 고기와 채소를 좋아합니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-058",
-    "lang": "en",
-    "word": "soup",
-    "meaning": "수프, 국",
-    "example": "The soup is hot.",
-    "exampleMeaning": "그 수프는 뜨겁습니다.",
-    "acceptedAnswers": [
-      "수프",
-      "국",
-      "국물"
-    ],
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-059",
-    "lang": "en",
-    "word": "salt",
-    "meaning": "소금",
-    "example": "Add a little salt.",
-    "exampleMeaning": "소금을 조금 넣으세요.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-060",
-    "lang": "en",
-    "word": "sugar",
-    "meaning": "설탕",
-    "example": "This tea needs sugar.",
-    "exampleMeaning": "이 차에는 설탕이 필요합니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-061",
-    "lang": "en",
-    "word": "cup",
-    "meaning": "컵",
-    "example": "The cup is on the table.",
-    "exampleMeaning": "컵이 탁자 위에 있습니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-062",
-    "lang": "en",
-    "word": "plate",
-    "meaning": "접시",
-    "example": "Put the food on the plate.",
-    "exampleMeaning": "음식을 접시에 놓으세요.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-063",
-    "lang": "en",
-    "word": "spoon",
-    "meaning": "숟가락",
-    "example": "I need a spoon.",
-    "exampleMeaning": "나는 숟가락이 필요합니다.",
-    "acceptedAnswers": [
-      "수저"
-    ],
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-064",
-    "lang": "en",
-    "word": "fork",
-    "meaning": "포크",
-    "example": "She uses a fork.",
-    "exampleMeaning": "그녀는 포크를 사용합니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-065",
-    "lang": "en",
-    "word": "knife",
-    "meaning": "칼",
-    "example": "Be careful with the knife.",
-    "exampleMeaning": "그 칼을 조심하세요.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-066",
-    "lang": "en",
-    "word": "chair",
-    "meaning": "의자",
-    "example": "Please sit on this chair.",
-    "exampleMeaning": "이 의자에 앉아 주세요.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-067",
-    "lang": "en",
-    "word": "desk",
-    "meaning": "책상",
-    "example": "My book is on the desk.",
-    "exampleMeaning": "내 책은 책상 위에 있습니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-068",
-    "lang": "en",
-    "word": "bed",
-    "meaning": "침대",
-    "example": "The bed is clean.",
-    "exampleMeaning": "그 침대는 깨끗합니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-069",
-    "lang": "en",
-    "word": "room",
-    "meaning": "방",
-    "example": "This room is small.",
-    "exampleMeaning": "이 방은 작습니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-070",
-    "lang": "en",
-    "word": "door",
-    "meaning": "문",
-    "example": "Close the door, please.",
-    "exampleMeaning": "문을 닫아 주세요.",
-    "acceptedAnswers": [
-      "문짝"
-    ],
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-071",
-    "lang": "en",
-    "word": "window",
-    "meaning": "창문",
-    "example": "Open the window.",
-    "exampleMeaning": "창문을 여세요.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-072",
-    "lang": "en",
-    "word": "floor",
-    "meaning": "바닥",
-    "example": "The floor is wet.",
-    "exampleMeaning": "바닥이 젖었습니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-073",
-    "lang": "en",
-    "word": "wall",
-    "meaning": "벽",
-    "example": "There is a picture on the wall.",
-    "exampleMeaning": "벽에 그림이 있습니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-074",
-    "lang": "en",
-    "word": "light",
-    "meaning": "빛, 전등",
-    "example": "Turn on the light.",
-    "exampleMeaning": "전등을 켜세요.",
-    "acceptedAnswers": [
-      "빛",
-      "전등"
-    ],
-    "level": "intermediate",
-    "difficulty": 2
-  },
-  {
-    "id": "en-075",
-    "lang": "en",
-    "word": "clock",
-    "meaning": "시계",
-    "example": "The clock is slow.",
-    "exampleMeaning": "그 시계는 느립니다.",
-    "level": "intermediate",
-    "difficulty": 2
-  },
-  {
-    "id": "en-076",
-    "lang": "en",
-    "word": "phone",
-    "meaning": "전화기, 휴대폰",
-    "example": "My phone is in my bag.",
-    "exampleMeaning": "내 휴대폰은 가방 안에 있습니다.",
-    "acceptedAnswers": [
-      "전화기",
-      "휴대폰",
-      "전화",
-      "휴대전화",
-      "핸드폰"
-    ],
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-077",
-    "lang": "en",
-    "word": "bag",
-    "meaning": "가방",
-    "example": "This bag is heavy.",
-    "exampleMeaning": "이 가방은 무겁습니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-078",
-    "lang": "en",
-    "word": "key",
-    "meaning": "열쇠",
-    "example": "I lost my key.",
-    "exampleMeaning": "나는 열쇠를 잃어버렸습니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-079",
-    "lang": "en",
-    "word": "money",
-    "meaning": "돈",
-    "example": "I need some money.",
-    "exampleMeaning": "나는 돈이 조금 필요합니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-080",
-    "lang": "en",
-    "word": "store",
-    "meaning": "가게",
-    "example": "The store opens at nine.",
-    "exampleMeaning": "그 가게는 아홉 시에 엽니다.",
-    "acceptedAnswers": [
-      "상점"
-    ],
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-081",
-    "lang": "en",
-    "word": "library",
-    "meaning": "도서관",
-    "example": "I study at the library.",
-    "exampleMeaning": "나는 도서관에서 공부합니다.",
-    "level": "intermediate",
-    "difficulty": 2
-  },
-  {
-    "id": "en-082",
-    "lang": "en",
-    "word": "street",
-    "meaning": "거리",
-    "example": "The street is busy.",
-    "exampleMeaning": "그 거리는 붐빕니다.",
-    "acceptedAnswers": [
-      "길"
-    ],
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-083",
-    "lang": "en",
-    "word": "park",
-    "meaning": "공원",
-    "example": "Children play in the park.",
-    "exampleMeaning": "아이들이 공원에서 놉니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-084",
-    "lang": "en",
-    "word": "school",
-    "meaning": "학교",
-    "example": "My school is near my house.",
-    "exampleMeaning": "내 학교는 우리 집 근처에 있습니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-085",
-    "lang": "en",
-    "word": "hospital",
-    "meaning": "병원",
-    "example": "The hospital is large.",
-    "exampleMeaning": "그 병원은 큽니다.",
-    "level": "intermediate",
-    "difficulty": 2
-  },
-  {
-    "id": "en-086",
-    "lang": "en",
-    "word": "station",
-    "meaning": "역",
-    "example": "Meet me at the station.",
-    "exampleMeaning": "역에서 나를 만나세요.",
-    "acceptedAnswers": [
-      "정거장"
-    ],
-    "level": "intermediate",
-    "difficulty": 2
-  },
-  {
-    "id": "en-087",
-    "lang": "en",
-    "word": "bus",
-    "meaning": "버스",
-    "example": "The bus is late.",
-    "exampleMeaning": "버스가 늦습니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-088",
-    "lang": "en",
-    "word": "train",
-    "meaning": "기차",
-    "example": "We take the train.",
-    "exampleMeaning": "우리는 기차를 탑니다.",
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-089",
-    "lang": "en",
-    "word": "bicycle",
-    "meaning": "자전거",
-    "example": "He rides a bicycle.",
-    "exampleMeaning": "그는 자전거를 탑니다.",
-    "level": "intermediate",
-    "difficulty": 2
-  },
-  {
-    "id": "en-090",
-    "lang": "en",
-    "word": "walk",
-    "meaning": "걷다",
-    "example": "I walk to school.",
-    "exampleMeaning": "나는 학교까지 걸어갑니다.",
-    "acceptedAnswers": [
-      "걷기",
-      "걸어가다"
-    ],
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-091",
-    "lang": "en",
-    "word": "run",
-    "meaning": "달리다",
-    "example": "They run every morning.",
-    "exampleMeaning": "그들은 매일 아침 달립니다.",
-    "acceptedAnswers": [
-      "뛰다",
-      "달려가다"
-    ],
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-092",
-    "lang": "en",
-    "word": "sleep",
-    "meaning": "자다",
-    "example": "The baby sleeps well.",
-    "exampleMeaning": "아기가 잘 잡니다.",
-    "acceptedAnswers": [
-      "잠자다"
-    ],
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-093",
-    "lang": "en",
-    "word": "wake",
-    "meaning": "깨다, 깨우다",
-    "example": "I wake up at seven.",
-    "exampleMeaning": "나는 일곱 시에 일어납니다.",
-    "acceptedAnswers": [
-      "깨다",
-      "깨우다",
-      "일어나다",
-      "깨우기"
-    ],
-    "level": "intermediate",
-    "difficulty": 2
-  },
-  {
-    "id": "en-094",
-    "lang": "en",
-    "word": "wash",
-    "meaning": "씻다",
-    "example": "Wash your hands.",
-    "exampleMeaning": "손을 씻으세요.",
-    "acceptedAnswers": [
-      "씻기",
-      "세척하다"
-    ],
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-095",
-    "lang": "en",
-    "word": "clean",
-    "meaning": "청소하다, 깨끗한",
-    "example": "I clean my room.",
-    "exampleMeaning": "나는 내 방을 청소합니다.",
-    "acceptedAnswers": [
-      "청소하다",
-      "청소",
-      "깨끗한",
-      "깨끗",
-      "깨끗하다"
-    ],
-    "level": "intermediate",
-    "difficulty": 2
-  },
-  {
-    "id": "en-096",
-    "lang": "en",
-    "word": "cook",
-    "meaning": "요리하다",
-    "example": "My father can cook.",
-    "exampleMeaning": "우리 아버지는 요리를 할 수 있습니다.",
-    "acceptedAnswers": [
-      "요리"
-    ],
-    "level": "intermediate",
-    "difficulty": 2
-  },
-  {
-    "id": "en-097",
-    "lang": "en",
-    "word": "buy",
-    "meaning": "사다",
-    "example": "I want to buy a book.",
-    "exampleMeaning": "나는 책을 사고 싶습니다.",
-    "acceptedAnswers": [
-      "구매하다"
-    ],
-    "level": "beginner",
-    "difficulty": 1
-  },
-  {
-    "id": "en-098",
-    "lang": "en",
-    "word": "sell",
-    "meaning": "팔다",
-    "example": "They sell fruit here.",
-    "exampleMeaning": "그들은 여기에서 과일을 팝니다.",
-    "level": "intermediate",
-    "difficulty": 2
-  },
-  {
-    "id": "en-099",
-    "lang": "en",
-    "word": "help",
-    "meaning": "돕다",
-    "example": "Can you help me?",
-    "exampleMeaning": "나를 도와줄 수 있나요?",
-    "acceptedAnswers": [
-      "도와주다",
-      "도움"
-    ],
-    "level": "intermediate",
-    "difficulty": 2
-  },
-  {
-    "id": "en-100",
-    "lang": "en",
-    "word": "wait",
-    "meaning": "기다리다",
-    "example": "Please wait here.",
-    "exampleMeaning": "여기서 기다려 주세요.",
-    "level": "intermediate",
-    "difficulty": 2
-  },
-  {
     "id": "ja-051",
     "lang": "ja",
     "word": "水",
@@ -2615,5 +3243,708 @@
     "exampleReading": "つぎのえきでおります / tsugi no eki de orimasu",
     "level": "intermediate",
     "difficulty": 2
+  },
+  {
+    "id": "ja-101",
+    "lang": "ja",
+    "word": "母",
+    "reading": "はは",
+    "meaning": "어머니, 엄마",
+    "example": "母は朝ご飯を作ります。",
+    "exampleReading": "ははは あさごはんを つくります。",
+    "exampleMeaning": "어머니는 아침밥을 만듭니다.",
+    "level": "beginner",
+    "difficulty": 1,
+    "acceptedAnswers": [
+      "어머니",
+      "엄마"
+    ]
+  },
+  {
+    "id": "ja-102",
+    "lang": "ja",
+    "word": "父",
+    "reading": "ちち",
+    "meaning": "아버지, 아빠",
+    "example": "父は会社へ行きます。",
+    "exampleReading": "ちちは かいしゃへ いきます。",
+    "exampleMeaning": "아버지는 회사에 갑니다.",
+    "level": "beginner",
+    "difficulty": 1,
+    "acceptedAnswers": [
+      "아버지",
+      "아빠"
+    ]
+  },
+  {
+    "id": "ja-103",
+    "lang": "ja",
+    "word": "子供",
+    "reading": "こども",
+    "meaning": "아이, 어린이",
+    "example": "子供が公園で遊びます。",
+    "exampleReading": "こどもが こうえんで あそびます。",
+    "exampleMeaning": "아이가 공원에서 놉니다.",
+    "level": "beginner",
+    "difficulty": 1,
+    "acceptedAnswers": [
+      "아이",
+      "어린이"
+    ]
+  },
+  {
+    "id": "ja-104",
+    "lang": "ja",
+    "word": "食べ物",
+    "reading": "たべもの",
+    "meaning": "음식",
+    "example": "好きな食べ物は何ですか。",
+    "exampleReading": "すきな たべものは なんですか。",
+    "exampleMeaning": "좋아하는 음식은 무엇입니까?",
+    "level": "beginner",
+    "difficulty": 1
+  },
+  {
+    "id": "ja-105",
+    "lang": "ja",
+    "word": "朝ご飯",
+    "reading": "あさごはん",
+    "meaning": "아침밥",
+    "example": "朝ご飯を食べます。",
+    "exampleReading": "あさごはんを たべます。",
+    "exampleMeaning": "아침밥을 먹습니다.",
+    "level": "beginner",
+    "difficulty": 1,
+    "acceptedAnswers": [
+      "아침 식사",
+      "아침밥"
+    ]
+  },
+  {
+    "id": "ja-106",
+    "lang": "ja",
+    "word": "約束",
+    "reading": "やくそく",
+    "meaning": "약속",
+    "example": "友達と約束があります。",
+    "exampleReading": "ともだちと やくそくが あります。",
+    "exampleMeaning": "친구와 약속이 있습니다.",
+    "level": "intermediate",
+    "difficulty": 2
+  },
+  {
+    "id": "ja-107",
+    "lang": "ja",
+    "word": "予定",
+    "reading": "よてい",
+    "meaning": "예정, 일정",
+    "example": "今日の予定を確認します。",
+    "exampleReading": "きょうの よていを かくにんします。",
+    "exampleMeaning": "오늘 일정을 확인합니다.",
+    "level": "intermediate",
+    "difficulty": 2,
+    "acceptedAnswers": [
+      "일정",
+      "예정"
+    ]
+  },
+  {
+    "id": "ja-108",
+    "lang": "ja",
+    "word": "説明する",
+    "reading": "せつめいする",
+    "meaning": "설명하다",
+    "example": "先生が文法を説明します。",
+    "exampleReading": "せんせいが ぶんぽうを せつめいします。",
+    "exampleMeaning": "선생님이 문법을 설명합니다.",
+    "level": "intermediate",
+    "difficulty": 2,
+    "acceptedAnswers": [
+      "설명"
+    ]
+  },
+  {
+    "id": "ja-109",
+    "lang": "ja",
+    "word": "集める",
+    "reading": "あつめる",
+    "meaning": "모으다",
+    "example": "新しい言葉を集めます。",
+    "exampleReading": "あたらしい ことばを あつめます。",
+    "exampleMeaning": "새로운 단어를 모읍니다.",
+    "level": "intermediate",
+    "difficulty": 2
+  },
+  {
+    "id": "ja-110",
+    "lang": "ja",
+    "word": "守る",
+    "reading": "まもる",
+    "meaning": "지키다, 보호하다",
+    "example": "ルールを守ります。",
+    "exampleReading": "ルールを まもります。",
+    "exampleMeaning": "규칙을 지킵니다.",
+    "level": "intermediate",
+    "difficulty": 2,
+    "acceptedAnswers": [
+      "지키다",
+      "보호하다"
+    ]
+  },
+  {
+    "id": "ja-111",
+    "lang": "ja",
+    "word": "招待する",
+    "reading": "しょうたいする",
+    "meaning": "초대하다",
+    "example": "友達を家に招待します。",
+    "exampleReading": "ともだちを いえに しょうたいします。",
+    "exampleMeaning": "친구를 집에 초대합니다.",
+    "level": "intermediate",
+    "difficulty": 2,
+    "acceptedAnswers": [
+      "초대"
+    ]
+  },
+  {
+    "id": "ja-112",
+    "lang": "ja",
+    "word": "到着する",
+    "reading": "とうちゃくする",
+    "meaning": "도착하다",
+    "example": "電車が駅に到着します。",
+    "exampleReading": "でんしゃが えきに とうちゃくします。",
+    "exampleMeaning": "전철이 역에 도착합니다.",
+    "level": "intermediate",
+    "difficulty": 2,
+    "acceptedAnswers": [
+      "도착"
+    ]
+  },
+  {
+    "id": "ja-113",
+    "lang": "ja",
+    "word": "運動する",
+    "reading": "うんどうする",
+    "meaning": "운동하다",
+    "example": "毎朝、運動します。",
+    "exampleReading": "まいあさ、うんどうします。",
+    "exampleMeaning": "매일 아침 운동합니다.",
+    "level": "intermediate",
+    "difficulty": 2,
+    "acceptedAnswers": [
+      "운동"
+    ]
+  },
+  {
+    "id": "ja-114",
+    "lang": "ja",
+    "word": "健康",
+    "reading": "けんこう",
+    "meaning": "건강",
+    "example": "健康が一番大切です。",
+    "exampleReading": "けんこうが いちばん たいせつです。",
+    "exampleMeaning": "건강이 가장 중요합니다.",
+    "level": "intermediate",
+    "difficulty": 2
+  },
+  {
+    "id": "ja-115",
+    "lang": "ja",
+    "word": "隣",
+    "reading": "となり",
+    "meaning": "옆, 이웃",
+    "example": "隣の人に聞きます。",
+    "exampleReading": "となりの ひとに ききます。",
+    "exampleMeaning": "옆 사람에게 묻습니다.",
+    "level": "intermediate",
+    "difficulty": 2,
+    "acceptedAnswers": [
+      "옆",
+      "이웃"
+    ]
+  },
+  {
+    "id": "ja-116",
+    "lang": "ja",
+    "word": "分析する",
+    "reading": "ぶんせきする",
+    "meaning": "분석하다",
+    "example": "結果を分析します。",
+    "exampleReading": "けっかを ぶんせきします。",
+    "exampleMeaning": "결과를 분석합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "분석"
+    ]
+  },
+  {
+    "id": "ja-117",
+    "lang": "ja",
+    "word": "評価する",
+    "reading": "ひょうかする",
+    "meaning": "평가하다",
+    "example": "先生が答えを評価します。",
+    "exampleReading": "せんせいが こたえを ひょうかします。",
+    "exampleMeaning": "선생님이 답을 평가합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "평가"
+    ]
+  },
+  {
+    "id": "ja-118",
+    "lang": "ja",
+    "word": "証拠",
+    "reading": "しょうこ",
+    "meaning": "증거",
+    "example": "はっきりした証拠が必要です。",
+    "exampleReading": "はっきりした しょうこが ひつようです。",
+    "exampleMeaning": "명확한 증거가 필요합니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "ja-119",
+    "lang": "ja",
+    "word": "戦略",
+    "reading": "せんりゃく",
+    "meaning": "전략",
+    "example": "新しい戦略を考えます。",
+    "exampleReading": "あたらしい せんりゃくを かんがえます。",
+    "exampleMeaning": "새로운 전략을 생각합니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "ja-120",
+    "lang": "ja",
+    "word": "効率的",
+    "reading": "こうりつてき",
+    "meaning": "효율적",
+    "example": "効率的な方法を使います。",
+    "exampleReading": "こうりつてきな ほうほうを つかいます。",
+    "exampleMeaning": "효율적인 방법을 사용합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "효율적인"
+    ]
+  },
+  {
+    "id": "ja-121",
+    "lang": "ja",
+    "word": "正確",
+    "reading": "せいかく",
+    "meaning": "정확함, 정확한",
+    "example": "正確な発音を練習します。",
+    "exampleReading": "せいかくな はつおんを れんしゅうします。",
+    "exampleMeaning": "정확한 발음을 연습합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "정확한",
+      "정확하다"
+    ]
+  },
+  {
+    "id": "ja-122",
+    "lang": "ja",
+    "word": "創造的",
+    "reading": "そうぞうてき",
+    "meaning": "창의적",
+    "example": "創造的な考えが大切です。",
+    "exampleReading": "そうぞうてきな かんがえが たいせつです。",
+    "exampleMeaning": "창의적인 생각이 중요합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "창의적인"
+    ]
+  },
+  {
+    "id": "ja-123",
+    "lang": "ja",
+    "word": "自信",
+    "reading": "じしん",
+    "meaning": "자신감",
+    "example": "自信を持って話します。",
+    "exampleReading": "じしんを もって はなします。",
+    "exampleMeaning": "자신감을 가지고 말합니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "ja-124",
+    "lang": "ja",
+    "word": "責任",
+    "reading": "せきにん",
+    "meaning": "책임",
+    "example": "責任を持って仕事をします。",
+    "exampleReading": "せきにんを もって しごとを します。",
+    "exampleMeaning": "책임감을 가지고 일을 합니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "ja-125",
+    "lang": "ja",
+    "word": "機会",
+    "reading": "きかい",
+    "meaning": "기회",
+    "example": "良い機会を待ちます。",
+    "exampleReading": "よい きかいを まちます。",
+    "exampleMeaning": "좋은 기회를 기다립니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "ja-126",
+    "lang": "ja",
+    "word": "環境",
+    "reading": "かんきょう",
+    "meaning": "환경",
+    "example": "環境を守ることは大切です。",
+    "exampleReading": "かんきょうを まもることは たいせつです。",
+    "exampleMeaning": "환경을 지키는 것은 중요합니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "ja-127",
+    "lang": "ja",
+    "word": "技術",
+    "reading": "ぎじゅつ",
+    "meaning": "기술",
+    "example": "新しい技術を学びます。",
+    "exampleReading": "あたらしい ぎじゅつを まなびます。",
+    "exampleMeaning": "새로운 기술을 배웁니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "ja-128",
+    "lang": "ja",
+    "word": "文化",
+    "reading": "ぶんか",
+    "meaning": "문화",
+    "example": "日本の文化に興味があります。",
+    "exampleReading": "にほんの ぶんかに きょうみが あります。",
+    "exampleMeaning": "일본 문화에 관심이 있습니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "ja-129",
+    "lang": "ja",
+    "word": "社会",
+    "reading": "しゃかい",
+    "meaning": "사회",
+    "example": "社会は少しずつ変わります。",
+    "exampleReading": "しゃかいは すこしずつ かわります。",
+    "exampleMeaning": "사회는 조금씩 변합니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "ja-130",
+    "lang": "ja",
+    "word": "経済",
+    "reading": "けいざい",
+    "meaning": "경제",
+    "example": "経済のニュースを読みます。",
+    "exampleReading": "けいざいの ニュースを よみます。",
+    "exampleMeaning": "경제 뉴스를 읽습니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "ja-131",
+    "lang": "ja",
+    "word": "政策",
+    "reading": "せいさく",
+    "meaning": "정책",
+    "example": "新しい政策が始まります。",
+    "exampleReading": "あたらしい せいさくが はじまります。",
+    "exampleMeaning": "새로운 정책이 시작됩니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "ja-132",
+    "lang": "ja",
+    "word": "交渉する",
+    "reading": "こうしょうする",
+    "meaning": "협상하다",
+    "example": "値段について交渉します。",
+    "exampleReading": "ねだんについて こうしょうします。",
+    "exampleMeaning": "가격에 대해 협상합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "협상"
+    ]
+  },
+  {
+    "id": "ja-133",
+    "lang": "ja",
+    "word": "説得する",
+    "reading": "せっとくする",
+    "meaning": "설득하다",
+    "example": "相手を説得します。",
+    "exampleReading": "あいてを せっとくします。",
+    "exampleMeaning": "상대를 설득합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "설득"
+    ]
+  },
+  {
+    "id": "ja-134",
+    "lang": "ja",
+    "word": "維持する",
+    "reading": "いじする",
+    "meaning": "유지하다",
+    "example": "良い習慣を維持します。",
+    "exampleReading": "よい しゅうかんを いじします。",
+    "exampleMeaning": "좋은 습관을 유지합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "유지"
+    ]
+  },
+  {
+    "id": "ja-135",
+    "lang": "ja",
+    "word": "認識する",
+    "reading": "にんしきする",
+    "meaning": "인식하다",
+    "example": "問題を正しく認識します。",
+    "exampleReading": "もんだいを ただしく にんしきします。",
+    "exampleMeaning": "문제를 올바르게 인식합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "인식"
+    ]
+  },
+  {
+    "id": "ja-136",
+    "lang": "ja",
+    "word": "影響",
+    "reading": "えいきょう",
+    "meaning": "영향",
+    "example": "天気は気分に影響します。",
+    "exampleReading": "てんきは きぶんに えいきょうします。",
+    "exampleMeaning": "날씨는 기분에 영향을 줍니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "ja-137",
+    "lang": "ja",
+    "word": "解決策",
+    "reading": "かいけつさく",
+    "meaning": "해결책",
+    "example": "別の解決策を探します。",
+    "exampleReading": "べつの かいけつさくを さがします。",
+    "exampleMeaning": "다른 해결책을 찾습니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "해법"
+    ]
+  },
+  {
+    "id": "ja-138",
+    "lang": "ja",
+    "word": "課題",
+    "reading": "かだい",
+    "meaning": "과제, 해결할 문제",
+    "example": "今日の課題を終えました。",
+    "exampleReading": "きょうの かだいを おえました。",
+    "exampleMeaning": "오늘의 과제를 끝냈습니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "과제",
+      "문제"
+    ]
+  },
+  {
+    "id": "ja-139",
+    "lang": "ja",
+    "word": "利益",
+    "reading": "りえき",
+    "meaning": "이익, 혜택",
+    "example": "この方法には利益があります。",
+    "exampleReading": "この ほうほうには りえきが あります。",
+    "exampleMeaning": "이 방법에는 이익이 있습니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "이익",
+      "혜택"
+    ]
+  },
+  {
+    "id": "ja-140",
+    "lang": "ja",
+    "word": "結果",
+    "reading": "けっか",
+    "meaning": "결과",
+    "example": "練習の結果が出ました。",
+    "exampleReading": "れんしゅうの けっかが でました。",
+    "exampleMeaning": "연습의 결과가 나왔습니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "ja-141",
+    "lang": "ja",
+    "word": "要件",
+    "reading": "ようけん",
+    "meaning": "요건, 요구 사항",
+    "example": "必要な要件を確認します。",
+    "exampleReading": "ひつような ようけんを かくにんします。",
+    "exampleMeaning": "필요한 요건을 확인합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "요구 사항",
+      "요건"
+    ]
+  },
+  {
+    "id": "ja-142",
+    "lang": "ja",
+    "word": "優先",
+    "reading": "ゆうせん",
+    "meaning": "우선",
+    "example": "大切なことを優先します。",
+    "exampleReading": "たいせつな ことを ゆうせんします。",
+    "exampleMeaning": "중요한 것을 우선합니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "ja-143",
+    "lang": "ja",
+    "word": "資源",
+    "reading": "しげん",
+    "meaning": "자원",
+    "example": "限られた資源を使います。",
+    "exampleReading": "かぎられた しげんを つかいます。",
+    "exampleMeaning": "제한된 자원을 사용합니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "ja-144",
+    "lang": "ja",
+    "word": "拡大する",
+    "reading": "かくだいする",
+    "meaning": "확대하다",
+    "example": "語彙を拡大します。",
+    "exampleReading": "ごいを かくだいします。",
+    "exampleMeaning": "어휘를 확대합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "확장하다",
+      "확대"
+    ]
+  },
+  {
+    "id": "ja-145",
+    "lang": "ja",
+    "word": "減らす",
+    "reading": "へらす",
+    "meaning": "줄이다",
+    "example": "間違いを減らします。",
+    "exampleReading": "まちがいを へらします。",
+    "exampleMeaning": "실수를 줄입니다.",
+    "level": "advanced",
+    "difficulty": 3
+  },
+  {
+    "id": "ja-146",
+    "lang": "ja",
+    "word": "防ぐ",
+    "reading": "ふせぐ",
+    "meaning": "막다, 예방하다",
+    "example": "同じ失敗を防ぎます。",
+    "exampleReading": "おなじ しっぱいを ふせぎます。",
+    "exampleMeaning": "같은 실패를 막습니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "예방하다",
+      "막다"
+    ]
+  },
+  {
+    "id": "ja-147",
+    "lang": "ja",
+    "word": "達成する",
+    "reading": "たっせいする",
+    "meaning": "달성하다",
+    "example": "目標を達成します。",
+    "exampleReading": "もくひょうを たっせいします。",
+    "exampleMeaning": "목표를 달성합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "달성"
+    ]
+  },
+  {
+    "id": "ja-148",
+    "lang": "ja",
+    "word": "適応する",
+    "reading": "てきおうする",
+    "meaning": "적응하다",
+    "example": "新しい環境に適応します。",
+    "exampleReading": "あたらしい かんきょうに てきおうします。",
+    "exampleMeaning": "새로운 환경에 적응합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "적응"
+    ]
+  },
+  {
+    "id": "ja-149",
+    "lang": "ja",
+    "word": "管理する",
+    "reading": "かんりする",
+    "meaning": "관리하다",
+    "example": "時間を管理します。",
+    "exampleReading": "じかんを かんりします。",
+    "exampleMeaning": "시간을 관리합니다.",
+    "level": "advanced",
+    "difficulty": 3,
+    "acceptedAnswers": [
+      "관리"
+    ]
+  },
+  {
+    "id": "ja-150",
+    "lang": "ja",
+    "word": "仮定",
+    "reading": "かてい",
+    "meaning": "가정",
+    "example": "その仮定を確認します。",
+    "exampleReading": "その かていを かくにんします。",
+    "exampleMeaning": "그 가정을 확인합니다.",
+    "acceptedAnswers": [
+      "가정"
+    ],
+    "level": "advanced",
+    "difficulty": 3
   }
 ]
