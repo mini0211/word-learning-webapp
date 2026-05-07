@@ -180,6 +180,28 @@ function statusLabel(status) {
   return labels[status] || labels.all;
 }
 
+const LEVEL_LABELS = { beginner: '초급', intermediate: '중급', advanced: '고급' };
+const LEVEL_ORDER = ['beginner', 'intermediate', 'advanced'];
+
+function levelLabel(level) { return LEVEL_LABELS[level] || '미정'; }
+function languageLabel(language) { return language === 'ja' ? '일본어' : '영어'; }
+function userLevelForLanguage(user, language) { return language === 'ja' ? user?.jaLevel : user?.enLevel; }
+
+function pickLevelTestWords(words, language) {
+  return LEVEL_ORDER.flatMap((level) => words
+    .filter((word) => word.lang === language && word.level === level)
+    .slice(0, 5));
+}
+
+function decidePlacementLevel(results) {
+  const correctByLevel = Object.fromEntries(LEVEL_ORDER.map((level) => [level, 0]));
+  results.forEach((item) => { if (item.correct) correctByLevel[item.level] += 1; });
+  const totalCorrect = results.filter((item) => item.correct).length;
+  if (correctByLevel.advanced >= 3 && totalCorrect >= 11) return 'advanced';
+  if (correctByLevel.intermediate >= 3 && totalCorrect >= 7) return 'intermediate';
+  return 'beginner';
+}
+
 function aiReasonText(feedback) {
   const grade = feedback?.aiGrade;
   if (!grade) {
@@ -259,6 +281,7 @@ function authMessage(error) {
     invalid_request_status: '요청 상태를 다시 선택해주세요.',
     invalid_question_count: '시험 문제 수를 다시 선택해주세요.',
     invalid_score: '선택한 문제 수를 모두 푼 뒤 저장해주세요.',
+    invalid_level: '레벨 결과를 다시 확인해주세요.',
     invalid_current_password: '현재 비밀번호가 맞지 않습니다.',
     account_locked: '로그인 실패가 여러 번 발생해 계정이 잠시 잠겼습니다. 10분 후 다시 시도해주세요.',
     use_own_password_change: '본인 비밀번호는 내 정보에서 변경해주세요.',
@@ -305,6 +328,8 @@ export default function App() {
   const [resetPasswordStatus, setResetPasswordStatus] = useState('');
   const [adminLoading, setAdminLoading] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
+  const [levelTestAnswers, setLevelTestAnswers] = useState({});
+  const [levelTestStatus, setLevelTestStatus] = useState('');
   const [activeView, setActiveView] = useState('learn');
   const [menuOpen, setMenuOpen] = useState(false);
   const isLoggedIn = Boolean(auth?.token && auth?.user);
@@ -400,6 +425,9 @@ export default function App() {
     return base;
   }, [languageWords, progress.wordStats]);
   const reviewCount = statusCounts.reviewAll;
+  const currentLanguageLevel = userLevelForLanguage(auth?.user, activeLanguage);
+  const needsLevelTest = isLoggedIn && (activeView === 'learn' || activeView === 'exam') && !currentLanguageLevel;
+  const levelTestWords = useMemo(() => pickLevelTestWords(words, activeLanguage), [words, activeLanguage]);
 
   async function refreshLeaderboard(language = activeLanguage) {
     if (!isLoggedIn) {
@@ -466,6 +494,8 @@ export default function App() {
     setFlipped(false);
     setExamAnswer('');
     setExamFeedback(null);
+    setLevelTestAnswers({});
+    setLevelTestStatus('');
     setProgress((prev) => ({ ...prev, filter: nextFilter, deck: rebuildDeck({ filter: nextFilter }), deckCursor: 0, updatedAt: new Date().toISOString() }));
   }
 
@@ -532,6 +562,39 @@ export default function App() {
       updatedAt: new Date().toISOString(),
     }));
     setTimeout(moveNext, flipped ? 180 : 0);
+  }
+
+
+  async function submitLevelTest(event) {
+    event.preventDefault();
+    if (!auth?.token || !levelTestWords.length) return;
+    const unanswered = levelTestWords.filter((word) => !String(levelTestAnswers[word.id] || '').trim());
+    if (unanswered.length) {
+      setLevelTestStatus(`아직 ${unanswered.length}문제가 남았습니다.`);
+      return;
+    }
+    const results = levelTestWords.map((word) => ({ id: word.id, level: word.level, correct: judgeAnswer(levelTestAnswers[word.id], word) }));
+    const placementLevel = decidePlacementLevel(results);
+    setLevelTestStatus('레벨 결과를 저장 중입니다...');
+    try {
+      const data = await api('/me/level', {
+        method: 'PATCH',
+        token: auth.token,
+        body: JSON.stringify({ language: activeLanguage, level: placementLevel }),
+      });
+      const nextAuth = { ...auth, user: { ...auth.user, ...data.user } };
+      setAuth(nextAuth);
+      setLevelTestAnswers({});
+      setLevelTestStatus(`${languageLabel(activeLanguage)} ${levelLabel(placementLevel)}으로 배치되었습니다.`);
+    } catch (err) {
+      setLevelTestStatus(authMessage(err));
+      if (err.status === 401) setAuth(null);
+    }
+  }
+
+  function skipToLanguageTest(language) {
+    navigate('learn');
+    changeFilter(language);
   }
 
   async function submitExam(event) {
@@ -1037,7 +1100,49 @@ export default function App() {
             </div>
           </header>
 
-          {(activeView === 'learn' || activeView === 'exam') && (
+          {needsLevelTest && (
+            <section className="space-y-5 rounded-[2rem] border border-indigo-100 bg-white/85 p-5 shadow-sm backdrop-blur sm:p-6">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-black text-indigo-600">레벨테스트 필요</p>
+                  <h2 className="mt-1 text-2xl font-black">{languageLabel(activeLanguage)} 레벨테스트를 먼저 진행해주세요</h2>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">레벨별 학습이 추가되어 기존 유저도 언어별 레벨 배치가 필요합니다. 결과는 {languageLabel(activeLanguage)} 학습/시험에만 적용됩니다.</p>
+                </div>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => skipToLanguageTest('en')} className={`rounded-full px-4 py-2 text-sm font-black ${activeLanguage === 'en' ? 'bg-slate-950 text-white' : 'bg-white text-slate-600'}`}>영어</button>
+                  <button type="button" onClick={() => skipToLanguageTest('ja')} className={`rounded-full px-4 py-2 text-sm font-black ${activeLanguage === 'ja' ? 'bg-slate-950 text-white' : 'bg-white text-slate-600'}`}>일본어</button>
+                </div>
+              </div>
+
+              {loading && <div className="rounded-3xl bg-white p-8 text-center shadow-sm">레벨테스트 단어를 준비하는 중입니다...</div>}
+              {!loading && levelTestWords.length < 15 && <div className="rounded-3xl bg-rose-50 p-6 text-sm font-semibold text-rose-700">레벨테스트 문항을 구성할 단어가 부족합니다.</div>}
+              {!loading && levelTestWords.length >= 15 && (
+                <form onSubmit={submitLevelTest} className="space-y-4">
+                  <div className="grid gap-3">
+                    {levelTestWords.map((word, index) => (
+                      <article key={word.id} className="rounded-3xl border border-slate-200 bg-white/85 p-4 shadow-sm">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div>
+                            <p className="text-xs font-black text-slate-400">{index + 1} / {levelTestWords.length} · {levelLabel(word.level)}</p>
+                            <div className="mt-2 flex flex-wrap items-center gap-3">
+                              <h3 className="text-2xl font-black text-slate-950">{word.word}</h3>
+                              <SpeakButton text={word.word} lang={word.lang === 'ja' ? 'ja-JP' : 'en-US'} label="듣기" />
+                            </div>
+                            {word.reading && <p className="mt-1 text-sm text-slate-500">{word.reading}</p>}
+                          </div>
+                        </div>
+                        <input value={levelTestAnswers[word.id] || ''} onChange={(event) => setLevelTestAnswers((answers) => ({ ...answers, [word.id]: event.target.value }))} placeholder="뜻을 입력하세요" className="mt-4 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100" />
+                      </article>
+                    ))}
+                  </div>
+                  <button type="submit" className="w-full rounded-2xl bg-indigo-600 px-6 py-4 text-lg font-black text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700">레벨테스트 제출</button>
+                  {levelTestStatus && <p className="rounded-2xl bg-slate-50 p-4 text-sm font-bold text-slate-700">{levelTestStatus}</p>}
+                </form>
+              )}
+            </section>
+          )}
+
+          {(activeView === 'learn' || activeView === 'exam') && !needsLevelTest && (
             <>
               <section className="space-y-5 rounded-[2rem] border border-white/70 bg-white/75 p-4 shadow-sm backdrop-blur sm:p-6">
                 <div className="flex flex-wrap gap-2">
@@ -1197,6 +1302,8 @@ export default function App() {
                 <div className="mt-4 rounded-2xl bg-indigo-50 p-4 text-sm text-indigo-900">
                   <p className="font-black">{auth.user.displayName}님 로그인 중</p>
                   <p className="mt-1">학습 언어: {auth.user.preferredLanguage === 'ja' ? '일본어' : auth.user.preferredLanguage === 'en' ? '영어' : '전체'}</p>
+                  <p className="mt-1">영어 레벨: {levelLabel(auth.user.enLevel)}</p>
+                  <p className="mt-1">일본어 레벨: {levelLabel(auth.user.jaLevel)}</p>
                   <p className="mt-2 text-xs text-indigo-700">실명/생년월일은 관리자 확인용이며 랭킹에는 표시되지 않습니다.</p>
                 </div>
               </section>
