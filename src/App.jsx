@@ -9,7 +9,7 @@ const API_BASE = 'https://lumi-storage.taild1716c.ts.net';
 
 const emptyProgress = {
   mode: 'learn',
-  filter: 'all',
+  filter: 'en',
   deck: [],
   deckCursor: 0,
   results: {},
@@ -36,7 +36,8 @@ const emptyAuthForm = {
 function loadProgress() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    return { ...emptyProgress, ...saved, results: saved?.results ?? {}, wordStats: saved?.wordStats ?? {}, deck: saved?.deck ?? [] };
+    const normalizedFilter = ['en', 'ja'].includes(saved?.filter) ? saved.filter : 'en';
+    return { ...emptyProgress, ...saved, filter: normalizedFilter, results: saved?.results ?? {}, wordStats: saved?.wordStats ?? {}, deck: saved?.deck ?? [] };
   } catch {
     return emptyProgress;
   }
@@ -364,10 +365,9 @@ export default function App() {
     else localStorage.removeItem(AUTH_KEY);
   }, [auth]);
 
-  const languageWords = useMemo(() => {
-    if (progress.filter === 'all') return words;
-    return words.filter((word) => word.lang === progress.filter);
-  }, [words, progress.filter]);
+  const activeLanguage = ['en', 'ja'].includes(progress.filter) ? progress.filter : 'en';
+
+  const languageWords = useMemo(() => words.filter((word) => word.lang === activeLanguage), [words, activeLanguage]);
 
   const filteredWords = useMemo(() => {
     const studyFilter = progress.studyFilter ?? 'all';
@@ -401,7 +401,7 @@ export default function App() {
   }, [languageWords, progress.wordStats]);
   const reviewCount = statusCounts.reviewAll;
 
-  async function refreshLeaderboard(language = progress.filter) {
+  async function refreshLeaderboard(language = activeLanguage) {
     if (!isLoggedIn) {
       setLeaderboard([]);
       return;
@@ -409,7 +409,8 @@ export default function App() {
     setLeaderboardLoading(true);
     try {
       const params = new URLSearchParams({ questionCount: String(examLimit) });
-      if (language !== 'all') params.set('language', language);
+      const normalizedLanguage = ['en', 'ja'].includes(language) ? language : 'en';
+      params.set('language', normalizedLanguage);
       const data = await api(`/leaderboard?${params.toString()}`);
       setLeaderboard(data.leaderboard ?? []);
     } catch {
@@ -420,9 +421,9 @@ export default function App() {
   }
 
   useEffect(() => {
-    if (isLoggedIn) refreshLeaderboard(progress.filter);
+    if (isLoggedIn) refreshLeaderboard(activeLanguage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [progress.filter, progress.examLimit, isLoggedIn]);
+  }, [activeLanguage, progress.examLimit, isLoggedIn]);
 
   useEffect(() => {
     if (!loading && filteredWords.length && !validDeck.length) {
@@ -431,9 +432,9 @@ export default function App() {
   }, [loading, filteredWords, validDeck.length]);
 
   function rebuildDeck(overrides = {}) {
-    const targetFilter = overrides.filter ?? progress.filter;
+    const targetFilter = ['en', 'ja'].includes(overrides.filter ?? progress.filter) ? (overrides.filter ?? progress.filter) : 'en';
     const targetStudyFilter = overrides.studyFilter ?? progress.studyFilter ?? 'all';
-    const byLanguage = targetFilter === 'all' ? words : words.filter((word) => word.lang === targetFilter);
+    const byLanguage = words.filter((word) => word.lang === targetFilter);
     const targetWords = targetStudyFilter === 'all'
       ? byLanguage
       : targetStudyFilter === 'reviewAll'
@@ -460,11 +461,12 @@ export default function App() {
   }
 
   function changeFilter(filter) {
-    if (filter === progress.filter) return;
+    const nextFilter = ['en', 'ja'].includes(filter) ? filter : 'en';
+    if (nextFilter === activeLanguage) return;
     setFlipped(false);
     setExamAnswer('');
     setExamFeedback(null);
-    setProgress((prev) => ({ ...prev, filter, deck: rebuildDeck({ filter }), deckCursor: 0, updatedAt: new Date().toISOString() }));
+    setProgress((prev) => ({ ...prev, filter: nextFilter, deck: rebuildDeck({ filter: nextFilter }), deckCursor: 0, updatedAt: new Date().toISOString() }));
   }
 
   function changeMode(mode) {
@@ -611,7 +613,7 @@ export default function App() {
       if (data.user?.role === 'admin') setAdminView('admin');
       setAuthStatus(authMode === 'register' ? '회원가입과 로그인이 완료되었습니다.' : '로그인되었습니다.');
       setAuthForm(emptyAuthForm);
-      if (data.user?.preferredLanguage) changeFilter(data.user.preferredLanguage);
+      if (['en', 'ja'].includes(data.user?.preferredLanguage)) changeFilter(data.user.preferredLanguage);
     } catch (err) {
       setAuthStatus(authMessage(err));
     }
@@ -797,10 +799,10 @@ export default function App() {
       await api('/scores', {
         method: 'POST',
         token: auth.token,
-        body: JSON.stringify({ correctCount: progress.examCorrect, wrongCount: progress.examWrong, languageFilter: progress.filter, questionCount: examLimit }),
+        body: JSON.stringify({ correctCount: progress.examCorrect, wrongCount: progress.examWrong, languageFilter: activeLanguage, questionCount: examLimit }),
       });
       setSyncStatus(`${examLimit}문제 시험 점수를 저장했습니다. 랭킹을 새로고침했습니다.`);
-      await refreshLeaderboard(progress.filter);
+      await refreshLeaderboard(activeLanguage);
     } catch (err) {
       setSyncStatus(authMessage(err));
       if (err.status === 401) setAuth(null);
@@ -1057,8 +1059,8 @@ export default function App() {
                 )}
 
                 <div className="flex flex-wrap gap-2">
-                  {[["all", "전체"], ["en", "영어"], ["ja", "일본어"]].map(([value, label]) => (
-                    <button key={value} type="button" onClick={() => changeFilter(value)} className={`rounded-full px-5 py-2 text-sm font-bold transition ${progress.filter === value ? 'bg-slate-950 text-white shadow-lg' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>{label}</button>
+                  {[["en", "영어"], ["ja", "일본어"]].map(([value, label]) => (
+                    <button key={value} type="button" onClick={() => changeFilter(value)} className={`rounded-full px-5 py-2 text-sm font-bold transition ${activeLanguage === value ? 'bg-slate-950 text-white shadow-lg' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>{label}</button>
                   ))}
                 </div>
 
@@ -1163,7 +1165,7 @@ export default function App() {
               <section className="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-sm">
                 <div className="flex items-center justify-between gap-2">
                   <h2 className="text-lg font-black">{examLimit}문제 랭킹</h2>
-                  <button type="button" onClick={() => refreshLeaderboard(progress.filter)} className="text-sm font-bold text-indigo-600">새로고침</button>
+                  <button type="button" onClick={() => refreshLeaderboard(activeLanguage)} className="text-sm font-bold text-indigo-600">새로고침</button>
                 </div>
                 <div className="mt-4 space-y-2">
                   {leaderboardLoading && <p className="text-sm text-slate-500">랭킹을 불러오는 중입니다...</p>}
