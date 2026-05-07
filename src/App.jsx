@@ -9,7 +9,7 @@ const API_BASE = 'https://lumi-storage.taild1716c.ts.net';
 
 const emptyProgress = {
   mode: 'learn',
-  filter: 'en',
+  filter: 'all',
   deck: [],
   deckCursor: 0,
   results: {},
@@ -36,8 +36,7 @@ const emptyAuthForm = {
 function loadProgress() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    const normalizedFilter = ['en', 'ja'].includes(saved?.filter) ? saved.filter : 'en';
-    return { ...emptyProgress, ...saved, filter: normalizedFilter, results: saved?.results ?? {}, wordStats: saved?.wordStats ?? {}, deck: saved?.deck ?? [] };
+    return { ...emptyProgress, ...saved, results: saved?.results ?? {}, wordStats: saved?.wordStats ?? {}, deck: saved?.deck ?? [] };
   } catch {
     return emptyProgress;
   }
@@ -365,7 +364,8 @@ export default function App() {
     else localStorage.removeItem(AUTH_KEY);
   }, [auth]);
 
-  const activeLanguage = ['en', 'ja'].includes(progress.filter) ? progress.filter : 'en';
+  const preferredStudyLanguage = ['en', 'ja'].includes(auth?.user?.preferredLanguage) ? auth.user.preferredLanguage : 'en';
+  const activeLanguage = ['en', 'ja'].includes(progress.filter) ? progress.filter : preferredStudyLanguage;
 
   const languageWords = useMemo(() => words.filter((word) => word.lang === activeLanguage), [words, activeLanguage]);
 
@@ -432,7 +432,7 @@ export default function App() {
   }, [loading, filteredWords, validDeck.length]);
 
   function rebuildDeck(overrides = {}) {
-    const targetFilter = ['en', 'ja'].includes(overrides.filter ?? progress.filter) ? (overrides.filter ?? progress.filter) : 'en';
+    const targetFilter = ['en', 'ja'].includes(overrides.filter ?? progress.filter) ? (overrides.filter ?? progress.filter) : preferredStudyLanguage;
     const targetStudyFilter = overrides.studyFilter ?? progress.studyFilter ?? 'all';
     const byLanguage = words.filter((word) => word.lang === targetFilter);
     const targetWords = targetStudyFilter === 'all'
@@ -461,8 +461,8 @@ export default function App() {
   }
 
   function changeFilter(filter) {
-    const nextFilter = ['en', 'ja'].includes(filter) ? filter : 'en';
-    if (nextFilter === activeLanguage) return;
+    const nextFilter = ['en', 'ja'].includes(filter) ? filter : preferredStudyLanguage;
+    if (nextFilter === activeLanguage && progress.filter === nextFilter) return;
     setFlipped(false);
     setExamAnswer('');
     setExamFeedback(null);
