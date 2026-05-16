@@ -100,10 +100,16 @@ function normalizeAnswer(value) {
 
 function answerCandidates(word) {
   const raw = [word.meaning, ...(word.acceptedAnswers ?? [])].filter(Boolean);
+  const seen = new Set();
   return raw
     .flatMap((item) => String(item).split(/[,，、/]| 또는 | 혹은 |\sor\s/i))
     .map((item) => item.trim())
-    .filter(Boolean);
+    .filter((item) => {
+      const key = normalizeAnswer(item);
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
 }
 
 function koreanLooseForms(value) {
@@ -408,7 +414,8 @@ export default function App() {
     return progress.deck.filter((id) => validIds.has(id));
   }, [filteredWords, progress.deck]);
 
-  const currentDeck = validDeck.length ? validDeck : makeDeck(filteredWords);
+  const fallbackDeck = useMemo(() => (validDeck.length ? [] : makeDeck(filteredWords)), [filteredWords, validDeck.length]);
+  const currentDeck = validDeck.length ? validDeck : fallbackDeck;
   const currentIndex = currentDeck.length ? progress.deckCursor % currentDeck.length : 0;
   const currentWord = wordById.get(currentDeck[currentIndex]);
   const learningPosition = currentDeck.length ? currentIndex + 1 : 0;
@@ -417,6 +424,8 @@ export default function App() {
   const examTotal = progress.examCorrect + progress.examWrong;
   const examLimit = [25, 50, 100].includes(Number(progress.examLimit)) ? Number(progress.examLimit) : 25;
   const examCompleted = isExamMode && examTotal >= examLimit;
+  const examProgressPercent = Math.min(100, Math.round((Math.min(examTotal, examLimit) / Math.max(examLimit, 1)) * 100));
+  const examAccuracy = examTotal ? Math.round((progress.examCorrect / examTotal) * 100) : 0;
   const isAdmin = auth?.user?.role === 'admin';
   const statusCounts = useMemo(() => {
     const base = { all: languageWords.length, reviewAll: 0, new: 0, learning: 0, review: 0, frequentWrong: 0, mastered: 0 };
@@ -541,6 +550,12 @@ export default function App() {
     setExamAnswer('');
     setExamFeedback(null);
     setAiChecking(false);
+  }
+
+  function handleExamAnswerKeyDown(event) {
+    if (event.key !== 'Enter' || event.shiftKey || !examFeedback) return;
+    event.preventDefault();
+    moveNext();
   }
 
   function answer(result) {
@@ -1200,9 +1215,19 @@ export default function App() {
 
                 {!loading && !error && filteredWords.length > 0 && isExamMode && (
                   <section className="rounded-[2rem] border border-violet-100 bg-white p-6 shadow-xl shadow-violet-100/60 sm:p-8">
-                    <div className="mb-6 flex items-center justify-between">
-                      <span className="rounded-full bg-violet-50 px-3 py-1 text-sm font-semibold text-violet-600">시험모드 · {examLimit}문제</span>
-                      <span className="text-sm text-slate-400">{Math.min(examTotal + 1, examLimit)} / {examLimit}</span>
+                    <div className="mb-6 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="rounded-full bg-violet-50 px-3 py-1 text-sm font-semibold text-violet-600">시험모드 · {examLimit}문제</span>
+                        <span className="text-sm text-slate-400">{Math.min(examTotal + 1, examLimit)} / {examLimit}</span>
+                      </div>
+                      <div aria-label={`시험 진행률 ${examProgressPercent}%`} className="h-2 overflow-hidden rounded-full bg-slate-100">
+                        <div className="h-full rounded-full bg-gradient-to-r from-violet-500 to-indigo-500 transition-all duration-500" style={{ width: `${examProgressPercent}%` }} />
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 text-center text-xs font-black text-slate-600 sm:text-sm">
+                        <span className="rounded-2xl bg-emerald-50 px-3 py-2 text-emerald-700">정답 {progress.examCorrect}</span>
+                        <span className="rounded-2xl bg-rose-50 px-3 py-2 text-rose-700">오답 {progress.examWrong}</span>
+                        <span className="rounded-2xl bg-slate-50 px-3 py-2 text-slate-700">정답률 {examAccuracy}%</span>
+                      </div>
                     </div>
                     {examCompleted ? (
                       <div className="rounded-3xl bg-violet-50 p-6 text-center">
@@ -1219,13 +1244,16 @@ export default function App() {
                         </div>
                         {currentWord?.reading && <p className="mt-4 text-xl text-slate-500">{currentWord.reading}</p>}
                         <form onSubmit={submitExam} className="mt-8 space-y-4">
-                          <input value={examAnswer} onChange={(event) => setExamAnswer(event.target.value)} disabled={!!examFeedback || aiChecking} placeholder="뜻을 입력하세요. 예: 사과" className="w-full rounded-2xl border border-slate-200 px-5 py-4 text-lg outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:bg-slate-50" />
+                          <input value={examAnswer} onChange={(event) => setExamAnswer(event.target.value)} onKeyDown={handleExamAnswerKeyDown} readOnly={!!examFeedback || aiChecking} aria-disabled={!!examFeedback || aiChecking} placeholder="뜻을 입력하세요. 예: 사과" className={`w-full rounded-2xl border border-slate-200 px-5 py-4 text-lg outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 ${examFeedback || aiChecking ? 'bg-slate-50' : ''}`} />
                           <button type="submit" disabled={!currentWord || !examAnswer.trim() || !!examFeedback || aiChecking} className="w-full rounded-2xl bg-violet-600 px-6 py-4 text-lg font-black text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5 hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-40">{aiChecking ? 'AI가 확인 중…' : '정답 확인'}</button>
                         </form>
                         {examFeedback && (
                           <div className={`mt-6 rounded-2xl p-5 ${examFeedback.correct ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}`}>
                             <p className="text-lg font-black">{examFeedback.correct ? '정답입니다!' : '오답입니다.'}</p>
                             <p className="mt-2 text-sm">정답: {examFeedback.answer}</p>
+                            {!examFeedback.correct && examFeedback.candidates?.length > 1 && (
+                              <p className="mt-2 text-xs leading-5 opacity-80">인정 답안: {examFeedback.candidates.slice(0, 5).join(' · ')}</p>
+                            )}
                             {examFeedback.reason && <p className="mt-2 rounded-xl bg-white/60 p-3 text-sm font-semibold leading-6">이유: {examFeedback.reason}</p>}
                             {examFeedback.aiGrade && (
                               <p className="mt-2 text-xs opacity-80">
@@ -1240,6 +1268,7 @@ export default function App() {
                             )}
                             {examFeedback.source === 'ai-local-cache' && <p className="mt-2 text-xs opacity-80">이전에 AI가 정답 처리한 답안이라 바로 인정했습니다.</p>}
                             <button type="button" onClick={moveNext} className="mt-4 rounded-xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">{examTotal >= examLimit ? '시험 결과 보기' : '다음 랜덤 단어'}</button>
+                            <p className="mt-2 text-xs opacity-70">Enter 키로도 다음 문제로 넘어갈 수 있습니다.</p>
                           </div>
                         )}
                       </>
