@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import WordCard, { SpeakButton } from './components/WordCard.jsx';
 import ProgressBar from './components/ProgressBar.jsx';
+import { answerCandidates, judgeAnswer, normalizeAnswer } from './utils/answerJudge.js';
 
 const STORAGE_KEY = 'wordLearningProgress.v2';
 const AUTH_KEY = 'wordLearningAuth.v1';
 const AI_ACCEPTED_KEY = 'wordLearningAiAcceptedAnswers.v1';
-const API_BASE = 'https://lumi-storage.taild1716c.ts.net';
+const API_BASE = import.meta.env.VITE_API_BASE || 'https://lumi-storage.taild1716c.ts.net';
 
 const emptyProgress = {
   mode: 'learn',
@@ -90,59 +91,6 @@ function shuffle(items) {
   return next;
 }
 
-function normalizeAnswer(value) {
-  return String(value ?? '')
-    .normalize('NFKC')
-    .toLowerCase()
-    .replace(/[\s.,!?，、。·・~`'"“”‘’()\[\]{}:;/-]+/g, '')
-    .trim();
-}
-
-function answerCandidates(word) {
-  const raw = [word.meaning, ...(word.acceptedAnswers ?? [])].filter(Boolean);
-  const seen = new Set();
-  return raw
-    .flatMap((item) => String(item).split(/[,，、/]| 또는 | 혹은 |\sor\s/i))
-    .map((item) => item.trim())
-    .filter((item) => {
-      const key = normalizeAnswer(item);
-      if (!key || seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-}
-
-function koreanLooseForms(value) {
-  const normalized = normalizeAnswer(value);
-  const forms = new Set([normalized]);
-  if (/^[가-힣]{2,}$/.test(normalized)) {
-    if (normalized.endsWith('다') && normalized.length >= 3) forms.add(normalized.slice(0, -1));
-    if (normalized.endsWith('기') && normalized.length >= 3) forms.add(normalized.slice(0, -1));
-    if (normalized.endsWith('하다') && normalized.length >= 4) forms.add(normalized.slice(0, -2));
-    if (normalized.endsWith('하기') && normalized.length >= 4) forms.add(normalized.slice(0, -2));
-  }
-  return [...forms].filter((form) => form.length >= 2);
-}
-
-function isAnswerMatch(input, candidate) {
-  const normalizedInput = normalizeAnswer(input);
-  const normalizedCandidate = normalizeAnswer(candidate);
-  if (!normalizedInput || !normalizedCandidate) return false;
-  if (normalizedInput === normalizedCandidate) return true;
-  const inputTokens = String(input ?? '').split(/[\s.,!?，、。·・~`'"“”‘’()\[\]{}:;/_\-]+/).map(normalizeAnswer).filter(Boolean);
-  if (inputTokens.includes(normalizedCandidate)) return true;
-  const inputForms = new Set([...koreanLooseForms(input), ...inputTokens.flatMap(koreanLooseForms)]);
-  if (koreanLooseForms(candidate).some((form) => inputForms.has(form))) return true;
-
-  // 제한적 부분 일치: 너무 짧은 답은 오답 과잉 인정 위험이 커서 제외한다.
-  if (normalizedInput.length < 3 || normalizedCandidate.length < 3) return false;
-  return normalizedCandidate.includes(normalizedInput) || normalizedInput.includes(normalizedCandidate);
-}
-
-function judgeAnswer(input, word) {
-  if (!input || !word) return false;
-  return answerCandidates(word).some((candidate) => isAnswerMatch(input, candidate));
-}
 
 
 function initialWordStats() {
@@ -397,6 +345,7 @@ export default function App() {
 
   const preferredStudyLanguage = ['en', 'ja'].includes(auth?.user?.preferredLanguage) ? auth.user.preferredLanguage : 'en';
   const activeLanguage = ['en', 'ja'].includes(progress.filter) ? progress.filter : preferredStudyLanguage;
+  const hasCombinedLanguagePreference = auth?.user?.preferredLanguage === 'all';
 
   const languageWords = useMemo(() => words.filter((word) => word.lang === activeLanguage), [words, activeLanguage]);
 
@@ -1183,6 +1132,11 @@ export default function App() {
                     <button key={value} type="button" onClick={() => changeFilter(value)} className={`rounded-full px-5 py-2 text-sm font-bold transition ${activeLanguage === value ? 'bg-slate-950 text-white shadow-lg' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>{label}</button>
                   ))}
                 </div>
+                {hasCombinedLanguagePreference && (
+                  <p className="-mt-3 rounded-2xl bg-indigo-50 px-4 py-3 text-xs font-bold leading-5 text-indigo-700">
+                    영어 + 일본어를 선택한 계정입니다. 현재 1차 안정화 버전에서는 위 버튼으로 학습 언어를 전환해 각각 학습합니다.
+                  </p>
+                )}
 
                 <div className="rounded-3xl border border-slate-200 bg-white/80 p-4 shadow-sm">
                   <div className="flex flex-wrap items-center justify-between gap-2">

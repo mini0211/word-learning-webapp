@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
-    "preview": "vite preview --host 127.0.0.1"
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^6.0.1",
@@ -16,5 +17,7 @@
     "tailwindcss": "^4.2.4",
     "@tailwindcss/vite": "^4.2.4"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "vitest": "^4.0.15"
+  }
 }
