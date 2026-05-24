@@ -25,6 +25,7 @@ export function authMessage(error) {
     invalid_current_password: '현재 비밀번호가 맞지 않습니다.',
     account_locked: '로그인 실패가 여러 번 발생해 계정이 잠시 잠겼습니다. 10분 후 다시 시도해주세요.',
     use_own_password_change: '본인 비밀번호는 내 정보에서 변경해주세요.',
+    managed_word_required: '먼저 단어 관리에서 해당 단어를 등록한 뒤 정답 후보를 승인해주세요.',
   };
   return map[error?.message] || '처리 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.';
 }
