@@ -252,6 +252,9 @@ export default function App() {
   const [adminWords, setAdminWords] = useState([]);
   const [adminWordsLoading, setAdminWordsLoading] = useState(false);
   const [adminWordStatus, setAdminWordStatus] = useState('');
+  const [aiReviews, setAiReviews] = useState([]);
+  const [aiReviewsLoading, setAiReviewsLoading] = useState(false);
+  const [aiReviewStatus, setAiReviewStatus] = useState('');
   const [adminWordFilters, setAdminWordFilters] = useState({ language: 'en', level: 'beginner', includeInactive: false });
   const [adminWordForm, setAdminWordForm] = useState(WORD_FORM_DEFAULTS);
   const [editingWordId, setEditingWordId] = useState(null);
@@ -608,7 +611,7 @@ export default function App() {
     if (!currentWord || examFeedback || examCompleted || aiChecking) return;
 
     const localCorrect = judgeAnswer(examAnswer, currentWord);
-    let correct = localCorrect || isAcceptedByAiCache(currentWord, examAnswer);
+    let correct = localCorrect;
     let aiGrade = null;
 
     if (!correct && auth?.token) {
@@ -621,7 +624,6 @@ export default function App() {
           body: JSON.stringify({ word: currentWord, answer: examAnswer }),
         });
         correct = Boolean(aiGrade.accepted);
-        if (correct && aiGrade.cacheable) rememberAiAcceptedAnswer(currentWord, examAnswer, aiGrade);
       } catch (err) {
         aiGrade = { source: 'fallback:client_error', error: err.message };
         if (err.status === 401) setAuth(null);
@@ -776,6 +778,39 @@ export default function App() {
       setAdminWordStatus(active ? '단어를 활성화했습니다.' : '단어를 비활성화했습니다.');
     } catch (err) {
       setAdminWordStatus(authMessage(err));
+    }
+  }
+
+  async function loadAiReviews() {
+    if (!auth?.token || !isAdmin) return;
+    setAiReviewsLoading(true);
+    setAiReviewStatus('AI 채점 후보를 불러오는 중입니다...');
+    try {
+      const data = await api('/admin/ai-answer-reviews?status=pending', { token: auth.token });
+      setAiReviews(data.reviews ?? []);
+      setAiReviewStatus('AI 채점 후보를 불러왔습니다.');
+    } catch (err) {
+      setAiReviewStatus(authMessage(err));
+      if (err.status === 401) setAuth(null);
+    } finally {
+      setAiReviewsLoading(false);
+    }
+  }
+
+  async function updateAiReview(review, status) {
+    if (!auth?.token || !isAdmin || !review) return;
+    setAiReviewStatus(status === 'approved' ? 'AI 정답 후보를 등록하는 중입니다...' : 'AI 정답 후보를 거부하는 중입니다...');
+    try {
+      const data = await api(`/admin/ai-answer-reviews/${review.id}`, {
+        method: 'PATCH',
+        token: auth.token,
+        body: JSON.stringify({ status }),
+      });
+      setAiReviews((reviews) => reviews.map((item) => (item.id === review.id ? { ...item, ...(data.review || {}), status } : item)));
+      setAiReviewStatus(status === 'approved' ? 'AI 정답 후보를 등록했습니다.' : 'AI 정답 후보를 거부했습니다.');
+      if (status === 'approved') await loadAdminWords({ language: review.lang || adminWordFilters.language, level: review.level || adminWordFilters.level });
+    } catch (err) {
+      setAiReviewStatus(authMessage(err));
     }
   }
 
@@ -939,6 +974,7 @@ export default function App() {
     if (isAdmin && adminView === 'admin') {
       loadAdminUsers();
       loadAdminWords();
+      loadAiReviews();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAdmin, adminView]);
@@ -1040,7 +1076,7 @@ export default function App() {
               <div>
                 <p className="text-sm font-bold uppercase tracking-[0.35em] text-indigo-500">Admin Dashboard</p>
                 <h1 className="mt-3 text-4xl font-black tracking-tight">단어 학습 관리자</h1>
-                <p className="mt-2 text-slate-600">회원 정보, 점수 기록, 건의/요청 쪽지를 확인하고 관리할 수 있습니다.</p>
+                <p className="mt-2 text-slate-600">회원 정보, 단어, AI 채점 후보, 건의/요청 쪽지를 확인하고 관리할 수 있습니다.</p>
               </div>
               <div className="flex gap-2">
                 <button type="button" onClick={() => setAdminView('learn')} className="rounded-2xl bg-indigo-600 px-4 py-3 text-sm font-black text-white">학습 페이지</button>
@@ -1108,6 +1144,37 @@ export default function App() {
                     <div className="flex flex-wrap gap-2">
                       <button type="button" onClick={() => startEditAdminWord(word)} className="rounded-xl bg-white px-3 py-2 font-bold text-emerald-700">수정</button>
                       <button type="button" onClick={() => setAdminWordActive(word, word.active === false)} className="rounded-xl bg-white px-3 py-2 font-bold text-rose-700">{word.active === false ? '활성화' : '비활성화'}</button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-3xl border border-violet-100 bg-white/85 p-5 shadow-sm backdrop-blur">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="text-xl font-black">AI 채점 검토 큐</h2>
+                <p className="mt-1 text-sm text-slate-500">AI가 정답으로 인정한 새 답안을 관리자가 정답 후보로 등록하거나 거부합니다.</p>
+              </div>
+              <button type="button" onClick={loadAiReviews} className="rounded-2xl bg-violet-600 px-4 py-2 text-sm font-bold text-white">검토 큐 새로고침</button>
+            </div>
+            {aiReviewStatus && <p className="mt-3 rounded-2xl bg-violet-50 px-4 py-3 text-sm font-semibold text-violet-800">{aiReviewStatus}</p>}
+            <div className="mt-5 grid gap-2">
+              {aiReviewsLoading && <p className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-500">AI 채점 후보를 불러오는 중입니다...</p>}
+              {!aiReviewsLoading && aiReviews.length === 0 && <p className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-500">검토할 AI 정답 후보가 없습니다.</p>}
+              {!aiReviewsLoading && aiReviews.map((review) => (
+                <article key={review.id} className="rounded-2xl border border-violet-100 bg-violet-50/40 p-4 text-sm text-slate-800">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-black text-violet-700">{languageLabel(review.lang)} · {levelLabel(review.level)} · 신뢰도 {Math.round(Number(review.confidence || 0) * 100)}% · {review.status === 'approved' ? '등록됨' : review.status === 'rejected' ? '거부됨' : '대기'}</p>
+                      <h3 className="mt-1 text-lg font-black text-slate-950">{review.word}</h3>
+                      <p className="mt-1 font-bold">후보 답안: {review.originalAnswer || review.original_answer || review.normalizedAnswer || review.normalized_answer}</p>
+                      <p className="mt-1 text-xs text-slate-500">기준 답안: {review.canonicalAnswer || review.canonical_answer || '-'}</p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {review.status !== 'approved' && <button type="button" onClick={() => updateAiReview(review, 'approved')} className="rounded-xl bg-white px-3 py-2 font-bold text-violet-700">정답 후보 등록</button>}
+                      {review.status !== 'rejected' && <button type="button" onClick={() => updateAiReview(review, 'rejected')} className="rounded-xl bg-white px-3 py-2 font-bold text-rose-700">거부</button>}
                     </div>
                   </div>
                 </article>
