@@ -26,6 +26,14 @@ const emptyProgress = {
   updatedAt: null,
 };
 
+const WORD_FORM_DEFAULTS = {
+  lang: 'en',
+  level: 'beginner',
+  word: '',
+  meaning: '',
+  acceptedAnswers: '',
+};
+
 const emptyAuthForm = {
   username: '',
   password: '',
@@ -241,6 +249,12 @@ export default function App() {
   const [leaderboardLoading, setLeaderboardLoading] = useState(false);
   const [adminView, setAdminView] = useState('admin');
   const [adminUsers, setAdminUsers] = useState([]);
+  const [adminWords, setAdminWords] = useState([]);
+  const [adminWordsLoading, setAdminWordsLoading] = useState(false);
+  const [adminWordStatus, setAdminWordStatus] = useState('');
+  const [adminWordFilters, setAdminWordFilters] = useState({ language: 'en', level: 'beginner', includeInactive: false });
+  const [adminWordForm, setAdminWordForm] = useState(WORD_FORM_DEFAULTS);
+  const [editingWordId, setEditingWordId] = useState(null);
   const [adminScores, setAdminScores] = useState([]);
   const [selectedAdminUser, setSelectedAdminUser] = useState(null);
   const [requestForm, setRequestForm] = useState({ type: 'suggestion', message: '' });
@@ -292,21 +306,38 @@ export default function App() {
       setLoading(false);
       return;
     }
-    setLoading(true);
-    fetch(`${import.meta.env.BASE_URL}words.json`)
-      .then((response) => {
-        if (!response.ok) throw new Error('words.json을 불러오지 못했습니다.');
-        return response.json();
-      })
-      .then((data) => {
-        setWords(Array.isArray(data) ? data : []);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message || '단어 데이터를 불러오지 못했습니다.');
-        setLoading(false);
-      });
-  }, [isLoggedIn]);
+    let cancelled = false;
+    async function loadWords() {
+      setLoading(true);
+      setError('');
+      try {
+        const publicResponse = await fetch(`${import.meta.env.BASE_URL}words.json`);
+        if (!publicResponse.ok) throw new Error('words.json을 불러오지 못했습니다.');
+        let nextWords = await publicResponse.json();
+        try {
+          const managed = await api('/words', { token: auth?.token, timeoutMs: 8000 });
+          if (Array.isArray(managed.words)) {
+            const byId = new Map((Array.isArray(nextWords) ? nextWords : []).map((word) => [word.id, word]));
+            managed.words.forEach((word) => {
+              if (!word?.id) return;
+              if (word.active === false) byId.delete(word.id);
+              else byId.set(word.id, word);
+            });
+            nextWords = [...byId.values()];
+          }
+        } catch (err) {
+          console.warn('managed words load failed', err.message);
+        }
+        if (!cancelled) setWords(Array.isArray(nextWords) ? nextWords : []);
+      } catch (err) {
+        if (!cancelled) setError(err.message || '단어 데이터를 불러오지 못했습니다.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    loadWords();
+    return () => { cancelled = true; };
+  }, [isLoggedIn, auth?.token]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
@@ -662,6 +693,92 @@ export default function App() {
     setAuthStatus('로그아웃되었습니다.');
   }
 
+  function adminWordPayload(form = adminWordForm) {
+    const acceptedAnswers = String(form.acceptedAnswers || '')
+      .split(',')
+      .map((answer) => answer.trim())
+      .filter(Boolean);
+    return {
+      lang: form.lang,
+      level: form.level,
+      word: form.word.trim(),
+      meaning: form.meaning.trim(),
+      acceptedAnswers,
+    };
+  }
+
+  async function loadAdminWords(overrides = {}) {
+    if (!auth?.token || !isAdmin) return;
+    const filters = { ...adminWordFilters, ...overrides };
+    setAdminWordFilters(filters);
+    setAdminWordsLoading(true);
+    setAdminWordStatus('단어 목록을 불러오는 중입니다...');
+    try {
+      const params = new URLSearchParams({ language: filters.language, level: filters.level });
+      if (filters.includeInactive) params.set('includeInactive', 'true');
+      const data = await api(`/admin/words?${params.toString()}`, { token: auth.token });
+      setAdminWords(data.words ?? []);
+      setAdminWordStatus('단어 목록을 불러왔습니다.');
+    } catch (err) {
+      setAdminWordStatus(authMessage(err));
+      if (err.status === 401) setAuth(null);
+    } finally {
+      setAdminWordsLoading(false);
+    }
+  }
+
+  async function submitAdminWord(event) {
+    event.preventDefault();
+    if (!auth?.token || !isAdmin) return;
+    const payload = adminWordPayload();
+    if (!payload.word || !payload.meaning) {
+      setAdminWordStatus('단어와 뜻을 입력해주세요.');
+      return;
+    }
+    setAdminWordStatus(editingWordId ? '단어를 수정하는 중입니다...' : '단어를 추가하는 중입니다...');
+    try {
+      const path = editingWordId ? `/admin/words/${encodeURIComponent(editingWordId)}` : '/admin/words';
+      await api(path, {
+        method: editingWordId ? 'PATCH' : 'POST',
+        token: auth.token,
+        body: JSON.stringify(payload),
+      });
+      setAdminWordForm({ ...WORD_FORM_DEFAULTS, lang: payload.lang, level: payload.level });
+      setEditingWordId(null);
+      await loadAdminWords({ language: payload.lang, level: payload.level });
+      setAdminWordStatus(editingWordId ? '단어를 수정했습니다.' : '단어를 추가했습니다.');
+    } catch (err) {
+      setAdminWordStatus(authMessage(err));
+    }
+  }
+
+  function startEditAdminWord(word) {
+    setEditingWordId(word.id);
+    setAdminWordForm({
+      lang: word.lang,
+      level: word.level,
+      word: word.word,
+      meaning: word.meaning,
+      acceptedAnswers: (word.acceptedAnswers || word.accepted_answers || []).join(', '),
+    });
+  }
+
+  async function setAdminWordActive(word, active) {
+    if (!auth?.token || !isAdmin || !word) return;
+    setAdminWordStatus(active ? '단어를 다시 활성화하는 중입니다...' : '단어를 비활성화하는 중입니다...');
+    try {
+      await api(`/admin/words/${encodeURIComponent(word.id)}`, {
+        method: 'PATCH',
+        token: auth.token,
+        body: JSON.stringify({ active }),
+      });
+      await loadAdminWords();
+      setAdminWordStatus(active ? '단어를 활성화했습니다.' : '단어를 비활성화했습니다.');
+    } catch (err) {
+      setAdminWordStatus(authMessage(err));
+    }
+  }
+
   async function loadAdminUsers() {
     if (!auth?.token || !isAdmin) return;
     setAdminLoading(true);
@@ -819,7 +936,10 @@ export default function App() {
   }
 
   useEffect(() => {
-    if (isAdmin && adminView === 'admin') loadAdminUsers();
+    if (isAdmin && adminView === 'admin') {
+      loadAdminUsers();
+      loadAdminWords();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAdmin, adminView]);
 
@@ -928,6 +1048,72 @@ export default function App() {
               </div>
             </div>
           </header>
+
+          <section className="rounded-3xl border border-emerald-100 bg-white/85 p-5 shadow-sm backdrop-blur">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="text-xl font-black">단어 관리</h2>
+                <p className="mt-1 text-sm text-slate-500">언어와 난이도별 단어를 추가, 수정, 비활성화합니다.</p>
+              </div>
+              <button type="button" onClick={() => loadAdminWords()} className="rounded-2xl bg-emerald-600 px-4 py-2 text-sm font-bold text-white">단어 새로고침</button>
+            </div>
+
+            <div className="mt-4 grid gap-3 md:grid-cols-[160px_160px_1fr]">
+              <select value={adminWordFilters.language} onChange={(e) => loadAdminWords({ language: e.target.value })} className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-emerald-400">
+                <option value="en">영어</option>
+                <option value="ja">일본어</option>
+              </select>
+              <select value={adminWordFilters.level} onChange={(e) => loadAdminWords({ level: e.target.value })} className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-emerald-400">
+                <option value="beginner">초급</option>
+                <option value="intermediate">중급</option>
+                <option value="advanced">고급</option>
+              </select>
+              <label className="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-600">
+                <input type="checkbox" checked={adminWordFilters.includeInactive} onChange={(e) => loadAdminWords({ includeInactive: e.target.checked })} />
+                비활성 단어 포함
+              </label>
+            </div>
+
+            <form onSubmit={submitAdminWord} className="mt-4 grid gap-3 md:grid-cols-5">
+              <select value={adminWordForm.lang} onChange={(e) => setAdminWordForm((form) => ({ ...form, lang: e.target.value }))} className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-emerald-400">
+                <option value="en">영어</option>
+                <option value="ja">일본어</option>
+              </select>
+              <select value={adminWordForm.level} onChange={(e) => setAdminWordForm((form) => ({ ...form, level: e.target.value }))} className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-emerald-400">
+                <option value="beginner">초급</option>
+                <option value="intermediate">중급</option>
+                <option value="advanced">고급</option>
+              </select>
+              <input value={adminWordForm.word} onChange={(e) => setAdminWordForm((form) => ({ ...form, word: e.target.value }))} placeholder="단어" className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-emerald-400" />
+              <input value={adminWordForm.meaning} onChange={(e) => setAdminWordForm((form) => ({ ...form, meaning: e.target.value }))} placeholder="뜻" className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-emerald-400" />
+              <input value={adminWordForm.acceptedAnswers} onChange={(e) => setAdminWordForm((form) => ({ ...form, acceptedAnswers: e.target.value }))} placeholder="인정 답안" className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-emerald-400" />
+              <button type="submit" className="rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-black text-white md:col-span-4">{editingWordId ? '단어 수정' : '단어 추가'}</button>
+              {editingWordId && <button type="button" onClick={() => { setEditingWordId(null); setAdminWordForm(WORD_FORM_DEFAULTS); }} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black text-slate-600">수정 취소</button>}
+            </form>
+
+            {adminWordStatus && <p className="mt-3 rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">{adminWordStatus}</p>}
+
+            <div className="mt-5 grid gap-2">
+              {adminWordsLoading && <p className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-500">단어를 불러오는 중입니다...</p>}
+              {!adminWordsLoading && adminWords.length === 0 && <p className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-500">조건에 맞는 단어가 없습니다.</p>}
+              {!adminWordsLoading && adminWords.map((word) => (
+                <article key={word.id} className={`rounded-2xl border p-4 text-sm ${word.active === false ? 'border-slate-200 bg-slate-50 text-slate-400' : 'border-emerald-100 bg-emerald-50/40 text-slate-800'}`}>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-black text-emerald-700">{languageLabel(word.lang)} · {levelLabel(word.level)} · {word.active === false ? '비활성' : '활성'}</p>
+                      <h3 className="mt-1 text-lg font-black text-slate-950">{word.word}</h3>
+                      <p className="mt-1 font-bold">{word.meaning}</p>
+                      {(word.acceptedAnswers || word.accepted_answers || []).length > 0 && <p className="mt-1 text-xs text-slate-500">인정 답안: {(word.acceptedAnswers || word.accepted_answers || []).join(', ')}</p>}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <button type="button" onClick={() => startEditAdminWord(word)} className="rounded-xl bg-white px-3 py-2 font-bold text-emerald-700">수정</button>
+                      <button type="button" onClick={() => setAdminWordActive(word, word.active === false)} className="rounded-xl bg-white px-3 py-2 font-bold text-rose-700">{word.active === false ? '활성화' : '비활성화'}</button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
 
           <section className="rounded-3xl border border-slate-200 bg-white/85 p-5 shadow-sm backdrop-blur">
             <div className="flex flex-wrap items-center justify-between gap-3">

@@ -64,6 +64,13 @@ async function mockApi(page) {
       body: JSON.stringify({ leaderboard: [] }),
     });
   });
+  await page.route(`${API_BASE}/words`, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ words: [] }),
+    });
+  });
   await page.route(`${API_BASE}/progress**`, async (route) => {
     await route.fulfill({
       status: 200,
