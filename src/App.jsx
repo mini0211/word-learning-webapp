@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import WordCard, { SpeakButton } from './components/WordCard.jsx';
 import ProgressBar from './components/ProgressBar.jsx';
 import { COMBINED_LANGUAGE_HELP_TEXT, authMessage } from './constants/messages.js';
 import { answerCandidates, judgeAnswer, normalizeAnswer } from './utils/answerJudge.js';
+import { mergeProgressByUpdatedAt, serverProgressForLanguage } from './utils/progressSync.js';
 
 const STORAGE_KEY = 'wordLearningProgress.v2';
 const AUTH_KEY = 'wordLearningAuth.v1';
@@ -258,6 +259,7 @@ export default function App() {
   const [levelTestStatus, setLevelTestStatus] = useState('');
   const [activeView, setActiveView] = useState('learn');
   const [menuOpen, setMenuOpen] = useState(false);
+  const loadedServerProgress = useRef(new Set());
   const isLoggedIn = Boolean(auth?.token && auth?.user);
 
   useEffect(() => {
@@ -311,13 +313,50 @@ export default function App() {
   }, [progress]);
 
   useEffect(() => {
-    if (auth?.token) localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
-    else localStorage.removeItem(AUTH_KEY);
+    if (!auth?.token) localStorage.removeItem(AUTH_KEY);
+    else localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
   }, [auth]);
 
   const preferredStudyLanguage = ['en', 'ja'].includes(auth?.user?.preferredLanguage) ? auth.user.preferredLanguage : 'en';
   const activeLanguage = ['en', 'ja'].includes(progress.filter) ? progress.filter : preferredStudyLanguage;
   const hasCombinedLanguagePreference = auth?.user?.preferredLanguage === 'all';
+
+  useEffect(() => {
+    loadedServerProgress.current.clear();
+  }, [auth?.token]);
+
+  useEffect(() => {
+    if (!authChecked || !auth?.token || !isLoggedIn || !['en', 'ja'].includes(activeLanguage)) return;
+    const loadKey = `${auth.user?.id || auth.user?.username || 'me'}:${activeLanguage}`;
+    if (loadedServerProgress.current.has(loadKey)) return;
+    loadedServerProgress.current.add(loadKey);
+    let cancelled = false;
+    api(`/progress?language=${encodeURIComponent(activeLanguage)}`, { token: auth.token })
+      .then((data) => {
+        if (cancelled || !data.progress) return;
+        setProgress((prev) => mergeProgressByUpdatedAt(prev, data.progress));
+      })
+      .catch((err) => {
+        if (err.status === 401) setAuth(null);
+        else console.warn('progress load failed', err.message);
+      });
+    return () => { cancelled = true; };
+  }, [activeLanguage, auth?.token, auth?.user?.id, auth?.user?.username, authChecked, isLoggedIn]);
+
+  useEffect(() => {
+    if (!authChecked || !auth?.token || !isLoggedIn || !['en', 'ja'].includes(activeLanguage) || !progress.updatedAt) return;
+    const timeout = window.setTimeout(() => {
+      api('/progress', {
+        method: 'PUT',
+        token: auth.token,
+        body: JSON.stringify({ language: activeLanguage, progress: serverProgressForLanguage(progress, activeLanguage) }),
+      }).catch((err) => {
+        if (err.status === 401) setAuth(null);
+        else console.warn('progress save failed', err.message);
+      });
+    }, 1200);
+    return () => window.clearTimeout(timeout);
+  }, [activeLanguage, auth?.token, authChecked, isLoggedIn, progress]);
 
   const languageWords = useMemo(() => words.filter((word) => word.lang === activeLanguage), [words, activeLanguage]);
 
