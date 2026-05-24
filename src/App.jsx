@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import WordCard, { SpeakButton } from './components/WordCard.jsx';
 import ProgressBar from './components/ProgressBar.jsx';
+import { COMBINED_LANGUAGE_HELP_TEXT, authMessage } from './constants/messages.js';
 import { answerCandidates, judgeAnswer, normalizeAnswer } from './utils/answerJudge.js';
 
 const STORAGE_KEY = 'wordLearningProgress.v2';
@@ -212,35 +213,6 @@ function rememberAiAcceptedAnswer(word, answer, grade) {
 
 function makeDeck(words) {
   return shuffle(words.map((word) => word.id));
-}
-
-function authMessage(error) {
-  const map = {
-    invalid_username: '아이디는 영문 소문자, 숫자, ., _, - 조합 3~24자로 입력해주세요.',
-    invalid_password: '비밀번호는 8자 이상으로 입력해주세요.',
-    invalid_display_name: '닉네임을 1~30자로 입력해주세요.',
-    invalid_real_name: '실명을 2~30자로 입력해주세요.',
-    invalid_birth_date: '생년월일을 올바르게 입력해주세요.',
-    invalid_preferred_language: '학습 언어를 다시 선택해주세요.',
-    username_taken: '이미 사용 중인 아이디입니다.',
-    invalid_credentials: '아이디 또는 비밀번호가 맞지 않습니다.',
-    missing_token: '로그인이 필요합니다.',
-    invalid_token: '로그인이 만료되었습니다. 다시 로그인해주세요.',
-    admin_required: '관리자 권한이 필요합니다.',
-    request_timeout: '서버 응답이 지연되고 있습니다. 잠시 후 다시 시도해주세요.',
-    network_error: '서버에 연결하지 못했습니다. 새로고침 후 다시 시도해주세요.',
-    api_error: '서버 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
-    invalid_request_type: '요청 종류를 다시 선택해주세요.',
-    invalid_request_message: '요청 내용은 1~1000자로 입력해주세요.',
-    invalid_request_status: '요청 상태를 다시 선택해주세요.',
-    invalid_question_count: '시험 문제 수를 다시 선택해주세요.',
-    invalid_score: '선택한 문제 수를 모두 푼 뒤 저장해주세요.',
-    invalid_level: '레벨 결과를 다시 확인해주세요.',
-    invalid_current_password: '현재 비밀번호가 맞지 않습니다.',
-    account_locked: '로그인 실패가 여러 번 발생해 계정이 잠시 잠겼습니다. 10분 후 다시 시도해주세요.',
-    use_own_password_change: '본인 비밀번호는 내 정보에서 변경해주세요.',
-  };
-  return map[error?.message] || '처리 중 문제가 발생했습니다.';
 }
 
 function formatBirthDate(value) {
@@ -1134,7 +1106,7 @@ export default function App() {
                 </div>
                 {hasCombinedLanguagePreference && (
                   <p className="-mt-3 rounded-2xl bg-indigo-50 px-4 py-3 text-xs font-bold leading-5 text-indigo-700">
-                    영어 + 일본어를 선택한 계정입니다. 현재 1차 안정화 버전에서는 위 버튼으로 학습 언어를 전환해 각각 학습합니다.
+                    {COMBINED_LANGUAGE_HELP_TEXT}
                   </p>
                 )}
 
